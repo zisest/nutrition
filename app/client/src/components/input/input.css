@@ -1,0 +1,45 @@
+.input {
+  width: 100%;
+}
+.input_label-tag {
+  display: grid;
+  grid-template-rows: auto auto;
+}
+.input_label {
+  font-size: 13px;
+  padding-left: 2px;
+}
+
+.input_input-tag {
+  height: 37px;
+  width: 100%;
+
+  border-radius: 7px;
+  border: 1px solid grey;
+  outline: none;
+
+  padding: 5px 10px;
+
+  font-size: 14px;
+
+  box-sizing: border-box;
+}
+.input_input-tag:focus-within {
+  border-color: var(--c-main-green)
+}
+.input_input-tag__error {
+  border-color: var(--c-error-red)
+}
+
+.input_validity-errors {
+
+  list-style: url('/leaf-ident.svg') inside;
+  padding-left: 15px;
+  margin: 0px;
+
+}
+.input_validity-error{
+  color: var(--c-error-red);
+  font-size: 13px;
+  font-weight: 600;
+}

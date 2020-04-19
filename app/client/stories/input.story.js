@@ -6,4 +6,9 @@ export default {
   component: Input
 }
 
-export const textInput = () => <Input />
+const field = {name: 'field1', label: 'field uno', regex: /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/}
+export const textInput = () => 
+  <div>
+    <Input {...field} validityErrors={['sasas', 'DEDJEF FEfEF']} />
+    <Input {...field} validityErrors={['sasas', 'DEDJEF FEfEF']} />
+  </div>

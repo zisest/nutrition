@@ -1,0 +1,48 @@
+.form-button {
+  height: 100%;
+  width: 50px;
+  margin: 0px 0px 0px auto;
+}
+
+.form-button_btn {
+  height: 100%;
+  width: 25px;
+  border-radius: 0px var(--window-border-radius) var(--window-border-radius) 0px;
+  font-size: 15px;
+
+  outline: none;
+  border: none;
+
+  font-weight: 600;
+  margin: 0px 0px 0px auto;
+  display: block;
+  line-height: 22px;
+
+  box-shadow: inset 5px 0px 6px 0px #00000030;
+  
+  transition: width 500ms;
+}
+
+.form-button_btn:hover {
+  cursor: pointer;
+  width: 50px;
+
+  transition: width 500ms;
+}
+
+
+.form-button_btn__green {
+  background-color: var(--c-main-green);
+  color: white;
+}
+
+.form-button_btn__violet {
+  background-color: var(--c-violet);
+  color: white;
+}
+
+
+.form-button_btn:disabled:hover {
+  transform: none;
+  cursor: default;
+}
