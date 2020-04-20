@@ -1,0 +1,19 @@
+{
+    "MODEL_DESCRIPTION": "I literally dont know",
+    "MODEL_NAME": "VeryDifferentModel",
+    "LABEL_TO_PREDICT": "PBF",
+    "SOURCE_FIELDS": [
+        "insulin",
+        "glucose",
+        "TC",
+        "HDL-C",
+        "LDL-C",
+        "age",
+        "sex_f",
+        "sex_m"
+    ],
+    "CATEGORIAL_LABELS": [
+        "sex_f",
+        "sex_m"
+    ]
+}

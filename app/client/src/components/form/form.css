@@ -3,7 +3,10 @@
   grid-template-columns: auto 70px;
   column-gap: 15px;
   border-radius: var(--window-border-radius);
-  border: 1px solid grey;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.20);
+
+  background-color: rgba(158, 171, 165, 0.1);
+  backdrop-filter: blur(15px);
 }
 .form_title {
   font-size: 24px;

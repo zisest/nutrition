@@ -9,7 +9,7 @@ const VALIDATION_ERRORS = {
 }
 
 //change to useEffect 
-function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorList, dataToSend }) {
+function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorList, dataToSend, width, onResponse }) {
   const [values, setValues] = useState({})
   const [validityErrors, setValidityErrors] = useState({})
   let regexs = fields.reduce((ac, field) => ({...ac, [field.name]: field.regex || /[\s\S]*/}), {})
@@ -82,7 +82,10 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
       }
     )
     .then(res => res.text())
-    .then(res => console.log(res))
+    .then(res => {
+      onResponse(res)
+      console.log(res)
+    })
 
     e.preventDefault()
   }
@@ -105,7 +108,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
   
 
   return (    
-    <form className='form' onSubmit={handleSubmit} noValidate autoComplete='off' >      
+    <form className='form' style={{width}} onSubmit={handleSubmit} noValidate autoComplete='off' >      
       <div className='form_body'>
         <div className='form_title'>{formTitle}</div>
         <div className='form_fields' style={gridCols}>
@@ -125,7 +128,8 @@ Form.defaultProps = {
   columns: 1,
   singleErrorList: true,
   formTitle: 'Form',
-  dataToSend: {}
+  dataToSend: {},
+  width: '600px'
 }
   
 export default Form

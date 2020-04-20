@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import json
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from tensorflow import keras
 from pathlib import Path
 
@@ -34,12 +34,34 @@ def getModels():
     return jsonify(models_info)
 
 
+def parse_request(req):
+    model_name = req['MODEL_NAME']
+    model_info = next((item for item in models_info if item['MODEL_NAME'] == model_name), False)
+
+    if not model_info:
+        return False
+    catLabels = set([item.split('_')[0] for item in model_info['CATEGORIAL_LABELS']])
+    catValues = {item: 0 for item in model_info['CATEGORIAL_LABELS']}
+    # catValues.update({item+'_'+req[item]: 1 for item in catLabels})
+    for item in catLabels:
+        catValues.update({item+'_'+req.pop(item, None): 1})
+    req.update(catValues)
+    req.pop('MODEL_NAME', None)
+    parsed = [float(req[key]) for key in model_info['SOURCE_FIELDS'] if key in req]
+    if len(parsed) != len(model_info['SOURCE_FIELDS']):
+        return False
+    return parsed, model_name
+
+
+
 @app.route('/api/predict', methods=['POST'])
 def results():
     data = request.get_json(force=True)
-    float_features = [float(x) for x in data.values()]
-    final_features = norm(float_features, normalization_info[data['MODEL_NAME']])
-    prediction = models[data['MODEL_NAME']].predict(pd.DataFrame(final_features).transpose())
+    parsed, model_name = parse_request(data)
+    if not parsed:
+        return str('ERROR')
+    normalized = norm(parsed, normalization_info[model_name])
+    prediction = models[model_name].predict(pd.DataFrame(normalized).transpose())
     print(prediction)
     output = prediction[0][0]
     return str(output)

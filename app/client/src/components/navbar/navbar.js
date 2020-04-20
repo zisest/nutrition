@@ -3,8 +3,8 @@ import './navbar.css'
   
 function Navbar({ title, position, children, stickToEnd }) {
   
-  let childrenArray = React.Children.toArray(children).map(child => 
-    <div className='navbar_child'>{child}</div>
+  let childrenArray = React.Children.toArray(children).map((child, index) => 
+    <div key={index} className='navbar_child'>{child}</div>
   )
   let atStart = childrenArray.slice(0, childrenArray.length - stickToEnd)
   let atEnd = childrenArray.slice(childrenArray.length - stickToEnd)

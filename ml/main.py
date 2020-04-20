@@ -24,10 +24,10 @@ data['sex'] = data['sex'].map({1: 'm', 2: 'f'})
 data['phys_act'] = data['phys_act'].map({1: 'low', 2: 'medium', 3: 'high'})
 data = pd.get_dummies(data, columns=['sex', 'phys_act'])
 
-MODEL_NAME = 'PredictingLBM1'
-MODEL_DESCRIPTION = 'Predicting LBM based on insluin, glucose, TC, etc.'
-LABEL_TO_PREDICT = 'LBM'
-SOURCE_FIELDS = ['insulin', 'glucose', 'TC', 'HDL-C', 'TG', 'LDL-C', 'age', 'sex_f', 'sex_m']
+MODEL_NAME = 'VeryDifferentModel'
+MODEL_DESCRIPTION = 'I literally dont know'
+LABEL_TO_PREDICT = 'PBF'
+SOURCE_FIELDS = ['insulin', 'glucose', 'TC', 'HDL-C', 'LDL-C', 'age', 'sex_f', 'sex_m']
 
 ALL_FIELDS = SOURCE_FIELDS + [LABEL_TO_PREDICT]
 

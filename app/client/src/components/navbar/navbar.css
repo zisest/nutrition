@@ -14,9 +14,7 @@
 }
 
 
-.navbar__vertical .navbar_header {
-  
-}
+
 .navbar__vertical .navbar_title {
   padding: 5px 8px;
   font-size: 36px;
@@ -34,13 +32,26 @@
   flex-direction: column;
   padding: 0px 10px 10px 10px
 }
-
-
-.navbar_children {
-
+.navbar__vertical .navbar_child:hover  {
+  background-color: rgba(0, 0, 0, 0.03)
 }
-.navbar_children__end {
 
+.navbar__vertical .navbar_child {
+  padding: 8px 12px;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1)
+}
+.navbar__vertical .navbar_child > * {
+  width: 100%;
+}
+.navbar__vertical .navbar_child:first-child {
+  margin-top: 0px;
+}
+.navbar__vertical .navbar_child:last-child {
+  margin-bottom: 0px;
+  border: none;
 }
 
 .navbar__horizontal {
@@ -77,3 +88,11 @@
 .navbar__horizontal .navbar_child {
   margin: 0px 15px
 }
+.navbar_child:hover {
+  cursor: pointer;
+}
+.navbar__horizontal .navbar_child:hover > * {
+  color: var(--c-dark-green);
+}
+
+
