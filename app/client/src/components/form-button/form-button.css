@@ -1,12 +1,12 @@
 .form-button {
   height: 100%;
-  width: 50px;
+  width: 70px;
   margin: 0px 0px 0px auto;
 }
 
 .form-button_btn {
   height: 100%;
-  width: 25px;
+  width: 50px;
   border-radius: 0px var(--window-border-radius) var(--window-border-radius) 0px;
   font-size: 15px;
 
@@ -25,7 +25,7 @@
 
 .form-button_btn:hover {
   cursor: pointer;
-  width: 50px;
+  width: 70px;
 
   transition: width 500ms;
 }

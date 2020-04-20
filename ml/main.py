@@ -3,6 +3,9 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from pathlib import Path
+import json
+
 import tensorflow as tf
 import tf_docs
 
@@ -21,6 +24,8 @@ data['sex'] = data['sex'].map({1: 'm', 2: 'f'})
 data['phys_act'] = data['phys_act'].map({1: 'low', 2: 'medium', 3: 'high'})
 data = pd.get_dummies(data, columns=['sex', 'phys_act'])
 
+MODEL_NAME = 'PredictingLBM1'
+MODEL_DESCRIPTION = 'Predicting LBM based on insluin, glucose, TC, etc.'
 LABEL_TO_PREDICT = 'LBM'
 SOURCE_FIELDS = ['insulin', 'glucose', 'TC', 'HDL-C', 'TG', 'LDL-C', 'age', 'sex_f', 'sex_m']
 
@@ -52,8 +57,14 @@ categorial = list(train_stats[(train_stats['min'] == 0) & (train_stats['max'] ==
 for el in categorial:
     train_stats.at[el, 'mean'] = 0
     train_stats.at[el, 'std'] = 1
-# exporting means and stds
-train_stats[['mean', 'std']].to_csv('model/normalization.csv')
+
+# exporting means and stds, other model info
+Path('models/{}'.format(MODEL_NAME)).mkdir(exist_ok=True)
+
+model_info = {'MODEL_DESCRIPTION': MODEL_DESCRIPTION, 'MODEL_NAME': MODEL_NAME, 'LABEL_TO_PREDICT': LABEL_TO_PREDICT, 'SOURCE_FIELDS': SOURCE_FIELDS, 'CATEGORIAL_LABELS': categorial}
+with open('models/{}/info.json'.format(MODEL_NAME), 'w', encoding='utf-8') as f:
+    json.dump(model_info, f, ensure_ascii=False, indent=4)
+train_stats[['mean', 'std']].to_csv('models/{}/normalization.csv'.format(MODEL_NAME))
 
 def norm(x):
     return (x - train_stats['mean']) / train_stats['std']
@@ -116,7 +127,7 @@ plt.ylim([0, 75])
 plt.ylabel('MAE [{}]'.format(LABEL_TO_PREDICT))
 
 
-model.save('model', save_format='tf')
+model.save('models/{}'.format(MODEL_NAME), save_format='tf')
 
 
 loss, mae, mse = model.evaluate(normed_test_data, test_labels, verbose=2)

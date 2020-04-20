@@ -3,12 +3,13 @@ import './input.css'
 
 function Input({ type, value, name, label, disabled, validityErrors, onChange, placeholder, maxLength, displayErrors }) {
   let errorBorderStyle = validityErrors.length === 0 ? '' : ' input_input-tag__error'
+  let errorLabelStyle = validityErrors.length === 0 ? '' : ' input_label__error'
   return (
     <div className='input'>
       <label className='input_label-tag'>
-        <div className='input_label'>{label}</div> 
+        <div className={'input_label' + errorLabelStyle}>{label}</div> 
         <input className={'input_input-tag' + errorBorderStyle}
-          type={type}
+          type='text'
           name={name}
           value={value}
           placeholder={placeholder || name}

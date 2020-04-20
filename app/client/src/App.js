@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import InputPage from './components/input-page'
-import ResultsPage from './components/results-page'
+import HomePage from './components/home-page'
+import ModelsPage from './components/models-page'
 import './App.css'
 
 function App() {
@@ -9,8 +9,8 @@ function App() {
   return (
     <div className='app'>
       <Switch>
-        <Route exact path='/' component={InputPage} />
-        <Route path='/res' component={ResultsPage} />
+        <Route exact path='/' component={HomePage} />
+        <Route path='/models' component={ModelsPage} />
         <Route render={() => <Redirect to='/' />} />
       </Switch>
     </div>

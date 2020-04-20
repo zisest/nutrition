@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Input from '../input'
+import Input, { RadioGroup } from '../input'
 import Button from '../button'
 import FormButton from '../form-button'
 import './form.css'
@@ -9,14 +9,14 @@ const VALIDATION_ERRORS = {
 }
 
 //change to useEffect 
-function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorList }) {
+function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorList, dataToSend }) {
   const [values, setValues] = useState({})
   const [validityErrors, setValidityErrors] = useState({})
   let regexs = fields.reduce((ac, field) => ({...ac, [field.name]: field.regex || /[\s\S]*/}), {})
   let required = fields.reduce((ac, field) => ({...ac, [field.name]: !!field.required}), {})
 
   useEffect(() => {
-    let initValues = fields.reduce((ac, field) => ({...ac, [field.name]: ''}), {})
+    let initValues = fields.reduce((ac, field) => ({...ac, [field.name]: field.initialValue || ''}), {})
     let initValidityErrors = fields.reduce((ac, field) => ({...ac, [field.name]: {}}), {})
     setValues(initValues)
     setValidityErrors(initValidityErrors)
@@ -40,15 +40,24 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     setValidityError(fieldName, 0, isError)
     return !isError
   }
-  const handleChange = (e) => {
-    let target = e.currentTarget    
-    if (matchesRegex(target.name, target.value)) {
-      requiredFieldCheck(target.name, target.value)
+  const handleChange = (e) => {    
+    let target = e.currentTarget   
+    console.log(target) 
+    if (target.type === 'radio') {
+      console.log('radio')
       setValues(prev => ({
         ...prev,
         [target.name]: target.value
       }))
-    }      
+    } else {
+      if (matchesRegex(target.name, target.value)) {
+        requiredFieldCheck(target.name, target.value)
+        setValues(prev => ({
+          ...prev,
+          [target.name]: target.value
+        }))
+      }
+    }          
   }
 
   const validateFields = () => {
@@ -66,7 +75,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     validateFields() && fetch(submitUrl, 
       {
         method: 'POST',
-        body: JSON.stringify(values),
+        body: JSON.stringify({...values, ...dataToSend}),
         headers: {
           'Content-Type': 'application/json'
         }
@@ -85,11 +94,14 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     errorMessages.forEach(msg => {
       !allErrorMessages.includes(msg) && allErrorMessages.push(msg)
     })
-    return <Input {...field} onChange={handleChange} value={values[field.name]} 
-      validityErrors={errorMessages || []} key={index} displayErrors={!singleErrorList} />
+    if (field.type === 'radio')
+      return <RadioGroup {...field} key={index} onChange={handleChange} value={values[field.name]} />
+    else
+      return <Input {...field} onChange={handleChange} value={values[field.name]} 
+        validityErrors={errorMessages || []} key={index} displayErrors={!singleErrorList} />
   })
 
-  let gridCols = { 'gridTemplateColumns': 'auto '.repeat(columns) }
+  let gridCols = { 'gridTemplateColumns': '1fr '.repeat(columns) }
   
 
   return (    
@@ -112,7 +124,8 @@ Form.defaultProps = {
   fields: [],
   columns: 1,
   singleErrorList: true,
-  formTitle: 'Form'
+  formTitle: 'Form',
+  dataToSend: {}
 }
   
 export default Form

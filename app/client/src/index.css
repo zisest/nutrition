@@ -17,3 +17,13 @@
   font-family: 'Open Sans', sans-serif;
   color: var(--c-grey);
 }
+
+*::selection {
+  background-color: var(--c-main-green);
+  color: white
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0
+}

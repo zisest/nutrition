@@ -9,13 +9,16 @@
   font-size: 13px;
   padding-left: 2px;
 }
+.input_label__error {
+ color: var(--c-error-red)
+}
 
 .input_input-tag {
   height: 37px;
   width: 100%;
 
   border-radius: 7px;
-  border: 1px solid grey;
+  border: 1px solid var(--c-light-grey);
   outline: none;
 
   padding: 5px 10px;
@@ -27,6 +30,7 @@
 .input_input-tag:focus-within {
   border-color: var(--c-main-green)
 }
+
 .input_input-tag__error {
   border-color: var(--c-error-red)
 }
