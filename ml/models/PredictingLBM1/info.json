@@ -1,0 +1,20 @@
+{
+    "MODEL_DESCRIPTION": "Predicting LBM based on insluin, glucose, TC, etc.",
+    "MODEL_NAME": "PredictingLBM1",
+    "LABEL_TO_PREDICT": "LBM",
+    "SOURCE_FIELDS": [
+        "insulin",
+        "glucose",
+        "TC",
+        "HDL-C",
+        "TG",
+        "LDL-C",
+        "age",
+        "sex_f",
+        "sex_m"
+    ],
+    "CATEGORIAL_LABELS": [
+        "sex_f",
+        "sex_m"
+    ]
+}
