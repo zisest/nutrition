@@ -24,10 +24,11 @@ data['sex'] = data['sex'].map({1: 'm', 2: 'f'})
 data['phys_act'] = data['phys_act'].map({1: 'low', 2: 'medium', 3: 'high'})
 data = pd.get_dummies(data, columns=['sex', 'phys_act'])
 
-MODEL_NAME = 'VeryDifferentModel'
-MODEL_DESCRIPTION = 'I literally dont know'
-LABEL_TO_PREDICT = 'PBF'
-SOURCE_FIELDS = ['insulin', 'glucose', 'TC', 'HDL-C', 'LDL-C', 'age', 'sex_f', 'sex_m']
+MODEL_NAME = 'PredictingSmth9'
+MODEL_TITLE = 'Predicting LBM'
+MODEL_DESCRIPTION = 'based on glucose, insulin, TC, HDL-C, age'
+LABEL_TO_PREDICT = 'LBM'
+SOURCE_FIELDS = ['insulin', 'glucose', 'TC', 'HDL-C', 'age']
 
 ALL_FIELDS = SOURCE_FIELDS + [LABEL_TO_PREDICT]
 
@@ -61,7 +62,14 @@ for el in categorial:
 # exporting means and stds, other model info
 Path('models/{}'.format(MODEL_NAME)).mkdir(exist_ok=True)
 
-model_info = {'MODEL_DESCRIPTION': MODEL_DESCRIPTION, 'MODEL_NAME': MODEL_NAME, 'LABEL_TO_PREDICT': LABEL_TO_PREDICT, 'SOURCE_FIELDS': SOURCE_FIELDS, 'CATEGORIAL_LABELS': categorial}
+model_info = {
+    'MODEL_DESCRIPTION': MODEL_DESCRIPTION,
+    'MODEL_NAME': MODEL_NAME,
+    'MODEL_TITLE': MODEL_TITLE,
+    'LABEL_TO_PREDICT': LABEL_TO_PREDICT,
+    'SOURCE_FIELDS': SOURCE_FIELDS,
+    'CATEGORIAL_LABELS': categorial
+}
 with open('models/{}/info.json'.format(MODEL_NAME), 'w', encoding='utf-8') as f:
     json.dump(model_info, f, ensure_ascii=False, indent=4)
 train_stats[['mean', 'std']].to_csv('models/{}/normalization.csv'.format(MODEL_NAME))

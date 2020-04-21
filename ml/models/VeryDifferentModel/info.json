@@ -1,6 +1,7 @@
 {
     "MODEL_DESCRIPTION": "I literally dont know",
     "MODEL_NAME": "VeryDifferentModel",
+    "MODEL_TITLE": "A very different model",
     "LABEL_TO_PREDICT": "PBF",
     "SOURCE_FIELDS": [
         "insulin",

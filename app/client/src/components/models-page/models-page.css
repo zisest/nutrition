@@ -12,14 +12,3 @@
   justify-content: center;
   padding-bottom: 8vh;
 }
-/*MODEL-LINK*/
-
-.model-link_name {
-  font-size: 16px;
-  color: var(--c-dark-green);
-}
-.model-link_description {
-  font-size: 14px;
-  color: var(--c-light-grey);
-  padding-left: 6px
-}

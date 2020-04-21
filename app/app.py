@@ -34,6 +34,7 @@ def getModels():
     return jsonify(models_info)
 
 
+
 def parse_request(req):
     model_name = req['MODEL_NAME']
     model_info = next((item for item in models_info if item['MODEL_NAME'] == model_name), False)

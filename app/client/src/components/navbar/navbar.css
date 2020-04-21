@@ -37,7 +37,6 @@
 }
 
 .navbar__vertical .navbar_child {
-  padding: 8px 12px;
   min-height: 35px;
   display: flex;
   align-items: center;

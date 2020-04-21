@@ -1,0 +1,19 @@
+
+.model-link {
+  padding: 6px 10px;
+}
+.model-link_name {
+  font-size: 16px;
+  color: var(--c-dark-green);
+}
+.model-link_description {
+  font-size: 14px;
+  color: var(--c-light-grey);
+  padding-left: 6px
+}
+.model-link__active {
+  background-color: rgb(214, 233, 222);
+}
+.model-link__active .model-link_name {
+  
+}

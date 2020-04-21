@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './model.css'
 import {
   BrowserRouter as Router,
@@ -40,12 +40,18 @@ const parseModel = (model) => {
 }
 
 function Model({ models }) {
-  const [result, setResult] = useState(null)
+  const [results, setResults] = useState({})
+
   let { modelName } = useParams()
   let model = models.find(m => m['MODEL_NAME'] === modelName)
+  useEffect(() => {
+    console.log('Model rerender')
+  }, [model])  
+  if (!model) return <Redirect to='/models' />
+
 
   const handleResponse = (res) => {
-    setResult(res)
+    setResults(prev => ({...prev, [model.MODEL_NAME]: res}))
   }
 
   let form = model && <Form 
@@ -53,20 +59,21 @@ function Model({ models }) {
     columns={2} 
     dataToSend={{MODEL_NAME: model.MODEL_NAME}}
     submitUrl='/api/predict' 
-    formTitle={model.MODEL_NAME}
+    formTitle={model.MODEL_TITLE || model.MODEL_NAME}
     onResponse={handleResponse}
-      />
+  />
 
     
   
   return (
     <div className='model'>
-      {!model && modelName && <Redirect to='/models' />}
       {form}
-      {result}
+      {results[model.MODEL_NAME]}
     </div>
   )
 }
-Model.defaultProps = { }
+Model.defaultProps = {
+  
+}
   
 export default Model

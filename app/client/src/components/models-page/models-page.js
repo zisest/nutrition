@@ -3,11 +3,12 @@ import { Link, Switch, Route } from 'react-router-dom'
 import './models-page.css'
 import Navbar from '../navbar'  
 import Model from '../model'
+import ModelLink from '../model-link'
 
 const FETCH_URL = '/api/getModels'
 
 function ModelsPage() {
-  const [models, setModels] = useState([])
+  const [models, setModels] = useState(null)
 
   useEffect(() => {
     fetch(FETCH_URL)
@@ -18,29 +19,26 @@ function ModelsPage() {
     .catch(err => console.error('ERROR: ', err))
   }, [])
 
-  let modelElements = models.map((model, index) => 
-    <Link to={'/models/' + model.MODEL_NAME}>
-    <div className='model-link' key={index}>
-      <div className='model-link_name'>
-        {model.MODEL_NAME}
-      </div>
-      <div className='model-link_description'>
-        {model.MODEL_DESCRIPTION}
-      </div>
-    </div>
-    </Link>
+  let modelLinks = models && models.map((model, index) => 
+    <ModelLink key={index}
+      name={model.MODEL_NAME} 
+      title={model.MODEL_TITLE || model.MODEL_NAME} 
+      description={model.MODEL_DESCRIPTION} 
+      to={'/models/' + model.MODEL_NAME}
+    />
   )
 
   return (
     <div className='models-page'>
       <div className='models-page_navbar'>
         <Navbar title='Models'>
-          {modelElements}
+          {modelLinks}
         </Navbar>
       </div>
       <div className='models-page_main-area'>
       <Switch>
-        <Route path="/models/:modelName" children={<Model models={models} />} />
+        <Route exact path='/models' />
+        <Route path='/models/:modelName' children={models && <Model models={models} />} />
       </Switch>
       </div>
     </div>
