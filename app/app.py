@@ -5,10 +5,10 @@ from flask import Flask, request, jsonify
 from tensorflow import keras
 from pathlib import Path
 
+
 app = Flask(__name__, static_folder='client/build/static')
 
-# model = keras.models.load_model('../ml/model')
-# normalization = pd.read_csv('../ml/model/normalization.csv', header=0, index_col=0)
+
 models_dir = Path('../ml/models')
 models_info = []
 normalization_info = {}
@@ -38,19 +38,19 @@ def getModels():
 def parse_request(req):
     model_name = req['MODEL_NAME']
     model_info = next((item for item in models_info if item['MODEL_NAME'] == model_name), False)
-
     if not model_info:
         return False
-    catLabels = set([item.split('_')[0] for item in model_info['CATEGORIAL_LABELS']])
-    catValues = {item: 0 for item in model_info['CATEGORIAL_LABELS']}
-    # catValues.update({item+'_'+req[item]: 1 for item in catLabels})
-    for item in catLabels:
-        catValues.update({item+'_'+req.pop(item, None): 1})
-    req.update(catValues)
-    req.pop('MODEL_NAME', None)
-    parsed = [float(req[key]) for key in model_info['SOURCE_FIELDS'] if key in req]
-    if len(parsed) != len(model_info['SOURCE_FIELDS']):
-        return False
+
+    parsedDict = {}
+    for field in model_info['SOURCE_FIELDS']:
+        if field['NAME'] not in req.keys():
+            return False
+        if field['CATEGORIAL']:
+            for val in field['VALUES']:
+                parsedDict[field['NAME'] + '_' + val['NAME']] = float(req[field['NAME']] == val['NAME'])
+        else:
+            parsedDict[field['NAME']] = float(req[field['NAME']])
+    parsed = list(parsedDict.values())
     return parsed, model_name
 
 
@@ -58,9 +58,11 @@ def parse_request(req):
 @app.route('/api/predict', methods=['POST'])
 def results():
     data = request.get_json(force=True)
+    print(data)
     parsed, model_name = parse_request(data)
+    print(parsed)
     if not parsed:
-        return str('ERROR')
+        return str('ERROR') # CHANGE
     normalized = norm(parsed, normalization_info[model_name])
     prediction = models[model_name].predict(pd.DataFrame(normalized).transpose())
     print(prediction)

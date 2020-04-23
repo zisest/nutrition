@@ -28,6 +28,10 @@
   box-sizing: border-box;
 }
 
+.input_input-tag::placeholder {
+  color: var(--c-light-grey)
+}
+
 .input_input-tag:hover {
   border-color: var(--c-main-green)
 }

@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 
 
-
 CJK_WH_coefs = { # coefs: wt, ht, free
     'm': {
         '0to3': [0.118, 3.59, -1.55], # 0to3 as in >= 0 && < 3

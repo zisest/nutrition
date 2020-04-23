@@ -36,11 +36,13 @@ MODEL_DESCRIPTION = 'trying to make sense of the ML params'
 CREATION_TIME = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 LABEL_TO_PREDICT = {
     'NAME': 'bmr',
-    'TITLE': 'BMR',
-    'FULL_TITLE': 'Basal metabolic rate',
+    'LABEL': 'BMR',
+    'FULL_LABEL': 'Basal metabolic rate',
     'UNIT': 'MJ/day',
+    'ACCURACY': 3,
     'ALTERNATIVE_UNITS': [
-        {'UNIT': 'kcal/day', 'RATE': 238.8458966}
+        # accuracy is 0 decimal places, but not == 0 because JavaScript :/
+        {'UNIT': 'kcal/day', 'RATE': 238.8458966, 'ACCURACY': 0.01}
     ]
 }
 SOURCE_FIELDS = [
@@ -54,7 +56,7 @@ SOURCE_FIELDS = [
     {
         'NAME': 'wt',
         'CATEGORIAL': False,
-        'TITLE': 'weight',
+        'LABEL': 'weight',
         'UNIT': 'kg',
         'ALTERNATIVE_UNITS': [],
         'DEFAULT_VALUE': 74
@@ -62,7 +64,7 @@ SOURCE_FIELDS = [
     {
         'NAME': 'ht',
         'CATEGORIAL': False,
-        'TITLE': 'height',
+        'LABEL': 'height',
         'UNIT': 'm',
         'ALTERNATIVE_UNITS': [
             {'UNIT': 'cm', 'RATE': 100}
@@ -73,16 +75,16 @@ SOURCE_FIELDS = [
         'NAME': 'sex',
         'CATEGORIAL': True,
         'VALUES': [
-            {'NAME': 'm', 'TITLE': 'male'},
-            {'NAME': 'f', 'TITLE': 'female'},
+            {'NAME': 'm', 'LABEL': 'male'},
+            {'NAME': 'f', 'LABEL': 'female'},
         ],
         'DEFAULT_VALUE': 'm'
     }
 ]
-LOSS = {'NAME': 'mse', 'TITLE': 'MSE', 'FULL_TITLE': 'Mean squared error'}
+LOSS = {'NAME': 'mse', 'LABEL': 'MSE', 'FULL_LABEL': 'Mean squared error'}
 METRICS = [
-    {'NAME': 'mae', 'TITLE': 'MAE', 'FULL_TITLE': 'Mean absolute error'},
-    {'NAME': 'mse', 'TITLE': 'MSE', 'FULL_TITLE': 'Mean squared error'}
+    {'NAME': 'mae', 'LABEL': 'MAE', 'FULL_LABEL': 'Mean absolute error'},
+    {'NAME': 'mse', 'LABEL': 'MSE', 'FULL_LABEL': 'Mean squared error'}
 ]
 EARLY_STOPPING = {
     'PLANNED_EPOCHS': 1000,
@@ -172,11 +174,11 @@ plotter = tf_docs.HistoryPlotter(smoothing_std=2)
 plt.figure(1)
 plotter.plot({'Basic': early_history}, metric="mse")
 plt.ylim([0, 300])
-plt.ylabel('MSE [{}^2]'.format(LABEL_TO_PREDICT['TITLE']))
+plt.ylabel('MSE [{}^2]'.format(LABEL_TO_PREDICT['LABEL']))
 plt.figure(2)
 plotter.plot({'Basic': early_history}, metric="mae")
 plt.ylim([0, 75])
-plt.ylabel('MAE [{}]'.format(LABEL_TO_PREDICT['TITLE']))
+plt.ylabel('MAE [{}]'.format(LABEL_TO_PREDICT['LABEL']))
 """
 
 
@@ -184,15 +186,15 @@ test_metrics = dict(zip(model.metrics_names, model.evaluate(normed_test_data, te
 LOSS['VALUE'] = test_metrics['loss']
 for metric in METRICS:
     metric['VALUE'] = np.float64(test_metrics[metric['NAME']])
-    print('Testing set {}: {} {}'.format(metric['TITLE'], metric['VALUE'], LABEL_TO_PREDICT['TITLE']))
+    print('Testing set {}: {} {}'.format(metric['LABEL'], metric['VALUE'], LABEL_TO_PREDICT['LABEL']))
 
 
 test_predictions = model.predict(normed_test_data).flatten()
 plt.figure(3)
 a = plt.axes(aspect='equal')
 plt.scatter(test_labels, test_predictions)
-plt.xlabel('True Values [{}]'.format(LABEL_TO_PREDICT['TITLE']))
-plt.ylabel('Predictions [{}]'.format(LABEL_TO_PREDICT['TITLE']))
+plt.xlabel('True Values [{}]'.format(LABEL_TO_PREDICT['LABEL']))
+plt.ylabel('Predictions [{}]'.format(LABEL_TO_PREDICT['LABEL']))
 lims = [LOWER_LIM, HIGHER_LIM]
 plt.xlim(lims)
 plt.ylim(lims)
@@ -221,8 +223,8 @@ def write_to_files():
         'TEST_METRICS': [
             {
                 'NAME': 'pearson',
-                'TITLE': 'Correlation coefficient',
-                'FULL_TITLE': 'Pearson correlation coefficient',
+                'LABEL': 'Correlation coefficient',
+                'FULL_LABEL': 'Pearson correlation coefficient',
                 'VALUE': pearson_coef
             }
         ] + METRICS,
