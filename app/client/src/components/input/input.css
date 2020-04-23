@@ -27,6 +27,10 @@
 
   box-sizing: border-box;
 }
+
+.input_input-tag:hover {
+  border-color: var(--c-main-green)
+}
 .input_input-tag:focus-within {
   border-color: var(--c-main-green)
 }

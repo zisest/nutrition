@@ -8,6 +8,10 @@
 
   display: flex;
 }
+.radio-group_options:hover {
+  border-color: var(--c-main-green)
+}
+
 
 .radio-group_label {
   height: 100%;

@@ -83,7 +83,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     )
     .then(res => res.text())
     .then(res => {
-      onResponse(res)
+      onResponse({...values, ...dataToSend}, res)
       console.log(res)
     })
 
@@ -106,6 +106,11 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
 
   let gridCols = { 'gridTemplateColumns': '1fr '.repeat(columns) }
   
+  let formValidityErrors = (singleErrorList && allErrorMessages.length !== 0) &&
+    <ul className="form_validity-errors">      
+      {allErrorMessages.map((err, index) => <li className="form_validity-error" key={index}>{err}</li>)}
+    </ul> 
+    
 
   return (    
     <form className='form' style={{width}} onSubmit={handleSubmit} noValidate autoComplete='off' >      
@@ -114,9 +119,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
         <div className='form_fields' style={gridCols}>
           {inputs}
         </div>
-        <ul className="form_validity-errors">      
-          {singleErrorList && allErrorMessages.map((err, index) => <li className="form_validity-error" key={index}>{err}</li>)}
-        </ul>        
+        {formValidityErrors}       
       </div>
       <FormButton submit  />
       
@@ -128,8 +131,7 @@ Form.defaultProps = {
   columns: 1,
   singleErrorList: true,
   formTitle: 'Form',
-  dataToSend: {},
-  width: '600px'
+  dataToSend: {}
 }
   
 export default Form

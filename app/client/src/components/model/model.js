@@ -6,6 +6,8 @@ import {
   Redirect
 } from 'react-router-dom'
 import Form from '../form'
+import Window from '../window'
+import ResultSection from '../result-section'
 
 const parseModel = (model) => {
   let textFields = model['SOURCE_FIELDS']
@@ -40,8 +42,9 @@ const parseModel = (model) => {
 }
 
 function Model({ models }) {
+  const [requests, setRequests] = useState({})
   const [results, setResults] = useState({})
-
+  
   let { modelName } = useParams()
   let model = models.find(m => m['MODEL_NAME'] === modelName)
   useEffect(() => {
@@ -49,26 +52,40 @@ function Model({ models }) {
   }, [model])  
   if (!model) return <Redirect to='/models' />
 
+  const dataToSend = {MODEL_NAME: model.MODEL_NAME}
 
-  const handleResponse = (res) => {
-    setResults(prev => ({...prev, [model.MODEL_NAME]: res}))
+  const handleResponse = (req, res) => {
+    Object.keys(dataToSend).forEach(key => {
+      delete req[key]
+    })
+    setRequests(prev => ({...prev, [model.MODEL_NAME]: req}))
+    setResults(prev => ({...prev, [model.MODEL_NAME]: res}))    
   }
 
-  let form = model && <Form 
+  let form = <Form 
     fields={parseModel(model)}
     columns={2} 
-    dataToSend={{MODEL_NAME: model.MODEL_NAME}}
+    dataToSend={dataToSend}
     submitUrl='/api/predict' 
     formTitle={model.MODEL_TITLE || model.MODEL_NAME}
     onResponse={handleResponse}
   />
+  let resultSection = (results[model.MODEL_NAME] && requests[model.MODEL_NAME]) && 
+    <Window  title='Results'>
+      <ResultSection 
+        sources={requests[model.MODEL_NAME]} 
+        result={{name: model.LABEL_TO_PREDICT, values:[{unit: 'MJ/day', value: results[model.MODEL_NAME]}]}} 
+        layout='row'
+      />
+    </Window>
 
     
   
   return (
     <div className='model'>
-      {form}
-      {results[model.MODEL_NAME]}
+      <Window blank width='420px'>{form}</Window>
+      {resultSection}
+      {/*Object.keys(requests[model.MODEL_NAME]).map(key=>requests[model.MODEL_NAME][key])*/}
     </div>
   )
 }

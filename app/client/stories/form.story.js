@@ -1,6 +1,7 @@
 import React from 'react'
 import Form from '../src/components/form'
 import Input  from '../src/components/input'
+import Window from '../src/components/window'
 
 export default { 
   title: 'Form',
@@ -28,10 +29,13 @@ const MAPPED = SOURCE_FIELDS.map(label => {
 })
 console.log(MAPPED)
 
-export const FormStory = () => <Form columns={2} 
-  dataToSend={{MODEL_NAME: 'PredictingLBM1'}}
-  submitUrl='/api/predict' 
-  fields={MAPPED} 
-  submitText={'Predict'}
-  formTitle={'Parameters'}
-   />
+export const FormStory = () => 
+  <Window blank width='600px'>
+    <Form columns={2} 
+    dataToSend={{MODEL_NAME: 'PredictingLBM1'}}
+    submitUrl='/api/predict' 
+    fields={MAPPED} 
+    submitText={'Predict'}
+    formTitle={'Parameters'}
+    />
+  </Window>

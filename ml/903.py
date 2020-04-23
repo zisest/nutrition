@@ -12,8 +12,6 @@ import tf_docs
 from tensorflow import keras
 from tensorflow.keras import layers
 tf.keras.backend.clear_session()
-
-
 pd.options.display.width = 0
 
 data = pd.read_csv('data/903.csv', sep=';', header=0)
