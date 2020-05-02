@@ -4,6 +4,8 @@
   background-color: rgba(158, 171, 165, 0.1);
   backdrop-filter: blur(15px);
 
+  box-sizing: border-box;
+
   padding: 15px 25px 25px 25px;
   width: fit-content;
 
