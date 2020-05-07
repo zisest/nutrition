@@ -5,8 +5,6 @@ from Equation import Equation
 # MJ/d
 
 
-
-
 def CJKH_WH(row):
     coefs = {  # coefs: wt, ht, free
         'm': {

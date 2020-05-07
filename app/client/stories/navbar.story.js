@@ -7,7 +7,7 @@ export default {
 }
 
 export const NavbarStory = () => 
-  <Navbar stickToEnd={2}>
+  <Navbar title='My name' stickToEnd={2} size='350px' >
     <div>a</div>
     <div>b</div>
     <div>c</div>
@@ -16,7 +16,7 @@ export const NavbarStory = () =>
   </Navbar>
 
 export const HorizStory = () => 
-<Navbar position='horizontal' stickToEnd={2}>
+<Navbar position='horizontal' stickToEnd={2} size='80px' >
   <div>atresfds</div>
   <div>bsdfdf</div>
   <div>cfdfdf</div>

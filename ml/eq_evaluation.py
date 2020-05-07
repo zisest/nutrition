@@ -7,9 +7,9 @@ import json
 from eq_CJK import eq_CJK
 from eq_FAO81_combined import eq_FAO81_combined
 from eq_HB import eq_HB
+from eq_Mifflin_StJeor import eq_Mifflin_StJeor
 
-
-eq = eq_HB
+eq = eq_Mifflin_StJeor
 
 # should save this model to file?
 should_save = True
@@ -19,10 +19,10 @@ should_save = True
 
 # model info
 TYPE = 'equation'
-MODEL_NAME = 'HB'
-MODEL_TITLE = 'Harris-Benedict equations'
-MODEL_DESCRIPTION = 'First BMR estimation formulas (1918)'
-CREATION_TIME = '1918'
+MODEL_NAME = 'Mifflin_StJeor'
+MODEL_TITLE = 'Mifflin-St.Jeor equation'
+MODEL_DESCRIPTION = 'Published in 1990'
+CREATION_TIME = '1990'
 LABEL_TO_PREDICT = {
     'NAME': 'bmr',
     'LABEL': 'BMR',
@@ -146,7 +146,7 @@ def write_to_files():
 
     train_stats[['mean', 'std']].to_csv('equations/{}/normalization.csv'.format(MODEL_NAME))
 
-    pd.to_pickle(eq_CJK, f'equations/{MODEL_NAME}/eq.pkl')
+    pd.to_pickle(eq, f'equations/{MODEL_NAME}/eq.pkl')
 
 
 if should_save:

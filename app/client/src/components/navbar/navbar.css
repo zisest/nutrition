@@ -30,8 +30,26 @@
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding: 0px 10px 10px 10px
+  padding: 0px 10px 10px 10px;
+  overflow-y: auto;
 }
+
+.navbar__vertical .navbar_body::-webkit-scrollbar {
+  width: 5px;
+}
+.navbar__vertical .navbar_body::-webkit-scrollbar-track { 
+  background : rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+}
+.navbar__vertical .navbar_body::-webkit-scrollbar-thumb { 
+  background-color: rgba(137, 139, 139, 0.2);
+  border-radius: 5px;      
+}
+.navbar__vertical .navbar_body:hover::-webkit-scrollbar-thumb { 
+  background-color: rgba(137, 139, 139, 0.3); 
+}
+
+
 .navbar__vertical .navbar_child:hover  {
   background-color: rgba(0, 0, 0, 0.03)
 }

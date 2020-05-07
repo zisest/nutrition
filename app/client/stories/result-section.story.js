@@ -77,7 +77,7 @@ let input = {
 let result = 7.2547809
 
 export const ResultSectionStory = () => 
-  <Window width='150px' title='Results'>
+  <Window title='Results'>
     <ResultSection input={input} result={result} model={model} />
   </Window>
 

@@ -31,7 +31,7 @@ function ModelsPage() {
   return (
     <div className='models-page'>
       <div className='models-page_navbar'>
-        <Navbar title='Models'>
+        <Navbar title='Models' size='350px' >
           {modelLinks}
         </Navbar>
       </div>

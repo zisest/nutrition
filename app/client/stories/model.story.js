@@ -1,9 +1,26 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Model from '../src/components/model'
+import StoryRouter from 'storybook-react-router'
 
 export default { 
   title: 'Model',
-  component: Model
+  component: Model,
+  decorators: [StoryRouter()]
 }
 
-export const ModelStory = () => <Model />
+const Wrapper = (props) => {
+  const [models, setModels] = useState([])
+
+  useEffect(() => {
+    fetch('/api/getModels')
+    .then(res => res.json())
+    .then(res => {
+      setModels(res)
+    })
+    .catch(err => console.error('ERROR: ', err))
+  }, [])
+
+  return <Model models={models} />
+}
+
+export const ModelStory = () => <Wrapper />
