@@ -1,8 +1,8 @@
 import numpy as np
-import pandas as pd
+from Equation import Equation
 
 
-CJK_WH_coefs = { # coefs: wt, ht, free
+HB_coefs = { # coefs: wt, ht, free
     'm': {
         '0to3': [0.118, 3.59, -1.55], # 0to3 as in >= 0 && < 3
         '3to10': [0.0632, 1.31, 1.28], # 3to10
@@ -22,7 +22,7 @@ CJK_WH_coefs = { # coefs: wt, ht, free
 }
 
 
-def CJKH_WH(row):
+def HB(coefs, row):
     sex = ('m', 'f')[row['sex_f'] == 1]
     age = row['age']
     if age < 3:
@@ -38,9 +38,12 @@ def CJKH_WH(row):
     else:
         age_band = '60plus'
 
-    coefs = CJK_WH_coefs[sex][age_band]
+    coefs = coefs[sex][age_band]
     return np.sum(row[['wt', 'ht']] * coefs[0:2]) + coefs[2]
 
 
-def calc_eqs(df, function):
-    return df.apply(function, axis=1)
+
+CJK_eq = Equation(HB_coefs, HB)
+
+
+

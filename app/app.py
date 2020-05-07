@@ -5,9 +5,14 @@ from flask import Flask, request, jsonify
 from tensorflow import keras
 from pathlib import Path
 
+from eq_CJK import eq_CJK
+from eq_FAO81_combined import eq_FAO81_combined
+
+from Equation import Equation
 
 app = Flask(__name__, static_folder='client/build/static')
 
+equations_dir = Path('../ml/equations')
 
 models_dir = Path('../ml/models')
 models_info = []
@@ -17,6 +22,12 @@ models = {}
 for path in models_dir.glob('*'):
     normalization_info[path.name] = pd.read_csv('{}/normalization.csv'.format(path), header=0, index_col=0)
     models[path.name] = keras.models.load_model(str(path))
+    with open('{}/info.json'.format(path), 'r', encoding='utf-8') as f:
+        models_info.append(json.load(f))
+
+for path in equations_dir.glob('*'):
+    normalization_info[path.name] = pd.read_csv('{}/normalization.csv'.format(path), header=0, index_col=0)
+    models[path.name] = pd.read_pickle(str(path) + '/eq.pkl')
     with open('{}/info.json'.format(path), 'r', encoding='utf-8') as f:
         models_info.append(json.load(f))
 
@@ -65,8 +76,9 @@ def results():
         return str('ERROR') # CHANGE
     normalized = norm(parsed, normalization_info[model_name])
     prediction = models[model_name].predict(pd.DataFrame(normalized).transpose())
-    print(prediction)
-    output = prediction[0][0]
+
+    output = np.array(prediction).flatten()[0]
+    print(output)
     return str(output)
 
 

@@ -12,7 +12,6 @@ from tensorflow.keras import layers
 
 
 import tf_docs
-import CJK_eqs
 
 # keras reset
 tf.keras.backend.clear_session()
@@ -30,9 +29,9 @@ data = pd.get_dummies(data, columns=['sex'])
 
 
 # specifying model information
-MODEL_NAME = 'Oxford2'
-MODEL_TITLE = 'Oxford 2nd try'
-MODEL_DESCRIPTION = 'trying to make sense of the ML params'
+MODEL_NAME = 'MyModel1'
+MODEL_TITLE = 'My model #1'
+MODEL_DESCRIPTION = 'One of the first tries'
 CREATION_TIME = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 LABEL_TO_PREDICT = {
     'NAME': 'bmr',
@@ -107,7 +106,7 @@ LOWER_LIM = model_dataset[LABEL_TO_PREDICT['NAME']].min()
 HIGHER_LIM = model_dataset[LABEL_TO_PREDICT['NAME']].max()
 
 # dividing dataset to train and test samples
-train_dataset = model_dataset.sample(frac=0.8, random_state=0)
+train_dataset = model_dataset.sample(frac=0.8, random_state=72)
 test_dataset = model_dataset.drop(train_dataset.index)
 
 # getting train data statistics (mean, std)

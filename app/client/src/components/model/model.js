@@ -8,6 +8,7 @@ import {
 import Form from '../form'
 import Window from '../window'
 import ResultSection from '../result-section'
+import ModelInfoSection from '../model-info-section'
 
 const parseModel = (model) => {
   let fields = model['SOURCE_FIELDS'].map(field => {
@@ -70,7 +71,7 @@ function Model({ models }) {
         input={requests[model.MODEL_NAME]}
         model={model} 
         result={results[model.MODEL_NAME]} 
-        layout='row'
+        layout='col'
       />
     </Window>
 
@@ -78,6 +79,7 @@ function Model({ models }) {
   
   return (
     <div className='model'>
+      <Window width='500px' className='model-info-window'><ModelInfoSection model={model} /> </Window>
       <Window blank width='420px'>{form}</Window>
       {resultSection}
       {/*Object.keys(requests[model.MODEL_NAME]).map(key=>requests[model.MODEL_NAME][key])*/}

@@ -24,7 +24,7 @@
 .button__green.button__secondary {
   background-color: transparent;
   color: var(--c-main-green);
-  border: 2px solid var(--c-main-green)
+  border: 2fpx solid var(--c-main-green)
 }
 .button__violet.button__primary {
   background-color: var(--c-violet);
