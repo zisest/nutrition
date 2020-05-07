@@ -5,27 +5,27 @@ from Equation import Equation
 # combined weight-height and weight-only (for children)
 # kcal/d coefs -> MJ/d result
 
-FAO81_comb_coefs = { # coefs: wt, ht, free
-    'm': {
-        '0to3': [60.9, 0, -54], # 0to3 as in >= 0 && < 3
-        '3to10': [22.7, 0, 495], # 3to10
-        '10to18': [16.6, 77, 572],
-        '18to30': [15.4, -27, 717],
-        '30to60': [11.3, 16, 901],
-        '60plus': [8.8, 1128, -1071]
-    },
-    'f': {
-        '0to3': [61, 0, -51], # 0to3 as in >= 0 && < 3
-        '3to10': [22.5, 0, 499], # 3to10
-        '10to18': [7.4, 482, 217],
-        '18to30': [13.3, 334, 35],
-        '30to60': [8.7, -25, 865],
-        '60plus': [9.2, 637, -302]
-    }
-}
-
 
 def FAO81_comb(row):
+    coefs = {  # coefs: wt, ht, free
+        'm': {
+            '0to3': [60.9, 0, -54],  # 0to3 as in >= 0 && < 3
+            '3to10': [22.7, 0, 495],  # 3to10
+            '10to18': [16.6, 77, 572],
+            '18to30': [15.4, -27, 717],
+            '30to60': [11.3, 16, 901],
+            '60plus': [8.8, 1128, -1071]
+        },
+        'f': {
+            '0to3': [61, 0, -51],  # 0to3 as in >= 0 && < 3
+            '3to10': [22.5, 0, 499],  # 3to10
+            '10to18': [7.4, 482, 217],
+            '18to30': [13.3, 334, 35],
+            '30to60': [8.7, -25, 865],
+            '60plus': [9.2, 637, -302]
+        }
+    }
+
     sex = ('m', 'f')[row['sex_f'] == 1]
     age = row['age']
     if age < 3:
@@ -41,11 +41,11 @@ def FAO81_comb(row):
     else:
         age_band = '60plus'
 
-    coefs = FAO81_comb_coefs[sex][age_band]
+    coefs = coefs[sex][age_band]
     return (np.sum(row[['wt', 'ht']] * coefs[0:2]) + coefs[2])*0.0041868  # kcal to MJ
 
 
-eq_FAO81_combined = Equation(FAO81_comb_coefs, FAO81_comb)
+eq_FAO81_combined = Equation(FAO81_comb)
 
 
 

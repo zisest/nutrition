@@ -6,9 +6,10 @@ import json
 
 from eq_CJK import eq_CJK
 from eq_FAO81_combined import eq_FAO81_combined
+from eq_HB import eq_HB
 
 
-eq = eq_CJK
+eq = eq_HB
 
 # should save this model to file?
 should_save = True
@@ -18,10 +19,10 @@ should_save = True
 
 # model info
 TYPE = 'equation'
-MODEL_NAME = 'CJK_WH'
-MODEL_TITLE = 'CJK Henry equations'
-MODEL_DESCRIPTION = 'aka \'Oxford\' equations (2001)'
-CREATION_TIME = '2001'
+MODEL_NAME = 'HB'
+MODEL_TITLE = 'Harris-Benedict equations'
+MODEL_DESCRIPTION = 'First BMR estimation formulas (1918)'
+CREATION_TIME = '1918'
 LABEL_TO_PREDICT = {
     'NAME': 'bmr',
     'LABEL': 'BMR',

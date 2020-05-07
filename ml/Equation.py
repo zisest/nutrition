@@ -1,8 +1,7 @@
 import pandas as pd
 
 class Equation:
-    def __init__(self, coefs, predict_row):
-        self.coefs = coefs
+    def __init__(self, predict_row):
         self.predict_row = predict_row
 
     def predict(self, df):
