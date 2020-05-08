@@ -16,7 +16,7 @@
 .radio-group_label {
   height: 100%;
   border-radius: 5px;
-  padding: 0px 10px;
+  padding: 0px 7px;
   line-height: 23px;
   
   box-shadow: inset 0 0 6px 1px rgba(0, 0, 0, 0.1);
@@ -34,6 +34,7 @@
   transition: 500ms;
   height: 25px;
   margin: 0px 3px;
+  flex-grow: 1;
 }
 .radio-group_option:first-child {
   margin-left: 0px
@@ -43,7 +44,7 @@
 }
 
 .radio-group_option__selected {
-  flex-grow: 1;
+  flex-grow: 20;
   transition: 500ms;
 }
 

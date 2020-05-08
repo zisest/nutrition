@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Input, { RadioGroup, Select, Slider } from '../input'
+import Input, { RadioGroup, Select, Slider, CheckboxGroup } from '../input'
 import Button from '../button'
 import FormButton from '../form-button'
 import './form.css'
@@ -43,7 +43,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
   const handleChange = (e) => {    
     let target = e.currentTarget   
     console.log(target) 
-    if (target.type === 'radio') {
+    if (target.type === 'radio' || target.type === 'checkbox') {
       console.log('radio')
       requiredFieldCheck(target.name, target.value)
       setValues(prev => ({
@@ -108,6 +108,9 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     else if (field.type === 'slider')
       return <Slider {...field} key={index} onChange={handleChange} value={values[field.name]} 
           validityErrors={errorMessages || []} displayErrors={!singleErrorList} />
+    else if (field.type === 'checkbox')
+      return <CheckboxGroup {...field} key={index} onChange={handleChange} value={values[field.name]} 
+        validityErrors={errorMessages || []} displayErrors={!singleErrorList} />
     else
       return <Input {...field} onChange={handleChange} value={values[field.name]} 
         validityErrors={errorMessages || []} key={index} displayErrors={!singleErrorList} />
