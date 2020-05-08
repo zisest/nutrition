@@ -39,7 +39,8 @@ function RadioGroup({ name, label, options, value, onChange, validityErrors, dis
   )
 }
 RadioGroup.defaultProps = {
-  options: []
+  options: [],
+  validityErrors: []
 }
   
 export default RadioGroup

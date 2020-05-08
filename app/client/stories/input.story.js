@@ -1,6 +1,6 @@
 import React from 'react'
 import Input from '../src/components/input'
-import { RadioGroup } from '../src/components/input'
+import { RadioGroup, Select } from '../src/components/input'
 import Form from '../src/components/form'
 
 export default { 
@@ -22,6 +22,19 @@ const radioG = {
 }
 const formed = [radioG]
 
+const select = {
+    type: 'select',
+    name: 'radio1',
+    required: true,
+    options: [{name: 'opt1', label: 'Option 1'}, {name: 'opt2', label: 'Option 2'}],
+    required: true,
+    initialValue: 'opt2'
+  }
+
+
+
+
+
 export const textInput = () => 
   <div style={{width: '300px'}}>
     <Input {...field} validityErrors={['sasas', 'DEDJEF FEfEF']} />
@@ -35,3 +48,8 @@ export const inForm = () =>
   submitText={'Predict'}
   formTitle={'Parameters'}
    /> 
+
+export const selectStory = () => 
+  <div style={{ width: '300px' }}>
+    <Select {...select} />
+  </div>

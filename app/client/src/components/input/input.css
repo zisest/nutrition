@@ -8,6 +8,7 @@
 .input_label {
   font-size: 13px;
   padding-left: 2px;
+  cursor: default;
 }
 .input_label__error {
  color: var(--c-error-red)

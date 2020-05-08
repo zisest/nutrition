@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Input, { RadioGroup } from '../input'
+import Input, { RadioGroup, Select } from '../input'
 import Button from '../button'
 import FormButton from '../form-button'
 import './form.css'
@@ -51,6 +51,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
         [target.name]: target.value
       }))
     } else {
+      console.log('not radio')
       if (matchesRegex(target.name, target.value)) {
         requiredFieldCheck(target.name, target.value)
         setValues(prev => ({
@@ -100,6 +101,9 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     })
     if (field.type === 'radio')
       return <RadioGroup {...field} key={index} onChange={handleChange} value={values[field.name]} 
+        validityErrors={errorMessages || []} displayErrors={!singleErrorList} />
+    else if (field.type === 'select')
+      return <Select {...field} key={index} onChange={handleChange} value={values[field.name]} 
         validityErrors={errorMessages || []} displayErrors={!singleErrorList} />
     else
       return <Input {...field} onChange={handleChange} value={values[field.name]} 
