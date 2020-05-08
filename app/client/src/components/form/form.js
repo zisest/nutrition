@@ -45,6 +45,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     console.log(target) 
     if (target.type === 'radio') {
       console.log('radio')
+      requiredFieldCheck(target.name, target.value)
       setValues(prev => ({
         ...prev,
         [target.name]: target.value
@@ -98,7 +99,8 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
       !allErrorMessages.includes(msg) && allErrorMessages.push(msg)
     })
     if (field.type === 'radio')
-      return <RadioGroup {...field} key={index} onChange={handleChange} value={values[field.name]} />
+      return <RadioGroup {...field} key={index} onChange={handleChange} value={values[field.name]} 
+        validityErrors={errorMessages || []} displayErrors={!singleErrorList} />
     else
       return <Input {...field} onChange={handleChange} value={values[field.name]} 
         validityErrors={errorMessages || []} key={index} displayErrors={!singleErrorList} />

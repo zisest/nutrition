@@ -15,7 +15,8 @@ const MAPPED = SOURCE_FIELDS.map(label => {
       type: 'radio',
       name: label[0].split('_')[0],
       initialValue: label[0].split('_')[1],
-      options: label.map(option => ({name: option.split('_')[1]}))
+      options: label.map(option => ({name: option.split('_')[1]})),
+      required: true
     }
   } else
     return {

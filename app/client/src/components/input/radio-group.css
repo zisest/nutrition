@@ -54,4 +54,7 @@
   transition: 500ms;
 }
 
+.radio-group_options.radio-group_options__error {
+  border-color: var(--c-error-red)
+}
 
