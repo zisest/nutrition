@@ -52,7 +52,34 @@ let fields2 = [
     name: 'radio1',
     required: true,
     options: [{name: 'opt1', label: 'Option 1'}, {name: 'opt2', label: 'Option 2'}],
-    required: true
+    required: true,
+    initialValue: 'opt1'
+  },
+  {
+    type: 'select',
+    label: 'Select 2',
+    double: false,
+    name: 'select2',
+    required: true,
+    options: [
+      {
+        name: 'opt11',
+        label: 'Sedentary or light activity',
+        description: 'These people have occupations that do not demand much physical effort, are not required to walk long distances'
+      },
+      {
+        name: 'opt12',
+        label: 'Active or moderately active',
+        description: 'These people have occupations that are not strenuous in terms of energy demands, but involve more energy expenditure than that described for sedentary lifestyles'
+      },
+      {
+        name: 'opt13',
+        label: 'Vigorous or vigorously active',
+        description: 'These people engage regularly in strenuous work or in strenuous leisure activities for several hours'
+      },
+
+    ],
+    initialValue: 'opt13'
   },
   {
     type: 'select',
@@ -80,31 +107,31 @@ let fields2 = [
     ],
     initialValue: 'opt2'
   },
+ 
   {
-    type: 'select',
-    label: 'Select 2',
+    type: 'slider',
+    label: 'Slider 1',
     double: false,
-    name: 'select2',
-    required: true,
+    name: 'slider1',
+    required: true,    
     options: [
       {
-        name: 'opt11',
-        label: 'Sedentary or light activity',
+        name: 'sl1',
+        label: 'Loose fat',
         description: 'These people have occupations that do not demand much physical effort, are not required to walk long distances'
       },
       {
-        name: 'opt12',
-        label: 'Active or moderately active',
+        name: 'sl2',
+        label: 'Maintain weight',
         description: 'These people have occupations that are not strenuous in terms of energy demands, but involve more energy expenditure than that described for sedentary lifestyles'
       },
       {
-        name: 'opt13',
-        label: 'Vigorous or vigorously active',
+        name: 'sl3',
+        label: 'Gain muscle',
         description: 'These people engage regularly in strenuous work or in strenuous leisure activities for several hours'
-      },
-
+      }
     ],
-    initialValue: 'opt12'
+    initialValue: 'sl2'
   }
 ]
 

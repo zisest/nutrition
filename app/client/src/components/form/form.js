@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Input, { RadioGroup, Select } from '../input'
+import Input, { RadioGroup, Select, Slider } from '../input'
 import Button from '../button'
 import FormButton from '../form-button'
 import './form.css'
@@ -105,6 +105,9 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     else if (field.type === 'select')
       return <Select {...field} key={index} onChange={handleChange} value={values[field.name]} 
         validityErrors={errorMessages || []} displayErrors={!singleErrorList} />
+    else if (field.type === 'slider')
+      return <Slider {...field} key={index} onChange={handleChange} value={values[field.name]} 
+          validityErrors={errorMessages || []} displayErrors={!singleErrorList} />
     else
       return <Input {...field} onChange={handleChange} value={values[field.name]} 
         validityErrors={errorMessages || []} key={index} displayErrors={!singleErrorList} />

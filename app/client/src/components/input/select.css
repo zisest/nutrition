@@ -25,7 +25,7 @@
 
 .select_dropdown {  
   font-size: 14px;
-  background-color: var(--c-main-green);
+  background-color: var(--c-grey);
   box-shadow: inset 0 0 6px 1px rgba(0, 0, 0, 0.1);
   position: absolute;
   width: 100%;
@@ -34,6 +34,8 @@
   border-radius: 7px;  
   min-height: 37px;
 }
+
+
 .select_dropdown__double{
   top: -91.6px;
   min-height: 91.6px;
@@ -54,7 +56,16 @@
 .select_dropdown .select_option {
   border-radius: 7px;
 }
-
+.select_dropdown .select_option * {
+  color: white;
+}
+.select_dropdown > .select_option:first-child {
+  border-radius: 7px;
+  background: var(--c-main-green);
+}
+.select_dropdown > .select_option:first-child *{
+  color: inherit
+}
 
 .select_option {
   padding: 6.8px 10px;
@@ -64,6 +75,7 @@
 
 
 .select_option-description {
+  color: inherit;
   display: none;
   padding: 0 6px;
   font-size: 12px;
