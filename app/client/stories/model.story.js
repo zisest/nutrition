@@ -20,7 +20,7 @@ const Wrapper = (props) => {
     .catch(err => console.error('ERROR: ', err))
   }, [])
 
-  return <Model models={models} />
+  return <Model model={models[0]} />
 }
 
 export const ModelStory = () => <Wrapper />

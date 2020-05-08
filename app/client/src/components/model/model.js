@@ -35,15 +35,11 @@ const parseModel = (model) => {
   return(fields)
 }
 
-function Model({ models }) {
-  const [requests, setRequests] = useState({})
-  const [results, setResults] = useState({})
+function Model({ model }) {
+  const [request, setRequest] = useState(null)
+  const [result, setResult] = useState(null)
   
-  let { modelName } = useParams()
-  let model = models.find(m => m['MODEL_NAME'] === modelName)
-  useEffect(() => {
-    console.log('Model rerender')
-  }, [model])  
+  
   if (!model) return <Redirect to='/models' />
 
   const dataToSend = {MODEL_NAME: model.MODEL_NAME}
@@ -52,8 +48,8 @@ function Model({ models }) {
     Object.keys(dataToSend).forEach(key => {
       delete req[key]
     })
-    setRequests(prev => ({...prev, [model.MODEL_NAME]: req}))
-    setResults(prev => ({...prev, [model.MODEL_NAME]: +res}))    
+    setRequest(req)
+    setResult(+res)    
   }
 
   let form = <Form 
@@ -65,12 +61,12 @@ function Model({ models }) {
     onResponse={handleResponse}
   />
   
-  let resultSection = (results[model.MODEL_NAME] && requests[model.MODEL_NAME]) && 
+  let resultSection = result && request && 
     <Window  title='Results'>
       <ResultSection 
-        input={requests[model.MODEL_NAME]}
+        input={request}
         model={model} 
-        result={results[model.MODEL_NAME]} 
+        result={result} 
         layout='col'
       />
     </Window>

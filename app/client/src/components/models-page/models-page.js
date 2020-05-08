@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, Switch, Route } from 'react-router-dom'
 import './models-page.css'
 import Navbar from '../navbar'  
-import Model from '../model'
+import {ModelRouter} from '../model'
 import ModelLink from '../model-link'
 
 const FETCH_URL = '/api/getModels'
@@ -38,7 +38,7 @@ function ModelsPage() {
       <div className='models-page_main-area'>
       <Switch>
         <Route exact path='/models' />
-        <Route path='/models/:modelName' children={models && <Model models={models} />} />
+        <Route path='/models/:modelName' children={models && <ModelRouter models={models} />} />
       </Switch>
       </div>
     </div>
