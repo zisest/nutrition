@@ -1,0 +1,18 @@
+.preferences-page {
+  height: 100%;
+}
+.preferences-page_main-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 8vh;
+
+  height: 100%;
+
+}
+
+.preferences-page_grid {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+}

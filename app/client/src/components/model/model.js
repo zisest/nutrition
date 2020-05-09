@@ -17,7 +17,7 @@ const parseModel = (model) => {
         name: field['NAME'],
         label: (field['LABEL'] || field['NAME']) + (field['UNIT'] && ` (${field['UNIT']})`),
         type: 'text',
-        regex: /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/,
+        regex: "^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$",
         required: true,
         maxLength: 5,
         placeholder: field['DEFAULT_VALUE']
@@ -87,3 +87,4 @@ Model.defaultProps = {
 }
   
 export default Model
+export { parseModel }

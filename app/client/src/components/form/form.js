@@ -12,7 +12,7 @@ const VALIDATION_ERRORS = {
 function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorList, dataToSend, width, onResponse }) {
   const [values, setValues] = useState({})
   const [validityErrors, setValidityErrors] = useState({})
-  let regexs = fields.reduce((ac, field) => ({...ac, [field.name]: field.regex || /[\s\S]*/}), {})
+  let regexs = fields.reduce((ac, field) => ({...ac, [field.name]: RegExp(field.regex) || /[\s\S]*/}), {})
   let required = fields.reduce((ac, field) => ({...ac, [field.name]: !!field.required}), {})
 
   useEffect(() => {

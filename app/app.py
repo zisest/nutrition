@@ -5,9 +5,10 @@ from flask import Flask, request, jsonify
 from tensorflow import keras
 from pathlib import Path
 
-
-
 app = Flask(__name__, static_folder='client/build/static')
+
+forms_dir = Path('data/forms')
+forms = {}
 
 equations_dir = Path('../ml/equations')
 
@@ -16,6 +17,7 @@ models_info = []
 normalization_info = {}
 models = {}
 
+# load models and equations
 for path in models_dir.glob('*'):
     normalization_info[path.name] = pd.read_csv('{}/normalization.csv'.format(path), header=0, index_col=0)
     models[path.name] = keras.models.load_model(str(path))
@@ -27,6 +29,13 @@ for path in equations_dir.glob('*'):
     models[path.name] = pd.read_pickle(str(path) + '/eq.pkl')
     with open('{}/info.json'.format(path), 'r', encoding='utf-8') as f:
         models_info.append(json.load(f))
+
+
+# load json forms
+for path in forms_dir.glob('*'):
+    with open(path, 'r', encoding='utf-8') as f:
+        forms[path.stem] = json.load(f)
+
 
 def norm(x, normalization):
     return (x - normalization['mean']) / normalization['std']
@@ -41,6 +50,17 @@ def home():
 def getModels():
     return jsonify(models_info)
 
+
+@app.route('/api/getForms')
+def getForms():
+    print(request.args.get('forms'))
+    requested = request.args.get('forms', default='all')
+    if requested != 'all':
+        requested = requested.split(',')
+        result = {key: forms[key] for key in requested}
+    else:
+        result = forms
+    return jsonify(result)
 
 
 def parse_request(req):

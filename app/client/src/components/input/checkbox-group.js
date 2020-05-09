@@ -14,7 +14,7 @@ function CheckboxGroup({ name, label, options, value, onChange, validityErrors, 
   useEffect(() => { // updatig label widths in the tooltip based on actual widths
     const ro = new ResizeObserver(entries => {
       for (let entry of entries) {
-        let checkboxName = entry.target.dataset.name.split('-').slice(1).join('-')
+        let checkboxName = entry.target.dataset.name.split('--').slice(1).join('-')
         setLabelWidths(prev => ({ ...prev, [checkboxName]: entry.contentRect.width }))
       }
     })
@@ -41,8 +41,9 @@ function CheckboxGroup({ name, label, options, value, onChange, validityErrors, 
     let tooltip = !option.description ? '' :
       <div className="radio-group_tooltip-container">
         <div className="radio-group_tooltip">
-          <div className="radio-group_tooltip-name radio-group_label" style={{ width: labelWidths[option.name]}} >
+          <div className="radio-group_tooltip-name radio-group_label" style={{ width: labelWidths[option.name] }} >
             {option.label}
+            {console.log(option.name)}
           </div>
           <div className="radio-group_tooltip-description">{option.description}</div> 
         </div>
@@ -57,7 +58,7 @@ function CheckboxGroup({ name, label, options, value, onChange, validityErrors, 
           checked={value && value.includes(option.name)}
           onChange={handleChange}
         />
-        <div className='radio-group_label' data-name={name + '-' + option.name}>
+        <div className='radio-group_label' data-name={name + '--' + option.name}>
           {option.label || option.name}
         </div> 
         {tooltip}

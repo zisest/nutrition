@@ -84,6 +84,7 @@
 
 .radio-group_tooltip {
   opacity: 0;
+  display: none; /*can be deleted when tooltips is not in the label tag*/
   transition: opacity 200ms;
   position: absolute;
   top: -31px;
@@ -118,4 +119,5 @@
 .radio-group_option:hover .radio-group_tooltip {
   opacity: 1;  
   transition: opacity 400ms;
+  display: inherit; /*can be deleted when tooltips is not in the label tag*/
 }

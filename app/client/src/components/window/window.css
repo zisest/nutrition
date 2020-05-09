@@ -11,6 +11,8 @@
 
   display: grid;
   grid-template-rows: max-content auto;
+
+  z-index: 0;
 }
 .window__blank {
   padding: 0;

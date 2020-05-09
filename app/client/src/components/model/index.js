@@ -1,5 +1,5 @@
-import Model from './model'
+import Model,  { parseModel } from './model'
 import ModelRouter from './model-router'
 
 export default Model
-export { ModelRouter }
+export { ModelRouter, parseModel }

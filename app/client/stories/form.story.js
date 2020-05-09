@@ -23,7 +23,7 @@ const MAPPED = SOURCE_FIELDS.map(label => {
       type: 'text',
       name: label,
       label,
-      regex: /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/,
+      regex: "^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$",
       required: true,
       maxLength: 5
     }
@@ -35,7 +35,7 @@ let fields2 = [
     type: 'text',
     name: 'field1',
     label: 'Field 1',
-    regex: /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/,
+    regex: "^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$",
     required: true,
     maxLength: 5
   },
@@ -43,7 +43,7 @@ let fields2 = [
     type: 'text',
     name: 'field2',
     label: 'Field 2',
-    regex: /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/,
+    regex: "^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$",
     required: true,
     maxLength: 5
   },
