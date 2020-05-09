@@ -4,6 +4,9 @@
   border-radius: 7px;
   /*border: 1px solid var(--c-light-grey)*/
 }
+.slider_container:hover > .slider_info {
+  border-color: var(--c-main-green)
+}
 
 .slider {
   height: 37px;

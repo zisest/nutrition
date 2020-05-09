@@ -24,6 +24,7 @@
   color: white;
   transition: 500ms;
 
+  box-sizing: border-box;
   text-align: right;
 }
 .radio-group_label:hover {
@@ -61,3 +62,60 @@
   border-color: var(--c-error-red)
 }
 
+/*NEW*/
+.radio-group_option-container {
+  
+  transition: 500ms;
+  height: 25px;
+  margin: 0px 3px;
+  flex-grow: 1;
+}
+
+
+
+
+/* TOOLTIP */
+
+.radio-group_tooltip-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+}
+
+.radio-group_tooltip {
+  opacity: 0;
+  transition: opacity 200ms;
+  position: absolute;
+  top: -31px;
+  left: -8px;
+  padding: 6px 8px;
+
+  background-color: white;
+  box-shadow: 2px 2px 7px 2px #0000003b;
+
+  min-width: 140px; 
+  min-height: 25px;
+  border-radius: 5px;
+}
+
+.radio-group_tooltip-name {
+  height: 25px;
+  background-color: var(--c-violet);
+  box-sizing: inherit;
+}
+.radio-group_tooltip-description {
+
+}
+/*
+.radio-group_option__selected .radio-group_tooltip{
+  width: 150%;
+  transition: width 500ms;
+}
+.radio-group_option__selected .radio-group_tooltip-name{
+  width: calc(2 / 3 * 100%);  
+}
+*/
+.radio-group_option:hover .radio-group_tooltip {
+  opacity: 1;  
+  transition: opacity 400ms;
+}

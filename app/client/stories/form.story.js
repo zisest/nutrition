@@ -138,13 +138,13 @@ let fields2 = [
     layout: [2, 3, 2],
     name: 'check1',
     options: [
-      {name: 'check1', label: 'Check 1'},
-      {name: 'check2', label: 'Check 2'}, 
-      {name: 'check3', label: 'Check 3'},
-      {name: 'check4', label: 'Check 4'},
-      {name: 'check5', label: 'Check 5'}, 
-      {name: 'check6', label: 'Check 6'},
-      {name: 'check7', label: 'Check 7'},
+      {name: 'check1', label: 'Check 1', description: 'Some text blabla'},
+      {name: 'check2', label: 'Check 2', description: 'Some text blabla'}, 
+      {name: 'check3', label: 'Check 3', description: 'Some text blabla'},
+      {name: 'check4', label: 'Check 4', description: 'Some text blabla'},
+      {name: 'check5', label: 'Check 5', description: 'Some text blabla'}, 
+      {name: 'check6', label: 'Check 6', description: 'Some text blabla'},
+      {name: 'check7', label: 'Check 7', description: 'Some text blabla'},
     ]
     
   }
