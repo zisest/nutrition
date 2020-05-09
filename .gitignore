@@ -106,4 +106,4 @@ venv.bak/
 .idea
 node_modules
 
-data/
+ml/data/
