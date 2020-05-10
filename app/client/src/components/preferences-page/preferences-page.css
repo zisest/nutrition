@@ -29,33 +29,53 @@
 .preferences-page_food-prefs {
   grid-area: foodPrefs;
 }
+
+/*nutrients*/
 .nutrients {
   grid-area: nutrients;
+  
+}
+.nutrients_grid{
+  display: grid;
+  height: 100%;
+  gap: 0 10px;
+  grid-template-columns: auto 185px 210px;
+  grid-template-rows: max-content max-content max-content auto 50px;
+  grid-template-areas: 
+    "nutrientsTitle nutrientsTitle nutrientTitle"
+    "nutrientsEnergy mainNutrients mainNutrients"
+    "nutrientsEnergy otherTitle otherTitle"
+    "nutrientsEnergy otherNutrients1 otherNutrients2"
+    "nutrientsEnergy otherNutrients1 nutrientsButton";
 }
 
-
+.nutrients_title {
+  grid-area: nutrientsTitle;
+  padding: 15px 25px 0 25px;
+}
 .nutrients_energy {
-  grid-area: energy;
+  grid-area: nutrientsEnergy;
+  padding: 0 15px 25px 25px;
   display: grid;
   gap: 10px;
   grid-template-rows: 1fr 1fr 1fr;
 }
 .nutrients_main-nutrients {
   grid-area: mainNutrients;
+  padding-right: 25px;
 }
-.nutrients_other-nutrients {
-  grid-area: otherNutrients;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+.nutrients_other-title {
+  grid-area: otherTitle;
+  padding-right: 25px;
 }
-.nutrients_grid {
-  height: 100%;
-  gap: 10px 25px;
-  display: grid;
-  grid-template-rows: 1fr 2fr;
-  grid-template-columns: 1fr 2fr;
-  grid-template-areas: 
-    "energy mainNutrients"
-    "energy otherNutrients";
+.nutrients_other-nutrients-1 {
+  grid-area: otherNutrients1;
 }
+.nutrients_other-nutrients-2 {
+  grid-area: otherNutrients2;
+  padding-right: 25px;
+}
+.nutrients_button {
+  grid-area: nutrientsButton
+}
+

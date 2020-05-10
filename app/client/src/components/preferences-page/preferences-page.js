@@ -3,6 +3,7 @@ import './preferences-page.css'
 import Window from '../window'
 import DataTable from '../data-table'
 import DataSquare from '../data-square'
+import Button from '../button'
 import Form from '../form'
 
 const FETCH_URL = '/api/getForms?forms=food-preferences,physiological-parameters,PAL-and-goals'
@@ -78,8 +79,9 @@ function PreferencesPage() {
         <Window blank width='600px' className='preferences-page_food-prefs'>
           {foodPrefsForm}          
         </Window>
-        <Window width='600px' title='Nutritional requirements' className='nutrients'>
+        <Window width='600px' blank className='nutrients'>
           <div className="nutrients_grid">
+            <div className="nutrients_title"><h2>Nutrition requirements</h2></div>
             <div className="nutrients_energy">
               <DataSquare {...BMR} />
               <DataSquare {...TEE} />
@@ -88,11 +90,19 @@ function PreferencesPage() {
             <div className="nutrients_main-nutrients">
               <DataTable fields={mainNutrients} />
             </div>
-            <div className="nutrients_other-nutrients">
-              <DataTable fields={mainNutrients} />
+            <div className="nutrients_other-title">
+              <h3>Other nutrients</h3>
+            </div>
+            <div className="nutrients_other-nutrients-1">
+              <DataTable fields={[...mainNutrients, ...mainNutrients, ...mainNutrients]} />
+            </div>
+            <div className="nutrients_other-nutrients-2">
               <DataTable fields={mainNutrients} />
             </div>
-          </div>
+            <div className="nutrients_button">
+              <Button type='corner' corner='bottom-right' text='Generate meal plan' />
+            </div>
+          </div>          
         </Window>
         </div>      
       </div>

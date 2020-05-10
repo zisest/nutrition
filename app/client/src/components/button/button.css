@@ -39,15 +39,18 @@
   color: white;
 }
 .form-button_btn__green:hover {  
-  animation: button-animation__green 2000ms 200ms infinite;
-  animation-timing-function: ease-out  
+  animation: button-animation__green 2500ms 200ms infinite;
+  animation-timing-function: ease-in-out  
 }
 
 .form-button_btn__violet {
   background-color: var(--c-violet);
   color: white;
 }
-
+.form-button_btn__green:hover {  
+  animation: button-animation__violet 2500ms 200ms infinite;
+  animation-timing-function: ease-in-out  
+}
 
 .form-button_btn:disabled:hover {
   transform: none;
