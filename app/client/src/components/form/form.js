@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Input, { RadioGroup, Select, Slider, CheckboxGroup } from '../input'
 import Button from '../button'
-import FormButton from '../form-button'
 import './form.css'
   
 const VALIDATION_ERRORS = {
@@ -133,7 +132,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
         </div>
         {formValidityErrors}       
       </div>
-      <FormButton submit  />
+      <Button type='form' submit  />
       
     </form>
   )

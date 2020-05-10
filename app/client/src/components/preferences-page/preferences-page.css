@@ -37,7 +37,7 @@
 .nutrients_energy {
   grid-area: energy;
   display: grid;
-  grid-gap: 10px;
+  gap: 10px;
   grid-template-rows: 1fr 1fr 1fr;
 }
 .nutrients_main-nutrients {
@@ -51,7 +51,7 @@
 }
 .nutrients_grid {
   height: 100%;
-  column-gap: 10px;
+  gap: 10px 25px;
   display: grid;
   grid-template-rows: 1fr 2fr;
   grid-template-columns: 1fr 2fr;

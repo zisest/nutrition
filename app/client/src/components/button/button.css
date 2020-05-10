@@ -1,49 +1,130 @@
-.button {
-  height: 40px;
-  border-radius: 8px;
+.form-button {
+  height: 100%;
+  width: 70px;
+  margin: 0px 0px 0px auto;
+}
+
+.form-button_btn {
+  height: 100%;
+  width: 50px;
+  border-radius: 0px var(--window-border-radius) var(--window-border-radius) 0px;
   font-size: 15px;
 
   outline: none;
   border: none;
-  padding: 6px 14px;
 
   font-weight: 600;
+  margin: 0px 0px 0px auto;
+  display: block;
+  line-height: 22px;
 
+  box-shadow: inset 5px 0px 6px 0px #00000030;
+  
+  transition: all 500ms;
 }
 
-.button:hover {
+.form-button_btn:hover {
   cursor: pointer;
-  transform: scale(1.02) ;
+  width: 70px;
+
+  box-shadow: inset 9px 0px 13px 0px #00000030;
+
+  transition: all 500ms;
 }
 
 
-.button__green.button__primary {
+
+.form-button_btn__green {
   background-color: var(--c-main-green);
   color: white;
 }
-.button__green.button__secondary {
-  background-color: transparent;
-  color: var(--c-main-green);
-  border: 2fpx solid var(--c-main-green)
+.form-button_btn__green:hover {  
+  animation: button-animation__green 2000ms 200ms infinite;
+  animation-timing-function: ease-out  
 }
-.button__violet.button__primary {
+
+.form-button_btn__violet {
   background-color: var(--c-violet);
   color: white;
 }
-.button__violet.button__secondary {
-  background-color: transparent;
-  color: var(--c-violet);
-  border: 2px solid var(--c-violet)
-}
 
-.button__primary:disabled {
-  background-color: var(--c-light-grey);
-}
-.button__secondary:disabled {
-  color: var(--c-light-grey);
-  border: 2px solid var(--c-light-grey)
-}
-.button:disabled:hover {
+
+.form-button_btn:disabled:hover {
   transform: none;
   cursor: default;
+}
+
+
+
+
+/*animation*/
+@keyframes button-animation__green {
+  25% {background-color: var(--c-violet); color: white}
+  75% {background-color: var(--c-main-green);}
+}
+@keyframes button-animation__violet {
+  25% {background-color: var(--c-main-green); color: var(--c-grey)}
+  75% {background-color: var(--c-violet);}
+}
+
+
+/*corner button*/
+.corner-button {
+  height: 100%;
+  width: 100%;
+}
+
+.corner-button_btn {
+  outline: none;
+  border: none;
+  height: 100%;
+  width: 100%;
+
+  box-sizing: border-box;
+  font-size: 18px;
+  padding: 0px 15px;
+
+}
+.corner-button_btn:hover {
+  cursor: pointer;
+}
+.corner-button_btn__green:hover {
+  animation: button-animation__green 2s 100ms infinite;
+  animation-timing-function: ease-in-out  
+}
+.corner-button_btn__violet:hover {
+  animation: button-animation__violet 2s 100ms infinite;
+  animation-timing-function: ease-in-out  
+}
+
+.corner-button_btn__green {
+  background-color: var(--c-main-green);
+  text-shadow: 0 0 1px #4242426b;
+}
+
+
+.corner-button_btn__violet {
+  background-color: var(--c-violet);
+  color: white
+}
+
+
+.corner-button_btn__bottom-left {
+  box-shadow: inset -5px 5px 6px 0px #00000030;
+  border-radius:  0px var(--window-border-radius) 0px var(--window-border-radius);
+}
+.corner-button_btn__top-right {
+  box-shadow: inset 5px -5px 6px 0px #00000030;
+  border-radius:  0px var(--window-border-radius) 0px var(--window-border-radius);  
+  text-align: right;
+}
+.corner-button_btn__bottom-right {
+  box-shadow: inset 5px 5px 6px 0px #00000030;
+  border-radius:  var(--window-border-radius) 0px var(--window-border-radius) 0px;
+  text-align: right;
+}
+
+.corner-button_btn__top-left {
+  box-shadow: inset -5px -5px 6px 0px #00000030;
+  border-radius:  var(--window-border-radius) 0px var(--window-border-radius) 0px;
 }
