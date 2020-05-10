@@ -1,6 +1,8 @@
 import React from 'react'
 import './result-section.css'
-  
+import DataSquare from '../data-square'  
+
+
 function ResultSection({ input, result, model, layout }) {
   let layoutStyle = layout === 'row' ? ' result-section__row' : ''
 
@@ -18,15 +20,10 @@ function ResultSection({ input, result, model, layout }) {
     )
   })
  
-  let mainRes = <div className="result-secton_result">
-      {result.toFixed(model['LABEL_TO_PREDICT']['ACCURACY'] || 2) + ' ' + model['LABEL_TO_PREDICT']['UNIT']}
-    </div>
-  let altUnits = model['LABEL_TO_PREDICT']['ALTERNATIVE_UNITS'].map((unit, index) => (
-    <div className="result-secton_result" key={index}>
-      {(result*unit['RATE']).toFixed(unit['ACCURACY'] || 2) + ' ' + unit['UNIT']}
-    </div>
-  ))
-   
+  let mainRes = result.toFixed(model['LABEL_TO_PREDICT']['ACCURACY'] || 2) + ' ' + model['LABEL_TO_PREDICT']['UNIT'] 
+  let altUnits = model['LABEL_TO_PREDICT']['ALTERNATIVE_UNITS'].map(unit => (    
+    (result*unit['RATE']).toFixed(unit['ACCURACY'] || 2) + ' ' + unit['UNIT']    
+  ))   
 
   return (
     <div className={'result-section' + layoutStyle}>
@@ -34,10 +31,11 @@ function ResultSection({ input, result, model, layout }) {
         <div className='result-section_sources-title'>Input data</div>        
         {sourceFields}
       </div>
-      <div className='result-section_results'>
-        <div className='result-section_results-title'>{model['LABEL_TO_PREDICT']['LABEL'] || model['LABEL_TO_PREDICT']['NAME']}</div>
-        <div className="result-section_results-fields">{[mainRes, ...altUnits]}</div>                
+      <div className="result-section_results">
+        <DataSquare title={model['LABEL_TO_PREDICT']['LABEL'] || model['LABEL_TO_PREDICT']['NAME']}
+          values={[mainRes, ...altUnits]} />
       </div>
+      
     </div>
   )
 }
