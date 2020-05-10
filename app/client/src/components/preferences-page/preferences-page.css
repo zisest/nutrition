@@ -5,7 +5,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 8vh;
 
   height: 100%;
 
@@ -13,6 +12,50 @@
 
 .preferences-page_grid {
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  column-gap: 30px;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: auto auto;
+  grid-template-areas: 
+    "physParams nutrients"
+    "physActivity nutrients"
+    "foodPrefs nutrients";
+}
+.preferences-page_phys-params {
+  grid-area: physParams;
+}
+.preferences-page_phys-activity {
+  grid-area: physActivity;
+}
+.preferences-page_food-prefs {
+  grid-area: foodPrefs;
+}
+.nutrients {
+  grid-area: nutrients;
+}
+
+
+.nutrients_energy {
+  grid-area: energy;
+  display: grid;
+  grid-gap: 10px;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+.nutrients_main-nutrients {
+  grid-area: mainNutrients;
+}
+.nutrients_other-nutrients {
+  grid-area: otherNutrients;
+  display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.nutrients_grid {
+  height: 100%;
+  column-gap: 10px;
+  display: grid;
+  grid-template-rows: 1fr 2fr;
+  grid-template-columns: 1fr 2fr;
+  grid-template-areas: 
+    "energy mainNutrients"
+    "energy otherNutrients";
 }

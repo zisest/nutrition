@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import './preferences-page.css'
 import Window from '../window'
+import DataTable from '../data-table'
+import DataSquare from '../data-square'
 import Form from '../form'
 
 const FETCH_URL = '/api/getForms?forms=food-preferences,physiological-parameters,PAL-and-goals'
 const MODEL_NAME = 'MyModel1'
 const dataToSend = { MODEL_NAME }
+
+const mainNutrients = [
+  { name: 'Proteins', value: 55, unit: 'g' },
+  { name: 'Fats', value: 16, unit: 'g' },
+  { name: 'Carbohydrates', value: 89, unit: 'g' }  
+]
+const BMR = { title: 'estimated BMR', values: ['7 MJ/day', '1850 kcal/day'] }
+const TEE = { title: 'estimated TEE', values: ['7.6 MJ/day', '2120 kcal/day'] }
+const req = { title: 'estimated energy requirements', values: ['7.4 MJ/day', '2034 kcal/day'] }
+
+
 
 function PreferencesPage() {
   const [forms, setForms] = useState(null)
@@ -30,7 +43,7 @@ function PreferencesPage() {
   }
   
   let physParamsForm = forms && forms['physiological-parameters'] ? <Form
-    columns={2} 
+    columns={4} 
     singleErrorList={true}
     dataToSend={dataToSend}
     submitUrl='/api/predict' 
@@ -46,7 +59,7 @@ function PreferencesPage() {
     formTitle={'Physical activity & goals'}
   /> : ''
   let foodPrefsForm = forms && forms['food-preferences'] ? <Form
-    columns={2} 
+    columns={1} 
     singleErrorList={true}
     fields={forms['food-preferences']} 
     formTitle={'Food preferences'}
@@ -56,14 +69,30 @@ function PreferencesPage() {
     <div className='preferences-page'>
       <div className="preferences-page_main-area">
         <div className="preferences-page_grid">
-        <Window blank width='500px'>
+        <Window blank width='600px' className='preferences-page_phys-params'>
           {physParamsForm}
         </Window>        
-        <Window blank width='400px'>
-          {foodPrefsForm}
-        </Window>
-        <Window blank width='500px'>
+        <Window blank width='600px' className='preferences-page_phys-activity'>
           {physActivityForm}
+        </Window>
+        <Window blank width='600px' className='preferences-page_food-prefs'>
+          {foodPrefsForm}          
+        </Window>
+        <Window width='600px' title='Nutritional requirements' className='nutrients'>
+          <div className="nutrients_grid">
+            <div className="nutrients_energy">
+              <DataSquare {...BMR} />
+              <DataSquare {...TEE} />
+              <DataSquare {...req} />
+            </div>
+            <div className="nutrients_main-nutrients">
+              <DataTable fields={mainNutrients} />
+            </div>
+            <div className="nutrients_other-nutrients">
+              <DataTable fields={mainNutrients} />
+              <DataTable fields={mainNutrients} />
+            </div>
+          </div>
         </Window>
         </div>      
       </div>

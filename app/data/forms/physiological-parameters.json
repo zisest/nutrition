@@ -32,8 +32,8 @@
     "type": "radio",
     "required": true,
     "options": [
-      { "name":  "m", "label":  "male" },
-      { "name":  "f", "label":  "female" }
+      { "name":  "m", "label":  "m" },
+      { "name":  "f", "label":  "f" }
     ]
   }
 ]

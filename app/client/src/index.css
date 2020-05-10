@@ -34,3 +34,17 @@ html, body, #root, .app {
   height: 100%;
   margin: 0
 }
+
+h2 {
+  font-size: 24px;
+  padding: 0px 8px 6px 8px;
+  margin: 0;
+  font-weight: 400;
+}
+h3 {
+  font-size: 20px;
+  padding: 0px 6px 2px 6px;
+  margin: 0;
+  color: var(--c-dark-green);
+  font-weight: 400;
+}

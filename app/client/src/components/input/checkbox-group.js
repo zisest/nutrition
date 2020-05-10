@@ -5,7 +5,7 @@ import './checkbox-group.css'
   
 
 // layout.length should be either 1 or 3
-function CheckboxGroup({ name, label, options, value, onChange, validityErrors, displayErrors, layout }) {
+function CheckboxGroup({ name, label, options, value, onChange, validityErrors, displayErrors, layout, tooltipWidth }) {
   const [labelWidths, setLabelWidths] = useState({})
   let errorBorderStyle = validityErrors.length === 0 ? '' : ' radio-group_options__error'
   let errorLabelStyle = validityErrors.length === 0 ? '' : ' input_label__error'
@@ -40,7 +40,7 @@ function CheckboxGroup({ name, label, options, value, onChange, validityErrors, 
     let selectedOptionStyle = (value && value.includes(option.name)) ? ' radio-group_option__selected' : ''
     let tooltip = !option.description ? '' :
       <div className="radio-group_tooltip-container">
-        <div className="radio-group_tooltip">
+        <div style={{ minWidth: tooltipWidth }} className="radio-group_tooltip">
           <div className="radio-group_tooltip-name radio-group_label" style={{ width: labelWidths[option.name] }} >
             {option.label}
             {console.log(option.name)}
@@ -91,7 +91,8 @@ function CheckboxGroup({ name, label, options, value, onChange, validityErrors, 
 CheckboxGroup.defaultProps = {
   options: [],
   validityErrors: [],
-  layout: [5]
+  layout: [5],
+  tooltipWidth: '140px'
 }
   
 export default CheckboxGroup

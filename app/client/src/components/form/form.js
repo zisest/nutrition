@@ -127,7 +127,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
   return (    
     <form className='form' style={{width}} onSubmit={handleSubmit} noValidate autoComplete='off' >      
       <div className='form_body'>
-        <div className='form_title'>{formTitle}</div>
+        <div className='form_title'><h2>{formTitle}</h2></div>
         <div className='form_fields' style={gridCols}>
           {inputs}
         </div>
