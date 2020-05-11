@@ -1,0 +1,30 @@
+[
+  {
+    "name": "food-preferences",
+    "label": "Food preferences",
+    "type": "checkbox",
+    "options": [
+      { "name":  "vegan", "label":  "vegan", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "vegetarian", "label":  "vegetarian", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "kosher", "label":  "kosher", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "paleo", "label":  "paleo", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "gluten-free", "label":  "gluten-free", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "lactose-free", "label":  "lactose-free", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "raw", "label":  "raw", "description": "Lorem ipsum dolor sit amet" }
+    ],
+    "layout": [3, 2, 2]
+  },
+  {
+    "name": "meals-per-day",
+    "label": "meals/day",
+    "type": "slider",
+    "options": [
+      { "name":  2, "label":  "2 meals/day", "description": "I consume 2 meals a day" },
+      { "name":  3, "label":  "3 meals/day", "description": "I consume 3 meals a day" },
+      { "name":  4, "label":  "4 meals/day", "description": "I consume 4 meals a day" },
+      { "name":  5, "label":  "5 meals/day", "description": "I consume 5 meals a day" },
+      { "name":  6, "label":  "6 meals/day", "description": "I consume 6 meals a day" },
+      { "name":  7, "label":  "7 meals/day", "description": "I consume 7 meals a day" }
+    ]
+  }
+]
