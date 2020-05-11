@@ -1,0 +1,25 @@
+[
+  {
+    "name": "pal",
+    "label": "Physical activity level",
+    "type": "select",
+    "double": true,
+    "initialValue": "moderate",
+    "options": [
+      { "name":  "low", "label":  "Low", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." },
+      { "name":  "moderate", "label":  "Moderate", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." },
+      { "name":  "high", "label":  "High", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." }
+    ]
+  },
+  {
+    "name": "weight-goal",
+    "label": "Weight goal",
+    "type": "slider",
+    "initialValue": "maintain",
+    "options": [
+      { "name":  "lose", "label":  "Lose weight", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "maintain", "label":  "Maintain weight", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "gain", "label":  "Gain muscle", "description": "Lorem ipsum dolor sit amet" }
+    ]
+  }
+]
