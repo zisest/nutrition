@@ -1,0 +1,11 @@
+.checkbox-group_options {
+display: grid;
+}
+.checkbox-group_options__double {
+  height: 91.6px;
+}
+.checkbox-group_options-row {
+  display: flex;
+  height: 25px;
+  align-items: center;
+}

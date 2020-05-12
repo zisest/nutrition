@@ -1,0 +1,35 @@
+.form {
+  display: grid;
+  grid-template-columns: auto 70px;
+  column-gap: 15px;
+  height: 100%;
+  /*
+  border-radius: var(--window-border-radius);
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.20);
+
+  background-color: rgba(158, 171, 165, 0.1);
+  backdrop-filter: blur(15px);*/
+}
+
+.form_body {
+  padding: 15px 15px 25px 25px;
+}
+
+.form_fields {
+  display: grid;
+  column-gap: 20px;
+  row-gap: 3px;
+  
+}
+
+.form_validity-errors {
+  list-style: url('/leaf-ident.svg') inside;
+  padding: 15px 0px 0px 15px; 
+  margin: 0px;
+
+}
+.form_validity-error{
+  color: var(--c-error-red);
+  font-size: 14px;
+  font-weight: 600;
+}

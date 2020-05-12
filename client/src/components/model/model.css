@@ -1,0 +1,9 @@
+.model {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-template-rows: max-content max-content;
+  gap: 25px;
+}
+.model-info-window{
+  grid-row: 1/3
+}

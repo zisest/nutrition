@@ -1,0 +1,31 @@
+
+.data-square {
+  width: 100%;
+  height: 100%;
+  border-radius: 7px;
+  padding: 2px 5px 5px 5px;
+  border: 1px solid var(--c-light-grey);
+
+  display: grid;
+  grid-template-rows: max-content auto;
+  box-sizing: border-box;
+}
+.data-square:hover {
+  border-color: var(--c-main-green)
+}
+.data-square_title {
+  text-align: right;
+  font-size: 13px;
+}
+.data-square_fields {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 8px 20px 8px;
+}
+
+.data-square_field {
+  color: var(--c-dark-green);
+  font-size: 18px;
+}

@@ -14,8 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from nutrition_helper import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,5 +24,7 @@ urlpatterns = [
     path('api/get_forms/', views.api_get_forms),
     path('api/get_models/', views.api_get_models),
     path('api/predict/', views.api_predict),
-    path('api/test_post/', views.api_test_post)
+    path('api/test_post/', views.api_test_post),
+    re_path(r'^.*$', views.index_page),
+    # path('', views.index_page)
 ]

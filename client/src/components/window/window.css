@@ -1,0 +1,24 @@
+.window {
+  border-radius: var(--window-border-radius);
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
+  background-color: rgba(158, 171, 165, 0.1);
+  backdrop-filter: blur(15px);
+
+  box-sizing: border-box;
+
+  padding: 15px 25px 25px 25px;
+  width: fit-content;
+
+  display: grid;
+  grid-template-rows: max-content auto;
+
+  z-index: 0;
+}
+.window__blank {
+  padding: 0;
+  display: block;
+}
+
+.window__blank  .window_body {
+  height: 100%;
+}
