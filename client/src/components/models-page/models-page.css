@@ -1,0 +1,14 @@
+.models-page {
+  height: 100%;
+  display: grid;
+  grid-template-columns: max-content auto;
+}
+.models-page_navbar {
+  height: 100%;
+}
+.models-page_main-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 8vh;
+}

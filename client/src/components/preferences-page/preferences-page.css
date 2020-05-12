@@ -1,0 +1,81 @@
+.preferences-page {
+  height: 100%;
+}
+.preferences-page_main-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+
+}
+
+.preferences-page_grid {
+  display: grid;
+  column-gap: 30px;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: auto auto;
+  grid-template-areas: 
+    "physParams nutrients"
+    "physActivity nutrients"
+    "foodPrefs nutrients";
+}
+.preferences-page_phys-params {
+  grid-area: physParams;
+}
+.preferences-page_phys-activity {
+  grid-area: physActivity;
+}
+.preferences-page_food-prefs {
+  grid-area: foodPrefs;
+}
+
+/*nutrients*/
+.nutrients {
+  grid-area: nutrients;
+  
+}
+.nutrients_grid{
+  display: grid;
+  height: 100%;
+  gap: 0 10px;
+  grid-template-columns: auto 185px 210px;
+  grid-template-rows: max-content max-content max-content auto 50px;
+  grid-template-areas: 
+    "nutrientsTitle nutrientsTitle nutrientTitle"
+    "nutrientsEnergy mainNutrients mainNutrients"
+    "nutrientsEnergy otherTitle otherTitle"
+    "nutrientsEnergy otherNutrients1 otherNutrients2"
+    "nutrientsEnergy otherNutrients1 nutrientsButton";
+}
+
+.nutrients_title {
+  grid-area: nutrientsTitle;
+  padding: 15px 25px 0 25px;
+}
+.nutrients_energy {
+  grid-area: nutrientsEnergy;
+  padding: 0 15px 25px 25px;
+  display: grid;
+  gap: 10px;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+.nutrients_main-nutrients {
+  grid-area: mainNutrients;
+  padding-right: 25px;
+}
+.nutrients_other-title {
+  grid-area: otherTitle;
+  padding-right: 25px;
+}
+.nutrients_other-nutrients-1 {
+  grid-area: otherNutrients1;
+}
+.nutrients_other-nutrients-2 {
+  grid-area: otherNutrients2;
+  padding-right: 25px;
+}
+.nutrients_button {
+  grid-area: nutrientsButton
+}
+

@@ -1,0 +1,33 @@
+.result-section {
+  display: grid;
+  grid-template-rows: max-content auto;
+  gap: 15px;
+  height: 100%;
+}
+.result-section__row {
+  grid-template-rows: auto;
+  grid-template-columns: max-content auto;
+}
+
+.result-section_sources {
+  min-width: 130px;
+}
+
+.result-section_source {
+  display: grid;
+  grid-template-columns: auto auto;
+  font-size: 14px;
+  padding: 0px 8px;
+}
+
+
+.result-section_source-value {
+  text-align: right;
+  
+  color: var(--c-dark-green)
+}
+
+/**/
+.result-section_results {
+
+}

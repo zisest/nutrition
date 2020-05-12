@@ -1,15 +1,21 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.renderers import StaticHTMLRenderer
 from django.apps import apps
 import json
 import pandas as pd
 import numpy as np
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from ml.Equation import Equation
+from django.shortcuts import render
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 # Create your views here.
+@api_view()
+@ensure_csrf_cookie
+def index_page(request):
+    return render(request, 'build/index.html')
+
 @api_view()
 def api_get_forms(request):
     requested_forms = request.query_params.get('forms', 'all')
@@ -48,6 +54,7 @@ def parse_request(data):
 
 def norm(x, normalization):
     return (x - normalization['mean']) / normalization['std']
+
 
 @api_view(['POST'])
 def api_predict(request):
