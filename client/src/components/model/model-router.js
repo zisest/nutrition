@@ -8,7 +8,15 @@ import {
 import Model from './model'
 
 
-function ModelRouter({ models }) {  
+function ModelRouter({ models }) {
+  const [results, setResults] = useState({})
+  const [requests, setRequests] = useState({})
+
+  const handleResponse = (modelName, req, res) => {
+    setRequests(prev => ({...prev, [modelName]: req}))
+    setResults(prev => ({...prev, [modelName]: res}))
+  }
+
   let { modelName } = useParams()
   let model = models.find(m => m['MODEL_NAME'] === modelName)
   useEffect(() => {
@@ -18,7 +26,7 @@ function ModelRouter({ models }) {
 
   
   return (
-    <Model model={model} />
+    <Model model={model} result={results[modelName]} request={requests[modelName]} onResponse={handleResponse} />
   )
 }
 ModelRouter.defaultProps = {

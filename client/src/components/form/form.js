@@ -75,12 +75,14 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     return noReqFieldsEmpty && noErrors
   }
   const handleSubmit = (e) => {
-    validateFields() && fetch(submitUrl, 
+    let CSRFheader = cookies.csrftoken ? { 'X-CSRFToken': cookies.csrftoken } : {}
+    validateFields() && fetch(submitUrl,
       {
         method: 'POST',
         body: JSON.stringify({...values, ...dataToSend}),
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...CSRFheader
         }
       }
     )

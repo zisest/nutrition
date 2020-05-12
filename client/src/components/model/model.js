@@ -35,21 +35,16 @@ const parseModel = (model) => {
   return(fields)
 }
 
-function Model({ model }) {
-  const [request, setRequest] = useState(null)
-  const [result, setResult] = useState(null)
-  
-  
+function Model({ model, request, result, onResponse }) {
   if (!model) return <Redirect to='/models' />
 
   const dataToSend = {MODEL_NAME: model.MODEL_NAME}
 
-  const handleResponse = (req, res) => {
+  const parseResponse = (req, res) => {
     Object.keys(dataToSend).forEach(key => {
       delete req[key]
     })
-    setRequest(req)
-    setResult(+res)    
+    onResponse(model.MODEL_NAME, req, +res)
   }
 
   let form = <Form 
@@ -58,7 +53,7 @@ function Model({ model }) {
     dataToSend={dataToSend}
     submitUrl='/api/predict/' 
     formTitle={model.MODEL_TITLE || model.MODEL_NAME}
-    onResponse={handleResponse}
+    onResponse={parseResponse}
   />
   
   let resultSection = result && request && 

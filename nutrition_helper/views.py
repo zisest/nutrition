@@ -75,7 +75,7 @@ def api_predict(request):
 
     output = np.array(prediction).flatten()[0]
     print(output)
-    return Response(str(output))
+    return Response(output)
 
 
 
