@@ -56,7 +56,7 @@ function Model({ model }) {
     fields={parseModel(model)}
     columns={2} 
     dataToSend={dataToSend}
-    submitUrl='/api/predict' 
+    submitUrl='/api/predict/' 
     formTitle={model.MODEL_TITLE || model.MODEL_NAME}
     onResponse={handleResponse}
   />

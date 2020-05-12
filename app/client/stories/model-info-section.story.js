@@ -11,7 +11,7 @@ const Wrapper = (props) => {
   const [models, setModels] = useState([])
 
   useEffect(() => {
-    fetch('/api/getModels')
+    fetch('/api/get_models/')
     .then(res => res.json())
     .then(res => {
       setModels(res)

@@ -155,7 +155,7 @@ export const FormStory = () =>
   <Window blank width='600px'>
     <Form columns={2} 
     dataToSend={{MODEL_NAME: 'PredictingLBM1'}}
-    submitUrl='/api/predict' 
+    submitUrl='/api/predict/' 
     fields={MAPPED} 
     submitText={'Predict'}
     formTitle={'Parameters'}
@@ -166,7 +166,7 @@ export const FormStory2 = () =>
   <Window blank width='600px'>
     <Form columns={2} 
     dataToSend={{MODEL_NAME: 'PredictingLBM1'}}
-    submitUrl='/api/predict' 
+    submitUrl='/api/predict/' 
     fields={fields2} 
     submitText={'Predict'}
     formTitle={'Parameters'}

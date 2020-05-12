@@ -46,12 +46,12 @@ def home():
     return app.send_static_file('index.html')
 
 
-@app.route('/api/getModels', methods=['GET'])
+@app.route('/api/get_models/', methods=['GET'])
 def getModels():
     return jsonify(models_info)
 
 
-@app.route('/api/getForms')
+@app.route('/api/get_forms/')
 def getForms():
     print(request.args.get('forms'))
     requested = request.args.get('forms', default='all')
@@ -83,7 +83,7 @@ def parse_request(req):
 
 
 
-@app.route('/api/predict', methods=['POST'])
+@app.route('/api/predict/', methods=['POST'])
 def results():
     data = request.get_json(force=True)
     print(data)

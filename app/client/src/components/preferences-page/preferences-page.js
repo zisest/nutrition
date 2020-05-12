@@ -6,7 +6,7 @@ import DataSquare from '../data-square'
 import Button from '../button'
 import Form from '../form'
 
-const FETCH_URL = '/api/getForms?forms=food-preferences,physiological-parameters,PAL-and-goals'
+const FETCH_URL = '/api/get_forms/?forms=food-preferences,physiological-parameters,PAL-and-goals'
 const MODEL_NAME = 'MyModel1'
 const dataToSend = { MODEL_NAME }
 
@@ -47,7 +47,7 @@ function PreferencesPage() {
     columns={4} 
     singleErrorList={true}
     dataToSend={dataToSend}
-    submitUrl='/api/predict' 
+    submitUrl='/api/predict/' 
     fields={forms['physiological-parameters']} 
     formTitle={'Physiological parameters'}
     onResponse={handleResponse}

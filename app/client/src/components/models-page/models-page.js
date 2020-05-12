@@ -5,7 +5,7 @@ import Navbar from '../navbar'
 import {ModelRouter} from '../model'
 import ModelLink from '../model-link'
 
-const FETCH_URL = '/api/getModels'
+const FETCH_URL = '/api/get_models/'
 
 function ModelsPage() {
   const [models, setModels] = useState(null)
