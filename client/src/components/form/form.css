@@ -23,7 +23,7 @@
 }
 
 .form_validity-errors {
-  list-style: url('/leaf-ident.svg') inside;
+  list-style: url('../../assets/leaf-ident.svg') inside;
   padding: 15px 0px 0px 15px; 
   margin: 0px;
 

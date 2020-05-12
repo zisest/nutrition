@@ -14,7 +14,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 @api_view()
 @ensure_csrf_cookie
 def index_page(request):
-    return render(request, 'build/index.html')
+    return render(request, 'index.html')
 
 @api_view()
 def api_get_forms(request):
