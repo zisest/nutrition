@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from nutrition_helper import views
+from rest_framework_simplejwt import views as jwt_views
 
 
 urlpatterns = [
@@ -24,7 +25,10 @@ urlpatterns = [
     path('api/get_forms/', views.api_get_forms),
     path('api/get_models/', views.api_get_models),
     path('api/predict/', views.api_predict),
-    path('api/test_post/', views.api_test_post),
+    path('api/closed/', views.api_closed),
+    path('api/token/obtain/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),  # override sjwt stock token
+    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/auth/create/', views.auth_create_user, name='create_user'),
     re_path(r'^.*$', views.index_page),
     # path('', views.index_page)
 ]
