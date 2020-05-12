@@ -1,16 +1,33 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.renderers import StaticHTMLRenderer
 from django.apps import apps
-import json
 import pandas as pd
 import numpy as np
 from ml.Equation import Equation
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.permissions import IsAuthenticated
 
+from rest_framework import status, permissions
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .serializers import AppUserSerializer
 
-# Create your views here.
+# AUTH
+
+@api_view(['POST'])
+def auth_create_user(request, format='json'):
+    serializer = AppUserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        if user:
+            json = serializer.data
+            return Response(json, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#
+
 @api_view()
 @ensure_csrf_cookie
 def index_page(request):
@@ -79,7 +96,7 @@ def api_predict(request):
 
 
 
-@api_view(['POST'])
-def api_test_post(request):
-    data = request.data
-    return Response(data)
+@api_view()
+@permission_classes([IsAuthenticated])
+def api_closed(request):
+    return Response('Allowed')
