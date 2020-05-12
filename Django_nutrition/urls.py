@@ -20,6 +20,8 @@ from nutrition_helper import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/get_forms', views.api_get_forms),
-    path('bs/', views.query_test)
+    path('api/get_forms/', views.api_get_forms),
+    path('api/get_models/', views.api_get_models),
+    path('api/predict/', views.api_predict),
+    path('api/test_post/', views.api_test_post)
 ]
