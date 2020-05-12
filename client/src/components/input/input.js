@@ -1,7 +1,8 @@
 import React from 'react'
 import './input.css'
 
-function Input({ type, value, name, label, disabled, validityErrors, onChange, placeholder, maxLength, displayErrors }) {
+// seems regex prop in Form === "permitted characters"
+function Input({ type, value, name, label, disabled, validityErrors, onChange, placeholder, maxLength, displayErrors, subtype }) {
   let errorBorderStyle = validityErrors.length === 0 ? '' : ' input_input-tag__error'
   let errorLabelStyle = validityErrors.length === 0 ? '' : ' input_label__error'
   return (
@@ -9,7 +10,7 @@ function Input({ type, value, name, label, disabled, validityErrors, onChange, p
       <label className='input_label-tag'>
         <div className={'input_label' + errorLabelStyle}>{label}</div> 
         <input className={'input_input-tag' + errorBorderStyle}
-          type='text'
+          type={subtype || 'text'}
           name={name}
           value={value}
           placeholder={placeholder || name}
