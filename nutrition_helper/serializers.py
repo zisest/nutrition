@@ -7,7 +7,7 @@ class AppUserSerializer(serializers.ModelSerializer):
     Currently unused in preference of the below.
     """
 
-    username = serializers.CharField()
+    username = serializers.CharField(min_length=4)
     password = serializers.CharField(min_length=8, write_only=True)
 
     class Meta:

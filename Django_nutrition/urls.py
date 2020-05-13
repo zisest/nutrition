@@ -26,8 +26,8 @@ urlpatterns = [
     path('api/get_models/', views.api_get_models),
     path('api/predict/', views.api_predict),
     path('api/closed/', views.api_closed),
-    path('api/token/obtain/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),  # override sjwt stock token
-    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/auth/get_token/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),  # override sjwt stock token
+    path('api/auth/refresh_token/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('api/auth/create/', views.auth_create_user, name='create_user'),
     re_path(r'^.*$', views.index_page),
     # path('', views.index_page)

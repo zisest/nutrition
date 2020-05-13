@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from django.db.utils import IntegrityError
 from rest_framework.renderers import StaticHTMLRenderer
 from django.apps import apps
 import pandas as pd
@@ -14,17 +15,31 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .serializers import AppUserSerializer
 
-# AUTH
 
+ERRORS = {
+    'DJ_AUTH-0': 'User with that name already exists',
+    'DJ_AUTH-1': 'Could not create user (validation error)',
+
+}
+
+# AUTH
 @api_view(['POST'])
 def auth_create_user(request, format='json'):
     serializer = AppUserSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        if user:
-            json = serializer.data
-            return Response(json, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        if serializer.is_valid():
+            user = serializer.save()
+            if user:
+                json = serializer.data
+                return Response(json, status=status.HTTP_201_CREATED)
+    except IntegrityError:
+        return Response([{'errID': 'DJ_AUTH-0', 'error': ERRORS['DJ_AUTH-0']}], status=status.HTTP_400_BAD_REQUEST)
+
+    serializer_errors = []  # restructuring serializer.errors
+    for err_type in serializer.errors.items():
+        for err in err_type[1]:
+            serializer_errors.append({'errID': 'DJ_AUTH-1', 'error': f'{err_type[0]}: {err}'})
+    return Response(serializer_errors, status=status.HTTP_400_BAD_REQUEST)
 
 #
 

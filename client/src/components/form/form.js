@@ -14,7 +14,7 @@ const VALIDATION_ERRORS_ALL = {
 }
 
 //change to useEffect 
-function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorList, dataToSend, headers, width, onResponse }) {
+function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorList, dataToSend, headers, width, onResponse, errorsToDisplay }) {
   const [cookies, setCookie] = useCookies()
   const [values, setValues] = useState({})
   const [validityErrors, setValidityErrors] = useState({})
@@ -49,7 +49,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
   }
   const minLengthCheck = (fieldName, value) => { // would only work 
     if (!withMinLength[fieldName]) return true
-    let isError = value.length >= withMinLength[fieldName]
+    let isError = value.length !== 0 && value.length < withMinLength[fieldName]
     setValidityError(fieldName, '1-p', isError, withMinLength[fieldName])
     return !isError
   }
@@ -147,10 +147,13 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
 
   let gridCols = { 'gridTemplateColumns': '1fr '.repeat(columns) }
   
-  let formValidityErrors = (singleErrorList && allErrorMessages.length !== 0) &&
+  let formValidityErrors = (singleErrorList && allErrorMessages.length !== 0) || errorsToDisplay.length !== 0 &&
     <ul className="form_validity-errors">      
-      {allErrorMessages.map((err, index) => <li className="form_validity-error" key={index}>{err}</li>)}
+      {singleErrorList && allErrorMessages.map((err, index) => <li className="form_validity-error" key={index}>{err}</li>)}
+      {errorsToDisplay.map((err, index) => <li className="form_validity-error" key={index}>{err}</li>)}
     </ul> 
+  
+
     
 
   return (    
@@ -173,7 +176,8 @@ Form.defaultProps = {
   singleErrorList: true,
   formTitle: 'Form',
   dataToSend: {},
-  headers: {}
+  headers: {},
+  errorsToDisplay: []
 }
   
 export default Form
