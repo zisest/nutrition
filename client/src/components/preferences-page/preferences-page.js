@@ -5,6 +5,7 @@ import DataTable from '../data-table'
 import DataSquare from '../data-square'
 import Button from '../button'
 import Form from '../form'
+import { refreshToken } from '../../api/auth'
 
 const FETCH_URL = '/api/get_forms/?forms=food-preferences,phys-params-PAL-goal'
 const MODEL_NAME = 'MyModel1'
@@ -35,12 +36,32 @@ function PreferencesPage({ auth, onAuth }) {
     .catch(err => console.error('ERROR: ', err))
   }, [])
 
-  const handleResponse = (req, res) => {
-    Object.keys(dataToSend).forEach(key => {
-      delete req[key]
+  const handleResponse = (req, res, status, url) => {
+    
+    if (status === 401) refreshToken().then(res => {
+      console.log('Was 401, tried to refresh tokens', res, res.status)
+      return new Promise((resolve, reject) => resolve(res.status))
     })
-    setRequest(req)
-    setResult(+res)    
+    .then(status => {
+      if (status === 200) { // if refreshed successfully try to request again
+        fetch(url,
+          {
+            method: 'POST',
+            body: JSON.stringify(req),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+            }
+          }
+        )
+        .then(res => {
+          res.json().then(json => {
+            console.log('2ns attempt', json, res.status)
+          })
+        })
+      }
+    })
+    console.log('Response!: ', req, res, status)
   }
   
   let physParamsPALGoalSections = [
@@ -50,10 +71,11 @@ function PreferencesPage({ auth, onAuth }) {
   let physParamsPALGoalForm = forms && forms['phys-params-PAL-goal'] ? <Form
     singleErrorList={true}
     dataToSend={dataToSend}
-    submitUrl='/api/predict/' 
+    submitUrl='/api/user_info/' 
     fields={forms['phys-params-PAL-goal']} 
     sections={physParamsPALGoalSections}
     onResponse={handleResponse}
+    headers={{'Authorization': 'Bearer ' + localStorage.getItem('access_token')}}
   /> : ''
 
   
