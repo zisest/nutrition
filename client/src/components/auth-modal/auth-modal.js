@@ -3,10 +3,12 @@ import './auth-modal.css'
 import Login from '../login'  
 import Register from '../register'
 
+import { setTokenPair } from '../../api/auth'
+
 const FETCH_FORMS_URL = '/api/get_forms/?forms=register,login'
 
 
-function AuthModal() {
+function AuthModal({ onAuth }) {
   const [forms, setForms] = useState(null)
   const [state, setState] = useState('login')
   const [username, setUsername] = useState(null)
@@ -24,12 +26,17 @@ function AuthModal() {
     setUsername(user)
     setState('login')
   }
+  const handleLogin = (tokens, user) => {
+    setTokenPair(tokens)
+    localStorage.setItem('username', user)
+  }
 
 
-  let login = forms && <Login username={username} form={forms.login} />
+  let login = forms && <Login onSuccess={handleLogin} username={username} form={forms.login} />
   let register = forms && <Register onSuccess={handleRegistration} form={forms.register} />
   return (
     <div className='auth-modal'>
+
       {state === 'login' ? login : register}
     </div>
   )

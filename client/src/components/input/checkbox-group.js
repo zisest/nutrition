@@ -43,7 +43,6 @@ function CheckboxGroup({ name, label, options, value, onChange, validityErrors, 
         <div style={{ minWidth: tooltipWidth }} className="radio-group_tooltip">
           <div className="radio-group_tooltip-name radio-group_label" style={{ width: labelWidths[option.name] }} >
             {option.label}
-            {console.log(option.name)}
           </div>
           <div className="radio-group_tooltip-description">{option.description}</div> 
         </div>
@@ -55,7 +54,7 @@ function CheckboxGroup({ name, label, options, value, onChange, validityErrors, 
         <input 
           type='checkbox'
           name={option.name}
-          checked={value && value.includes(option.name)}
+          checked={value ? value.includes(option.name) : false}
           onChange={handleChange}
         />
         <div className='radio-group_label' data-name={name + '--' + option.name}>

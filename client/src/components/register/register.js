@@ -5,17 +5,18 @@ import './register.css'
 const REGISTER_URL = '/api/auth/create/'
 
 function Register({ form, onSuccess }) {
-  const [status, setStatus] = useState(null)
+  //const [status, setStatus] = useState(null)
   const [errors, setErrors] = useState([])  
 
   
-  const handleResponse = (req, res) => {
+  const handleResponse = (req, res, status) => {
     if (res.username) {
-      setStatus(res.username)
+      //setStatus(res.username)
       setErrors([])
       onSuccess(res.username)
     } else setErrors(res)
   }
+
 
   let registrationForm = form ? <Form
     columns={1} 
@@ -25,6 +26,7 @@ function Register({ form, onSuccess }) {
     formTitle={'Register'}
     onResponse={handleResponse}
     errorsToDisplay={errors.map(err => err.error)}
+    onFieldChange={() => setErrors([])}
   /> : ''
 
 
