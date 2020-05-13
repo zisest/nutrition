@@ -1,0 +1,29 @@
+.auth-modal_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  backdrop-filter: blur(20px);
+}
+
+.auth-modal {
+
+}
+.auth-modal > * {
+  background-color: white;
+}
+
+.auth-modal_link {
+  color: var(--c-dark-green);
+  font-weight: 600;
+}
+.auth-modal_link:hover {
+  cursor: pointer;
+  color: var(--c-violet)
+}

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import './preferences-page.css'
 import Window from '../window'
 import DataTable from '../data-table'
 import DataSquare from '../data-square'
 import Button from '../button'
 import Form from '../form'
+import AuthModal from '../auth-modal'
 
 const FETCH_URL = '/api/get_forms/?forms=food-preferences,physiological-parameters,PAL-and-goals'
 const MODEL_NAME = 'MyModel1'
@@ -21,7 +22,7 @@ const req = { title: 'estimated energy requirements', values: ['7.4 MJ/day', '20
 
 
 
-function PreferencesPage() {
+function PreferencesPage({ auth, onAuth }) {
   const [forms, setForms] = useState(null)
   const [request, setRequest] = useState(null)
   const [result, setResult] = useState(null)
@@ -67,6 +68,7 @@ function PreferencesPage() {
   /> : ''
 
   return (
+    <Fragment>
     <div className='preferences-page'>
       <div className="preferences-page_main-area">
         <div className="preferences-page_grid">
@@ -107,6 +109,8 @@ function PreferencesPage() {
         </div>      
       </div>
     </div>
+    
+    </Fragment>
   )
 }
 PreferencesPage.defaultProps = { }
