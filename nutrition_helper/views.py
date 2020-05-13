@@ -115,3 +115,8 @@ def api_predict(request):
 @permission_classes([IsAuthenticated])
 def api_closed(request):
     return Response('Allowed')
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_user_info(request):
+    return Response(request.user.get_username())

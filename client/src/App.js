@@ -52,7 +52,7 @@ function App() {
 
   return (
     <div className='app'>
-      <Navbar title='Nutrition helper' position='horizontal' size='70px' >
+      <Navbar title='Nutrition helper' position='horizontal' size='70px' zIndex={100} >
         <Link to='/models'>Models</Link>
         <Link to='/preferences'>Preferences</Link>
         <Link to='/meal-plan'>Meal plan</Link>

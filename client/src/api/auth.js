@@ -25,6 +25,9 @@ export const setTokenPair = (pair) => {
 export const refreshToken = () => {
   const REFRESH_URL = '/api/auth/refresh_token/'
   let data = { refresh: localStorage.getItem('refresh_token') }
+  if (!data) return new Promise((resolve, reject) => { 
+    reject({tokens: null, status: 401}) 
+  })
   return fetch(REFRESH_URL,
     {
       method: 'POST',

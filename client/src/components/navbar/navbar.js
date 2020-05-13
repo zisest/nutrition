@@ -1,7 +1,7 @@
 import React from 'react'
 import './navbar.css'
   
-function Navbar({ title, size, position, children, stickToEnd }) {
+function Navbar({ title, size, position, children, stickToEnd, zIndex }) {
   
   let childrenArray = React.Children.toArray(children).map((child, index) => 
     <div key={index} className='navbar_child'>{child}</div>
@@ -12,7 +12,7 @@ function Navbar({ title, size, position, children, stickToEnd }) {
   let sizeStyle = size && position === 'vertical' ? { width: size } : { height: size }
 
   return (
-    <div style={sizeStyle} className={`navbar navbar__${position}`}>
+    <div style={{ ...sizeStyle, zIndex }} className={`navbar navbar__${position}`}>
       <div className='navbar_header'>
         <div className="navbar_title">{title}</div> 
         <div className='navbar_divider'></div>
@@ -27,7 +27,8 @@ function Navbar({ title, size, position, children, stickToEnd }) {
 Navbar.defaultProps = {
   position: 'vertical',
   stickToEnd: 0,
-  title: 'Navbar'
+  title: 'Navbar',
+  zIndex: null
 }
   
 export default Navbar
