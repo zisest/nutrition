@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import { useCookies } from 'react-cookie'
 import Input, { RadioGroup, Select, Slider, CheckboxGroup } from '../input'
 import Button from '../button'
@@ -6,18 +6,19 @@ import './form.css'
 
 import { VALIDATION_ERRORS, VALIDATION_ERRORS_ALL } from '../../errors'
 
-
+//sections : [{title, size, columns}]
 //change to useEffect 
 function Form({ 
   fields,
   formTitle, 
   submitText, 
-  submitUrl, 
-  columns, 
+  submitUrl,   
   singleErrorList, 
+  columns, 
+  sections, //sections is incompatible with formTitle, columns
+  width, 
   dataToSend, 
   headers, 
-  width, 
   onResponse, 
   errorsToDisplay,
   onFieldChange
@@ -155,7 +156,6 @@ function Form({
         validityErrors={errorMessages || []} key={index} displayErrors={!singleErrorList} />
   })
 
-  let gridCols = { 'gridTemplateColumns': '1fr '.repeat(columns) }
   
   let formValidityErrors = ((singleErrorList && allErrorMessages.length !== 0) || (errorsToDisplay.length !== 0)) &&
     <ul className="form_validity-errors">      
@@ -164,31 +164,44 @@ function Form({
     </ul> 
   
 
-    
+  
+  let sectionsToRender = sections.length !== 0 ? sections : [{ title: formTitle, size: 100, columns }]  
+  let sectioned = sectionsToRender.map((section, index) => {
+    let sectionInputs = inputs.splice(0, section.size)
+    let sectionCols = { 'gridTemplateColumns': '1fr '.repeat(section.columns) }
+    let sectionDelimeter = index !== 0 ? <div className="form_section-delimeter"></div> : ''
+    return (
+      <Fragment>
+      {sectionDelimeter}
+      {section.title && <div className='form_title'><h2>{section.title}</h2></div>}
+      <div className='form_fields' style={sectionCols}>
+          {sectionInputs}
+      </div>
+      </Fragment>
+    )
+  })
 
   return (    
     <form className='form' style={{width}} onSubmit={handleSubmit} noValidate autoComplete='off' >      
-      <div className='form_body'>
-        <div className='form_title'><h2>{formTitle}</h2></div>
-        <div className='form_fields' style={gridCols}>
-          {inputs}
-        </div>
+      <div className='form_body'>        
+        {sectioned}
         {formValidityErrors}       
       </div>
-      <Button type='form' submit  />
-      
+      <Button type='form' submit  />      
     </form>
-  )
+)
+
 }
 Form.defaultProps = {
   fields: [],
   columns: 1,
   singleErrorList: true,
-  formTitle: 'Form',
+  formTitle: '',
   dataToSend: {},
   headers: {},
   errorsToDisplay: [],
-  onFieldChange: () => {}
+  onFieldChange: () => {},
+  sections: []
 }
   
 export default Form

@@ -13,11 +13,12 @@
 .preferences-page_grid {
   display: grid;
   column-gap: 30px;
+  row-gap: 15px;
   grid-template-rows: auto auto auto;
   grid-template-columns: auto auto;
   grid-template-areas: 
     "physParams nutrients"
-    "physActivity nutrients"
+    "physParams nutrients"
     "foodPrefs nutrients";
 }
 .preferences-page_phys-params {
