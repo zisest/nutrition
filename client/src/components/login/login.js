@@ -20,7 +20,8 @@ function Login({ form, username, onSuccess }) {
   }
 
   useEffect(() => {
-    setFields(username ? form.map(field => (field.name === 'username' ? {...field, initialValue: username} : field)) : form)
+    let user = username || localStorage.getItem('username') || null
+    setFields(user ? form.map(field => (field.name === 'username' ? {...field, initialValue: user} : field)) : form)
   }, [])
 
 
