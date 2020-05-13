@@ -3,18 +3,25 @@ import { useCookies } from 'react-cookie'
 import Input, { RadioGroup, Select, Slider, CheckboxGroup } from '../input'
 import Button from '../button'
 import './form.css'
-  
-const VALIDATION_ERRORS = { // '-p' is for errors with parameters (like min length)
-  0: 'This field should not be empty',  
-  '1-p': p => `The value should be at least ${p} characters long`
-}
-const VALIDATION_ERRORS_ALL = {
-  0: 'Required fields should not be empty',
-  '1-p': p => `Value(s) of some field(s) is not long enough`
-}
+
+import { VALIDATION_ERRORS, VALIDATION_ERRORS_ALL } from '../../errors'
+
 
 //change to useEffect 
-function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorList, dataToSend, headers, width, onResponse, errorsToDisplay }) {
+function Form({ 
+  fields,
+  formTitle, 
+  submitText, 
+  submitUrl, 
+  columns, 
+  singleErrorList, 
+  dataToSend, 
+  headers, 
+  width, 
+  onResponse, 
+  errorsToDisplay,
+  onFieldChange
+}) {
   const [cookies, setCookie] = useCookies()
   const [values, setValues] = useState({})
   const [validityErrors, setValidityErrors] = useState({})
@@ -59,6 +66,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
     if (target.type === 'radio' || target.type === 'checkbox') {
       console.log('radio')
       requiredFieldCheck(target.name, target.value)
+      onFieldChange(target.name, target.value)
       setValues(prev => ({
         ...prev,
         [target.name]: target.value
@@ -68,6 +76,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
       if (matchesRegex(target.name, target.value)) {
         requiredFieldCheck(target.name, target.value)
         minLengthCheck(target.name, target.value)
+        onFieldChange(target.name, target.value)
         setValues(prev => ({
           ...prev,
           [target.name]: target.value
@@ -100,11 +109,12 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
         }
       }
     )
-    .then(res => res.json())
     .then(res => {
-      onResponse({...values, ...dataToSend}, res)
-      console.log(res)
-    })
+      res.json().then(json => {
+        onResponse({...values, ...dataToSend}, json, res.status)
+        console.log(res)
+      })
+    }) 
 
     e.preventDefault()
   }
@@ -147,7 +157,7 @@ function Form({ fields, formTitle, submitText, submitUrl, columns, singleErrorLi
 
   let gridCols = { 'gridTemplateColumns': '1fr '.repeat(columns) }
   
-  let formValidityErrors = (singleErrorList && allErrorMessages.length !== 0) || errorsToDisplay.length !== 0 &&
+  let formValidityErrors = ((singleErrorList && allErrorMessages.length !== 0) || (errorsToDisplay.length !== 0)) &&
     <ul className="form_validity-errors">      
       {singleErrorList && allErrorMessages.map((err, index) => <li className="form_validity-error" key={index}>{err}</li>)}
       {errorsToDisplay.map((err, index) => <li className="form_validity-error" key={index}>{err}</li>)}
@@ -177,7 +187,8 @@ Form.defaultProps = {
   formTitle: 'Form',
   dataToSend: {},
   headers: {},
-  errorsToDisplay: []
+  errorsToDisplay: [],
+  onFieldChange: () => {}
 }
   
 export default Form
