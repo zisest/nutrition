@@ -5,9 +5,8 @@ import DataTable from '../data-table'
 import DataSquare from '../data-square'
 import Button from '../button'
 import Form from '../form'
-import AuthModal from '../auth-modal'
 
-const FETCH_URL = '/api/get_forms/?forms=food-preferences,physiological-parameters,PAL-and-goals'
+const FETCH_URL = '/api/get_forms/?forms=food-preferences,phys-params-PAL-goal'
 const MODEL_NAME = 'MyModel1'
 const dataToSend = { MODEL_NAME }
 
@@ -44,24 +43,22 @@ function PreferencesPage({ auth, onAuth }) {
     setResult(+res)    
   }
   
-  let physParamsForm = forms && forms['physiological-parameters'] ? <Form
-    columns={4} 
+  let physParamsPALGoalSections = [
+    { title: 'Physiological parameters', size: 4, columns: 2 }, 
+    { title: 'Physical activity & goals', size: 2, columns: 2 }, 
+  ]
+  let physParamsPALGoalForm = forms && forms['phys-params-PAL-goal'] ? <Form
     singleErrorList={true}
     dataToSend={dataToSend}
     submitUrl='/api/predict/' 
-    fields={forms['physiological-parameters']} 
-    formTitle={'Physiological parameters'}
+    fields={forms['phys-params-PAL-goal']} 
+    sections={physParamsPALGoalSections}
     onResponse={handleResponse}
   /> : ''
 
-  let physActivityForm = forms && forms['PAL-and-goals'] ? <Form
-    columns={2} 
-    singleErrorList={true}
-    fields={forms['PAL-and-goals']} 
-    formTitle={'Physical activity & goals'}
-  /> : ''
+  
   let foodPrefsForm = forms && forms['food-preferences'] ? <Form
-    columns={1} 
+    columns={2} 
     singleErrorList={true}
     fields={forms['food-preferences']} 
     formTitle={'Food preferences'}
@@ -72,12 +69,9 @@ function PreferencesPage({ auth, onAuth }) {
     <div className='preferences-page'>
       <div className="preferences-page_main-area">
         <div className="preferences-page_grid">
-        <Window blank width='600px' className='preferences-page_phys-params'>
-          {physParamsForm}
-        </Window>        
-        <Window blank width='600px' className='preferences-page_phys-activity'>
-          {physActivityForm}
-        </Window>
+        <Window blank width='600px' className='preferences-page_phys-params' style={{ zIndex: 1 }}>
+          {physParamsPALGoalForm}
+        </Window>       
         <Window blank width='600px' className='preferences-page_food-prefs'>
           {foodPrefsForm}          
         </Window>

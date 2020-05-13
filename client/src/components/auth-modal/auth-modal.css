@@ -12,9 +12,7 @@
   backdrop-filter: blur(20px);
 }
 
-.auth-modal {
 
-}
 .auth-modal > * {
   background-color: white;
 }

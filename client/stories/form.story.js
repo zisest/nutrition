@@ -172,3 +172,19 @@ export const FormStory2 = () =>
     formTitle={'Parameters'}
     />
   </Window>
+
+
+const sections = [
+  {title: 'Section 1', size: 4, columns: 2},
+  {title: 'Section 2', size: 3, columns: 3}
+]
+
+export const FormStory3 = () => 
+  <Window blank width='600px'>
+    <Form 
+    dataToSend={{MODEL_NAME: 'PredictingLBM1'}}
+    submitUrl='/api/' 
+    fields={fields2} 
+    sections={sections}
+    />
+  </Window>
