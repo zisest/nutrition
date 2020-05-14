@@ -80,7 +80,7 @@ function PreferencesPage({ auth, onAuth }) {
     fields={forms['phys-params-PAL-goal']} 
     sections={physParamsPALGoalSections}
     onResponse={handleResponse}
-    headers={AUTHORIZATION_HEADER(localStorage.getItem('access_token'))}
+    withAuth
   /> : ''
 
   
@@ -91,7 +91,7 @@ function PreferencesPage({ auth, onAuth }) {
     submitUrl={POST_PREFERENCES_URL} 
     formTitle={'Food preferences'}
     onResponse={handleResponse}
-    headers={AUTHORIZATION_HEADER(localStorage.getItem('access_token'))}
+    withAuth
   /> : ''
 
   return (
