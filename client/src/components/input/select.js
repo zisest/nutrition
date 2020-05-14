@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './select.css'
 import './input.css'
   
-function Select({ name, label, options, value, onChange, double, validityErrors, displayErrors }) {
+function Select({ name, label, options, value, onChange, double, validityErrors, displayErrors, dropdownWidth }) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   let doubleSizeStyle = double ? ' select__double' : ''
@@ -46,11 +46,15 @@ function Select({ name, label, options, value, onChange, double, validityErrors,
       <div className={'select' + doubleSizeStyle} name={name}>
         {selected}
       </div>
-      <div className="select_dropdown-container">
+      <div className="select_dropdown-container" style={{ width: dropdownWidth*100 + '%' }}>
         {isExpanded && dropdown}
       </div>
     </div>
   )
+}
+
+Select.defaultProps = {
+  dropdownWidth: 1
 }
 
 export default Select
