@@ -63,9 +63,7 @@ function Form({
   }
   const handleChange = (e) => {    
     let target = e.currentTarget   
-    console.log(target) 
     if (target.type === 'radio' || target.type === 'checkbox') {
-      console.log('radio')
       requiredFieldCheck(target.name, target.value)
       onFieldChange(target.name, target.value)
       setValues(prev => ({
@@ -73,7 +71,6 @@ function Form({
         [target.name]: target.value
       }))
     } else {
-      console.log('not radio')
       if (matchesRegex(target.name, target.value)) {
         requiredFieldCheck(target.name, target.value)
         minLengthCheck(target.name, target.value)
@@ -171,7 +168,7 @@ function Form({
     let sectionCols = { 'gridTemplateColumns': '1fr '.repeat(section.columns) }
     let sectionDelimeter = index !== 0 ? <div className="form_section-delimeter"></div> : ''
     return (
-      <Fragment>
+      <Fragment key={index}>
       {sectionDelimeter}
       {section.title && <div className='form_title'><h2>{section.title}</h2></div>}
       <div className='form_fields' style={sectionCols}>

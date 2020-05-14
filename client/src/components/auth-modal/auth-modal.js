@@ -30,7 +30,7 @@ function AuthModal({ onAuth }) {
   const handleLogin = (tokens, user) => {
     setTokenPair(tokens)
     localStorage.setItem('username', user)
-    onAuth()
+    onAuth(true)
   }
 
 

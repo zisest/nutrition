@@ -65,8 +65,8 @@ function CheckboxGroup({ name, label, options, value, onChange, validityErrors, 
     )
   })
 
-  let rows = layout.map(val => (
-    <div className="checkbox-group_options-row">
+  let rows = layout.map((val, index) => (
+    <div className="checkbox-group_options-row" key={index}>
       {radios.splice(0, val)}
     </div>
   ))
