@@ -10,7 +10,7 @@ def HB(row):
 
     sex = ('m', 'f')[row['sex_f'] == 1]
     coefs = coefs[sex]
-    return (np.sum(row[['wt', 'ht', 'age']] * coefs[0:3]) + coefs[3])*0.0041868  # kcal to MJ
+    return (np.sum(row[['weight', 'height', 'age']] * coefs[0:3]) + coefs[3])*0.0041868  # kcal to MJ
 
 
 eq_HB = Equation(HB)

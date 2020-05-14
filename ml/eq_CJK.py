@@ -41,7 +41,7 @@ def CJKH_WH(row):
         age_band = '60plus'
 
     coefs = coefs[sex][age_band]
-    return np.sum(row[['wt', 'ht']] * coefs[0:2]) + coefs[2]
+    return np.sum(row[['weight', 'height']] * coefs[0:2]) + coefs[2]
 
 
 

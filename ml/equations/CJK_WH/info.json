@@ -26,7 +26,7 @@
             "DEFAULT_VALUE": 42
         },
         {
-            "NAME": "wt",
+            "NAME": "weight",
             "CATEGORIAL": false,
             "LABEL": "weight",
             "UNIT": "kg",
@@ -34,7 +34,7 @@
             "DEFAULT_VALUE": 74
         },
         {
-            "NAME": "ht",
+            "NAME": "height",
             "CATEGORIAL": false,
             "LABEL": "height",
             "UNIT": "m",

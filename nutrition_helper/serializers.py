@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .models import AppUser
+from .models import UserParams
 
 class AppUserSerializer(serializers.ModelSerializer):
     """
@@ -22,3 +23,15 @@ class AppUserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+class MainUserParamsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserParams
+        fields = ['user', 'age', 'weight', 'height', 'sex', 'goal', 'activity']
+        extra_kwargs = {
+            'user': {'write_only': True}
+        }
+
+
+
