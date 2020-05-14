@@ -25,13 +25,13 @@ class AppUserSerializer(serializers.ModelSerializer):
         return instance
 
 class MainUserParamsSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = UserParams
-        fields = ['user', 'age', 'weight', 'height', 'sex', 'goal', 'activity']
-        extra_kwargs = {
-            'user': {'write_only': True}
-        }
+        fields = ['age', 'weight', 'height', 'sex', 'goal', 'activity']
 
+class UserPreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserParams
+        fields = ['preferences', 'meals']
 
 

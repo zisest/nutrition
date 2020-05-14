@@ -30,5 +30,7 @@ urlpatterns = [
     path('api/auth/refresh_token/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('api/auth/create/', views.auth_create_user, name='create_user'),
     path('api/user_params/', views.api_user_params),
+    path('api/user_preferences/', views.api_user_preferences),
+    path('api/get_preferences/', views.api_get_preferences)
     # re_path(r'^.*$', views.index_page),
 ]

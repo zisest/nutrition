@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import AppUserSerializer, MainUserParamsSerializer
+from .serializers import AppUserSerializer, MainUserParamsSerializer, UserPreferencesSerializer
 from .models import AppUser, UserParams
 
 
@@ -126,18 +126,19 @@ def api_user_params(request):
     if request.method == 'GET':
         params = UserParams.objects.filter(user=user)
         if not params:
-            return Response(None)
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
         serializer = MainUserParamsSerializer(params[0])
         return Response(serializer.data)
     if request.method == 'POST':
         params = UserParams.objects.filter(user=user)
         if not params:
-            serializer = MainUserParamsSerializer(data={**request.data, 'user': user})
+            serializer = MainUserParamsSerializer(data=request.data)
         else:
-            serializer = MainUserParamsSerializer(params[0], data={**request.data, 'user': user})
+            serializer = MainUserParamsSerializer(params[0], data=request.data)
         try:
             if serializer.is_valid():
-                params = serializer.save()
+                user = AppUser.objects.get(pk=user)
+                params = serializer.save(user=user)
                 if params:
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
         except IntegrityError:
@@ -148,3 +149,63 @@ def api_user_params(request):
             for err in err_type[1]:
                 serializer_errors.append({'errID': 'DJ_PARAMS-1', 'error': f'{err_type[0]}: {err}'})
         return Response(serializer_errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def api_user_preferences(request):
+    user = request.user.id
+    if request.method == 'GET':
+        params = UserParams.objects.filter(user=user)
+        if not params:
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
+        serializer = UserPreferencesSerializer(params[0])
+        return Response(serializer.data)
+    if request.method == 'POST':
+        params = UserParams.objects.filter(user=user)
+        if not params:
+            serializer = UserPreferencesSerializer(data=request.data)
+        else:
+            serializer = UserPreferencesSerializer(params[0], data=request.data)
+        try:
+            if serializer.is_valid():
+                user = AppUser.objects.get(pk=user)
+                params = serializer.save(user=user)
+                if params:
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response([{'errID': 'DJ_PARAMS-0', 'error': ERRORS['DJ_PARAMS-0']}],
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        serializer_errors = []  # restructuring serializer.errors
+        for err_type in serializer.errors.items():
+            for err in err_type[1]:
+                serializer_errors.append({'errID': 'DJ_PARAMS-1', 'error': f'{err_type[0]}: {err}'})
+        return Response(serializer_errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_get_preferences(request):
+    forms = apps.get_app_config('nutrition_helper').forms
+    forms = {key: forms[key] for key in ['phys-params-PAL-goal', 'food-preferences']}
+
+    user = request.user.id
+    user_params = UserParams.objects.filter(user=user)
+    if not user_params:
+        return Response(forms)
+
+    params_serializer = MainUserParamsSerializer(user_params[0])
+    prefs_serializer = UserPreferencesSerializer(user_params[0])
+
+    params = params_serializer.data
+    prefs = prefs_serializer.data
+
+    params_form = []
+    for field in forms['phys-params-PAL-goal']:
+        params_form.append({**field, 'initialValue': params[field['name']]})
+    prefs_form = []
+    for field in forms['food-preferences']:
+        prefs_form.append({**field, 'initialValue': prefs[field['name']]})
+
+
+    return Response({'food-preferences': prefs_form, 'phys-params-PAL-goal': params_form})

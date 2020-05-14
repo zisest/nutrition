@@ -7,7 +7,7 @@ import './App.css'
 import PreferencesPage from './components/preferences-page'
 import Navbar from './components/navbar'
 
-import { checkAuth, refreshToken, checkRefresh } from './api/auth'
+import { checkAuth, refreshToken, checkRefresh, deleteTokens } from './api/auth'
 
 const jwtDecode = require('jwt-decode')
 
@@ -57,10 +57,11 @@ function App() {
 
   return (
     <div className='app'>
-      <Navbar title='Nutrition helper' position='horizontal' size='70px' zIndex={100} >
+      <Navbar title='Nutrition helper' position='horizontal' size='70px' zIndex={100} stickToEnd={1} >
         <Link to='/models'>Models</Link>
         <Link to='/preferences'>Preferences</Link>
         <Link to='/meal-plan'>Meal plan</Link>
+        <div onClick={() => {deleteTokens(); setAuth(false)}}>{auth && localStorage.getItem('username') || ''}</div>
       </Navbar>
       <div className="app_main">
       <Switch>

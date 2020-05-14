@@ -1,21 +1,21 @@
 [
   {
-    "name": "food-preferences",
+    "name": "preferences",
     "label": "Food preferences",
     "type": "checkbox",
     "options": [
       { "name":  "vegan", "label":  "vegan", "description": "Lorem ipsum dolor sit amet" },
       { "name":  "vegetarian", "label":  "vegetarian", "description": "Lorem ipsum dolor sit amet" },
       { "name":  "kosher", "label":  "kosher", "description": "Lorem ipsum dolor sit amet" },
-      { "name":  "paleo", "label":  "paleo", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "halal", "label":  "halal", "description": "Lorem ipsum dolor sit amet" },
       { "name":  "gluten-free", "label":  "gluten-free", "description": "Lorem ipsum dolor sit amet" },
-      { "name":  "lactose-free", "label":  "lactose-free", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "low-lactose", "label":  "low-lactose", "description": "Lorem ipsum dolor sit amet" },
       { "name":  "raw", "label":  "raw", "description": "Lorem ipsum dolor sit amet" }
     ],
     "layout": [3, 2, 2]
   },
   {
-    "name": "meals-per-day",
+    "name": "meals",
     "label": "meals/day",
     "type": "slider",
     "options": [

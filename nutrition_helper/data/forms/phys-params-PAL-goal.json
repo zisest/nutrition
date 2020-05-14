@@ -31,6 +31,7 @@
     "label": "sex",
     "type": "radio",
     "required": true,
+    "initialValue": "m",
     "options": [
       { "name":  "m", "label":  "m" },
       { "name":  "f", "label":  "f" }
