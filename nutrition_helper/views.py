@@ -13,18 +13,21 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import AppUserSerializer
+from .serializers import AppUserSerializer, MainUserParamsSerializer
+from .models import AppUser, UserParams
 
 
 ERRORS = {
     'DJ_AUTH-0': 'User with that name already exists',
     'DJ_AUTH-1': 'Could not create user (validation error)',
+    'DJ_PARAMS-0': 'Could not save params',
+    'DJ_AUTH-0': 'Could not save params (validation error)'
 
 }
 
 # AUTH
 @api_view(['POST'])
-def auth_create_user(request, format='json'):
+def auth_create_user(request):
     serializer = AppUserSerializer(data=request.data)
     try:
         if serializer.is_valid():
@@ -116,7 +119,32 @@ def api_predict(request):
 def api_closed(request):
     return Response('Allowed')
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-def api_user_info(request):
-    return Response(request.user.get_username())
+def api_user_params(request):
+    user = request.user.id
+    if request.method == 'GET':
+        params = UserParams.objects.filter(user=user)
+        if not params:
+            return Response(None)
+        serializer = MainUserParamsSerializer(params[0])
+        return Response(serializer.data)
+    if request.method == 'POST':
+        params = UserParams.objects.filter(user=user)
+        if not params:
+            serializer = MainUserParamsSerializer(data={**request.data, 'user': user})
+        else:
+            serializer = MainUserParamsSerializer(params[0], data={**request.data, 'user': user})
+        try:
+            if serializer.is_valid():
+                params = serializer.save()
+                if params:
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response([{'errID': 'DJ_PARAMS-0', 'error': ERRORS['DJ_PARAMS-0']}], status=status.HTTP_400_BAD_REQUEST)
+
+        serializer_errors = []  # restructuring serializer.errors
+        for err_type in serializer.errors.items():
+            for err in err_type[1]:
+                serializer_errors.append({'errID': 'DJ_PARAMS-1', 'error': f'{err_type[0]}: {err}'})
+        return Response(serializer_errors, status=status.HTTP_400_BAD_REQUEST)

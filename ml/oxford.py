@@ -53,7 +53,7 @@ SOURCE_FIELDS = [
         'DEFAULT_VALUE': 42
     },
     {
-        'NAME': 'wt',
+        'NAME': 'weight',
         'CATEGORIAL': False,
         'LABEL': 'weight',
         'UNIT': 'kg',
@@ -61,7 +61,7 @@ SOURCE_FIELDS = [
         'DEFAULT_VALUE': 74
     },
     {
-        'NAME': 'ht',
+        'NAME': 'height',
         'CATEGORIAL': False,
         'LABEL': 'height',
         'UNIT': 'm',

@@ -42,7 +42,7 @@ def FAO81_comb(row):
         age_band = '60plus'
 
     coefs = coefs[sex][age_band]
-    return (np.sum(row[['wt', 'ht']] * coefs[0:2]) + coefs[2])*0.0041868  # kcal to MJ
+    return (np.sum(row[['weight', 'height']] * coefs[0:2]) + coefs[2])*0.0041868  # kcal to MJ
 
 
 eq_FAO81_combined = Equation(FAO81_comb)

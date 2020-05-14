@@ -3,13 +3,13 @@
     "name": "age",
     "label": "age",
     "type": "text",
-    "regex": "^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$",
+    "regex": "^[0-9]*$",
     "required": true,
     "maxLength": 3,
     "placeholder": 42
   },
   {
-    "name": "wt",
+    "name": "weight",
     "label": "weight (kg)",
     "type": "text",
     "regex": "^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$",
@@ -18,7 +18,7 @@
     "placeholder": 70
   },
   {
-    "name": "ht",
+    "name": "height",
     "label": "height (m)",
     "type": "text",
     "regex": "^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$",
@@ -37,19 +37,20 @@
     ]
   },
   {
-    "name": "pal",
+    "name": "activity",
     "label": "Physical activity level",
     "type": "select",
     "double": true,
     "initialValue": "moderate",
     "options": [
-      { "name":  "low", "label":  "Low", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." },
+      { "name":  "sedentary", "label":  "Sedentary", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." },
       { "name":  "moderate", "label":  "Moderate", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." },
+      { "name":  "active", "label":  "Active", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." },
       { "name":  "high", "label":  "High", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." }
     ]
   },
   {
-    "name": "weight-goal",
+    "name": "goal",
     "label": "Weight goal",
     "type": "slider",
     "initialValue": "maintain",
