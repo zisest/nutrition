@@ -25,9 +25,7 @@ export const setTokenPair = (pair) => {
 export const refreshToken = () => {
   const REFRESH_URL = '/api/auth/refresh_token/'
   let data = { refresh: localStorage.getItem('refresh_token') }
-  if (!data) return new Promise((resolve, reject) => { 
-    reject({tokens: null, status: 401}) 
-  })
+  if (!data) throw({data: 'No refresh token', status: 400, logout: true})
   return fetch(REFRESH_URL,
     {
       method: 'POST',
@@ -39,8 +37,49 @@ export const refreshToken = () => {
   )
   .then(res => {
     return res.json().then(json => {
-      if (res.ok) setTokenPair(json)
-      return {tokens: json, status: res.status}
+      return new Promise((resolve, reject) => {
+        if (res.ok) {
+          setTokenPair(json)
+          resolve({data: json, status: res.status})
+        } else if (res.status === 400 || res.status === 401) 
+          reject({status: res.status, data: 'Could not refresh token', logout: true})
+        else 
+          reject({status: res.status, data: 'Could not refresh token'})
+      })
     })
   })
+}
+
+export const retryRequest = (req, url) => {
+  console.log(`401 Unauthorized: ${url}`)
+  return refreshToken()
+  .then(res => {
+    console.log(`Retrying ${url}. Refresh tokens: `, res, res.status)
+    return new Promise((resolve, reject) => {
+      if (res.status === 200) resolve(res.status)
+      else reject({status: res.status, data: 'Could not refresh tokens', logout: true})
+    })
+  })
+  .then(status => {// if refreshed successfully try to request again
+    console.log('Sending 2nd req')
+    return fetch(url,
+      {
+        method: 'POST',
+        body: JSON.stringify(req),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+        }
+      }
+    )       
+  })
+  .then(res => {
+    return res.json().then(json => {
+      return new Promise((resolve, reject) => {
+        if (res.status === 200) resolve({data: json, status: res.status})
+        else reject({status: res.status, data: '2nd attempt failed'})
+      })
+    })
+  }) 
+  
 }

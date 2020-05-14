@@ -5,7 +5,7 @@ import DataTable from '../data-table'
 import DataSquare from '../data-square'
 import Button from '../button'
 import Form from '../form'
-import { refreshToken } from '../../api/auth'
+import { refreshToken, retryRequest } from '../../api/auth'
 
 const FETCH_URL = '/api/get_forms/?forms=food-preferences,phys-params-PAL-goal'
 const MODEL_NAME = 'MyModel1'
@@ -27,7 +27,7 @@ function PreferencesPage({ auth, onAuth }) {
   const [request, setRequest] = useState(null)
   const [result, setResult] = useState(null)
 
-  useEffect(() => {
+  useEffect(() => { //fetching forms
     fetch(FETCH_URL)
     .then(res => res.json())
     .then(res => {
@@ -36,32 +36,16 @@ function PreferencesPage({ auth, onAuth }) {
     .catch(err => console.error('ERROR: ', err))
   }, [])
 
-  const handleResponse = (req, res, status, url) => {
-    
-    if (status === 401) refreshToken().then(res => {
-      console.log('Was 401, tried to refresh tokens', res, res.status)
-      return new Promise((resolve, reject) => resolve(res.status))
-    })
-    .then(status => {
-      if (status === 200) { // if refreshed successfully try to request again
-        fetch(url,
-          {
-            method: 'POST',
-            body: JSON.stringify(req),
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + localStorage.getItem('access_token')
-            }
-          }
-        )
-        .then(res => {
-          res.json().then(json => {
-            console.log('2ns attempt', json, res.status)
-          })
-        })
-      }
-    })
-    console.log('Response!: ', req, res, status)
+  const handleResponse = (req, res, status, url) => { // handle resonse from protected view    
+    if (status === 401) retryRequest(req, url)
+      .then(res => {
+        console.log('retryRequest successful', res.status, res.data)
+      })
+      .catch(err => {
+        if (err.logout) onAuth(false)
+        console.error('retryRequest error!', err.status, err.data, err)
+      })
+    else console.log('Response!: ', req, res, status)
   }
   
   let physParamsPALGoalSections = [

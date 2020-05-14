@@ -22,11 +22,16 @@ function App() {
     let isAuth = checkAuth()
     console.log('isAuth', isAuth)    
     if (!isAuth) {
-      if (!checkRefresh()) setAuth(false)
-      else refreshToken().then((res) => {
-        console.log('refreshToken: ', res)
-        res.status === 200 && setAuth(true)
-      })
+      if (!checkRefresh()) 
+        setAuth(false)
+      else refreshToken()
+        .then((res) => {
+          console.log('refreshToken: ', res)
+          res.status === 200 && setAuth(true)
+        })
+        .catch(err => {
+          console.error(err)
+        })
     } else {
       setAuth(true)
     }        
@@ -48,7 +53,7 @@ function App() {
     })
   }, [])
 
-  let authModal = protectedRoutes.includes(location.pathname) && !auth ? <AuthModal onAuth={() => setAuth(true)} /> : ''
+  let authModal = protectedRoutes.includes(location.pathname) && !auth ? <AuthModal onAuth={(state) => setAuth(state)} /> : ''
 
   return (
     <div className='app'>
@@ -61,7 +66,7 @@ function App() {
       <Switch>
         <Route exact path='/' render={() => <Redirect to='/models' />} />
         <Route path='/models' component={ModelsPage} />
-        <Route path='/preferences' render={() => <PreferencesPage auth={auth} />} />
+        <Route path='/preferences' render={() => <PreferencesPage auth={auth} onAuth={(state) => setAuth(state)} />} />
         <Route path='/meal-plan' render={() => <HomePage />} />
         <Route render={() => <Redirect to='/' />} />
       </Switch>
