@@ -18,7 +18,8 @@ function Form({
   sections, //sections is incompatible with formTitle, columns
   width, 
   dataToSend, 
-  headers, 
+  headers,
+  withAuth, 
   onResponse, 
   errorsToDisplay,
   onFieldChange
@@ -96,6 +97,7 @@ function Form({
   }
   const handleSubmit = (e) => {
     let CSRFheader = cookies.csrftoken ? { 'X-CSRFToken': cookies.csrftoken } : {}
+    let authHeader = withAuth ? { 'Authorization': 'Bearer ' + localStorage.getItem('access_token') } : {}
     validateFields() && fetch(submitUrl,
       {
         method: 'POST',
@@ -103,7 +105,8 @@ function Form({
         headers: {
           'Content-Type': 'application/json',
           ...CSRFheader,
-          ...headers
+          ...headers,
+          ...authHeader
         }
       }
     )
