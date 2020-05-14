@@ -7,7 +7,11 @@ import Button from '../button'
 import Form from '../form'
 import { refreshToken, retryRequest } from '../../api/auth'
 
-const FETCH_URL = '/api/get_forms/?forms=food-preferences,phys-params-PAL-goal'
+const POST_PARAMETERS_URL = '/api/user_params/'
+const POST_PREFERENCES_URL = '/api/user_preferences/'
+
+const FETCH_FORMS_URL = '/api/get_preferences/'
+const AUTHORIZATION_HEADER = (token) => ({'Authorization': 'Bearer ' + token})
 const MODEL_NAME = 'MyModel1'
 const dataToSend = { MODEL_NAME }
 
@@ -27,14 +31,31 @@ function PreferencesPage({ auth, onAuth }) {
   const [request, setRequest] = useState(null)
   const [result, setResult] = useState(null)
 
-  useEffect(() => { //fetching forms
-    fetch(FETCH_URL)
-    .then(res => res.json())
+  const fetchForms = () => {
+    fetch(FETCH_FORMS_URL, { headers: AUTHORIZATION_HEADER(localStorage.getItem('access_token')) })
     .then(res => {
+      if (!res.ok) throw {status: res.status, data: 'Failed to fetch'}
+      return res.json()
+    })
+    .then(res => {     
       setForms(res)
     })
-    .catch(err => console.error('ERROR: ', err))
-  }, [])
+    .catch(err => {
+      if (err.status === 401) return retryRequest(null, FETCH_FORMS_URL, 'GET')
+        .then(res => {
+          setForms(res.data)
+          console.log('retryRequest successful', res.status, res.data)
+        })
+        .catch(err => {
+          if (err.logout) onAuth(false)
+          console.error('retryRequest error!', err.status, err.data, err)
+        })
+    })
+  }
+
+  useEffect(() => { //fetching forms
+    fetchForms()
+  }, [auth])
 
   const handleResponse = (req, res, status, url) => { // handle resonse from protected view    
     if (status === 401) retryRequest(req, url)
@@ -49,17 +70,17 @@ function PreferencesPage({ auth, onAuth }) {
   }
   
   let physParamsPALGoalSections = [
-    { title: 'Physiological parameters', size: 4, columns: 2 }, 
+    { title: 'Physiological parameters', size: 4, columns: 4 }, 
     { title: 'Physical activity & goals', size: 2, columns: 2 }, 
   ]
   let physParamsPALGoalForm = forms && forms['phys-params-PAL-goal'] ? <Form
     singleErrorList={true}
-    dataToSend={dataToSend}
-    submitUrl='/api/user_info/' 
+    //dataToSend={dataToSend}
+    submitUrl={POST_PARAMETERS_URL} 
     fields={forms['phys-params-PAL-goal']} 
     sections={physParamsPALGoalSections}
     onResponse={handleResponse}
-    headers={{'Authorization': 'Bearer ' + localStorage.getItem('access_token')}}
+    headers={AUTHORIZATION_HEADER(localStorage.getItem('access_token'))}
   /> : ''
 
   
@@ -67,7 +88,10 @@ function PreferencesPage({ auth, onAuth }) {
     columns={2} 
     singleErrorList={true}
     fields={forms['food-preferences']} 
+    submitUrl={POST_PREFERENCES_URL} 
     formTitle={'Food preferences'}
+    onResponse={handleResponse}
+    headers={AUTHORIZATION_HEADER(localStorage.getItem('access_token'))}
   /> : ''
 
   return (
