@@ -29,15 +29,6 @@ class UserParams(models.Model):
         ('high', 'Highly active')
     ]
 
-    PREFERENCES = [
-        ('vegan', 'vegan'),
-        ('vegetarian', 'vegetarian'),
-        ('kosher', 'kosher'),
-        ('halal', 'halal'),
-        ('gluten-free', 'gluten-free'),
-        ('low-lactose', 'low-lactose'),
-        ('raw', 'raw')
-    ]
 
     user = models.OneToOneField(
         AppUser,
@@ -46,12 +37,10 @@ class UserParams(models.Model):
     )
 
     age = models.IntegerField(
-        blank=True,
-        null=True,
         validators=[MinValueValidator(0), MaxValueValidator(110)]
     )
-    weight = models.FloatField(blank=True, null=True)
-    height = models.FloatField(blank=True, null=True)
+    weight = models.FloatField()
+    height = models.FloatField()
     sex = models.CharField(
         max_length=1,
         choices=SEXES,
@@ -71,6 +60,26 @@ class UserParams(models.Model):
         max_length=9
     )
 
+
+
+
+class UserPreferences(models.Model):
+    PREFERENCES = [
+        ('vegan', 'vegan'),
+        ('vegetarian', 'vegetarian'),
+        ('kosher', 'kosher'),
+        ('halal', 'halal'),
+        ('gluten-free', 'gluten-free'),
+        ('low-lactose', 'low-lactose'),
+        ('raw', 'raw')
+    ]
+
+    user = models.OneToOneField(
+        AppUser,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )
+
     preferences = ArrayField(
         models.CharField(
             choices=PREFERENCES,
@@ -84,4 +93,44 @@ class UserParams(models.Model):
         blank=False,
         default=4,
         validators=[MinValueValidator(2), MaxValueValidator(7)]
+    )
+
+
+class UserRequirements(models.Model):
+    user = models.OneToOneField(
+        AppUser,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )
+
+    bmr = models.DecimalField(  # all energy values are in MJ
+        max_digits=5,
+        decimal_places=3,
+        blank=True,
+        null=True
+    )
+    tee = models.DecimalField(
+        max_digits=5,
+        decimal_places=3,
+        blank=True,
+        null=True
+    )
+    energy_requirements = models.DecimalField(
+        max_digits=5,
+        decimal_places=3,
+        blank=True,
+        null=True
+    )
+
+    proteins = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+    fats = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+    carbohydrates = models.PositiveIntegerField(
+        blank=True,
+        null=True
     )

@@ -1,7 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .models import AppUser
-from .models import UserParams
+from .models import UserParams, UserRequirements, UserPreferences
 
 class AppUserSerializer(serializers.ModelSerializer):
     """
@@ -31,7 +31,10 @@ class MainUserParamsSerializer(serializers.ModelSerializer):
 
 class UserPreferencesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserParams
+        model = UserPreferences
         fields = ['preferences', 'meals']
 
-
+class UserRequirementsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserRequirements
+        fields = ['bmr', 'tee', 'energy_requirements', 'proteins', 'fats', 'carbohydrates']
