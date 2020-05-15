@@ -1,0 +1,38 @@
+[
+  {
+    "name": "bmr",
+    "label": "estimated BMR",
+    "value": 0,
+    "unit": {
+      "name": "MJ/day",
+      "accuracy":3
+    },
+    "alternativeUnits": [
+      { "name": "kcal/day", "accuracy": 0.01, "rate": 238.8458966 }
+    ]
+  },
+  {
+    "name": "tee",
+    "label": "estimated TEE",
+    "value": 0,
+    "unit": {
+      "name": "MJ/day",
+      "accuracy":3
+    },
+    "alternativeUnits": [
+      { "name": "kcal/day", "accuracy": 0.01, "rate": 238.8458966 }
+    ]
+  },
+  {
+    "name": "energy_requirements",
+    "label": "estimated energy requirements",
+    "value": 0,
+    "unit": {
+      "name": "MJ/day",
+      "accuracy":3
+    },
+    "alternativeUnits": [
+      { "name": "kcal/day", "accuracy": 0.01, "rate": 238.8458966 }
+    ]
+  }
+]

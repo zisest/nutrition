@@ -28,8 +28,8 @@ const req = { label: 'estimated energy requirements', value: 7.415, unit: { name
 
 function PreferencesPage({ auth, onAuth }) {
   const [forms, setForms] = useState(null)
-  const [request, setRequest] = useState(null)
-  const [result, setResult] = useState(null)
+  const [state, setState] = useState([])
+  
 
   const fetchForms = () => {
     fetch(FETCH_FORMS_URL, { headers: AUTHORIZATION_HEADER(localStorage.getItem('access_token')) })
@@ -38,12 +38,14 @@ function PreferencesPage({ auth, onAuth }) {
       return res.json()
     })
     .then(res => {     
-      setForms(res)
+      setForms(res.data)
+      setState(res.status)
     })
     .catch(err => {
       if (err.status === 401) return retryRequest(null, FETCH_FORMS_URL, 'GET')
         .then(res => {
-          setForms(res.data)
+          setForms(res.data.data)
+          setState(res.data.status)
           console.log('retryRequest successful', res.status, res.data)
         })
         .catch(err => {
@@ -57,16 +59,29 @@ function PreferencesPage({ auth, onAuth }) {
     fetchForms()
   }, [auth])
 
+  const setNewRequirements = (requirements) => {
+    let energy = forms['energy'].map(field => ({ ...field, value: requirements[field.name] }))
+    let nutrients = forms['nutrients'].map(field => ({ ...field, value: requirements[field.name] }))
+    setForms(prev => ({...prev, energy, nutrients}))
+    
+  }
+
   const handleResponse = (req, res, status, url) => { // handle resonse from protected view    
     if (status === 401) retryRequest(req, url)
       .then(res => {
         console.log('retryRequest successful', res.status, res.data)
+        if (res.data.data && res.data.data.requirements)
+          setNewRequirements(res.data.data.requirements)   
       })
       .catch(err => {
         if (err.logout) onAuth(false)
         console.error('retryRequest error!', err.status, err.data, err)
       })
-    else console.log('Response!: ', req, res, status)
+    else {
+      console.log('Response!: ', req, res, status)
+      if (res.data && res.data.requirements)
+        setNewRequirements(res.data.requirements)      
+    }
   }
   
   let physParamsPALGoalSections = [
@@ -94,6 +109,10 @@ function PreferencesPage({ auth, onAuth }) {
     withAuth
   /> : ''
 
+  let energySquares = forms && forms['energy'] ? forms['energy'].map((square, index) => <DataSquare key={index} {...square} />) : ''
+  let macronutrientsTable = forms && forms['nutrients'] ? <DataTable fields={forms['nutrients']} /> : ''
+
+
   return (
     <Fragment>
     <div className='preferences-page'>
@@ -105,16 +124,20 @@ function PreferencesPage({ auth, onAuth }) {
         <Window blank width='600px' className='preferences-page_food-prefs'>
           {foodPrefsForm}          
         </Window>
-        <Window width='600px' blank className='nutrients'>
+        <Window 
+          blank width='610px'            
+          className='nutrients' 
+          title='Nutrition requirements' 
+          empty={!state.includes('energy')} 
+          emptyText='There is nothing here.\Please provide your parameters.' 
+        >
           <div className="nutrients_grid">
             <div className="nutrients_title"><h2>Nutrition requirements</h2></div>
             <div className="nutrients_energy">
-              <DataSquare {...BMR} />
-              <DataSquare {...TEE} />
-              <DataSquare {...req} />
+              {energySquares}
             </div>
             <div className="nutrients_main-nutrients">
-              <DataTable fields={mainNutrients} />
+              {macronutrientsTable}
             </div>
             <div className="nutrients_other-title">
               <h3>Other nutrients</h3>

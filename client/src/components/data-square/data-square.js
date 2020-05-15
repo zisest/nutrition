@@ -4,10 +4,10 @@ import './data-square.css'
 // {name, label, value, unit: {name, accuracy}, alternativeUnits: [{name, rate, accuracy }] }
 function DataSquare({ name, label, value, unit, alternativeUnits }) {
 
-  let mainField = <div className="data-square_field">{value.toFixed(unit.accuracy) + ' ' + unit.name}</div>
+  let mainField = <div className="data-square_field" key={-1}>{Number(value).toFixed(unit.accuracy) + ' ' + unit.name}</div>
 
   let fields = alternativeUnits.map((unit, index) => (
-    <div className="data-square_field" key={index} >{(value*unit.rate).toFixed(unit.accuracy) + ' ' + unit.name}</div>
+    <div className="data-square_field" key={index} >{Number(value*unit.rate).toFixed(unit.accuracy) + ' ' + unit.name}</div>
   ))
 
   return (

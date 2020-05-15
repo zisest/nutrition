@@ -23,7 +23,7 @@ ERRORS = {
     'DJ_AUTH-0': 'User with that name already exists',
     'DJ_AUTH-1': 'Could not create user (validation error)',
     'DJ_PARAMS-0': 'Could not save params',
-    'DJ_AUTH-0': 'Could not save params (validation error)',
+    'DJ_PARAMS-1': 'Could not save params (validation error)',
     'DJ_PREFS-0': 'Could not save preferences',
     'DJ_PREFS-1': 'Could not save preferences (validation error)',
     'DJ_SAVE-PARAMS-0': 'Could not create params and requirements',
@@ -160,35 +160,39 @@ def api_user_preferences(request):
 @permission_classes([IsAuthenticated])
 def api_get_preferences_page(request):
     forms = apps.get_app_config('nutrition_helper').forms
-    forms = {key: forms[key] for key in ['phys-params-PAL-goal', 'food-preferences']}
+    forms = {key: forms[key] for key in ['phys-params-PAL-goal', 'food-preferences', 'energy', 'nutrients']}
 
     user = request.user.id
     user_params = UserParams.objects.filter(user=user)
     user_preferences = UserPreferences.objects.filter(user=user)
+    user_requirements = UserRequirements.objects.filter(user=user)
 
-    if not user_params and not user_preferences:
-        return Response(forms)
-
+    response = forms
+    status = []
     if user_params:
+        status.append('phys-params-PAL-goal')
         params_serializer = MainUserParamsSerializer(user_params[0])
         params = params_serializer.data
-        params_form = []
-        for field in forms['phys-params-PAL-goal']:
-            params_form.append({**field, 'initialValue': params[field['name']]})
+        params_form = [{**field, 'initialValue': params[field['name']]} for field in forms['phys-params-PAL-goal']]
+        response['phys-params-PAL-goal'] = params_form
 
     if user_preferences:
+        status.append('food-preferences')
         prefs_serializer = UserPreferencesSerializer(user_preferences[0])
         prefs = prefs_serializer.data
-        prefs_form = []
-        for field in forms['food-preferences']:
-            prefs_form.append({**field, 'initialValue': prefs[field['name']]})
+        prefs_form = [{**field, 'initialValue': prefs[field['name']]} for field in forms['food-preferences']]
+        response['food-preferences'] = prefs_form
 
-    if user_preferences and user_params:
-        return Response({'food-preferences': prefs_form, 'phys-params-PAL-goal': params_form})
-    if user_params:
-        return Response({'food-preferences': forms['food-preferences'], 'phys-params-PAL-goal': params_form})
-    if user_preferences:
-        return Response({'food-preferences': prefs_form, 'phys-params-PAL-goal': forms['phys-params-PAL-goal']})
+    if user_requirements:
+        status.extend(['energy', 'nutrients'])
+        reqs_serializer = UserRequirementsSerializer(user_requirements[0])
+        reqs = reqs_serializer.data
+        energy = [{**field, 'value': reqs[field['name']]} for field in forms['energy']]
+        nutrients = [{**field, 'value': reqs[field['name']]} for field in forms['nutrients']]
+        response['energy'] = energy
+        response['nutrients'] = nutrients
+
+    return Response({'data': response, 'status': status})
 
 
 @api_view(['GET'])

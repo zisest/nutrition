@@ -1,0 +1,5 @@
+[
+  { "name": "proteins", "label": "Proteins", "value": 0, "unit":  { "name": "g", "accuracy": 0.01 }},
+  { "name": "fats", "label": "Fats", "value": 0, "unit":  { "name": "g", "accuracy": 0.01 }},
+  { "name": "carbohydrates", "label": "Carbohydrates", "value": 0, "unit":  { "name": "g", "accuracy": 0.01 }}
+]

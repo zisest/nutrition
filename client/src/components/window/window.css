@@ -22,3 +22,33 @@
 .window__blank  .window_body {
   height: 100%;
 }
+
+
+.window__empty {
+
+}
+
+.window__empty  .window_body {
+  border: 1px solid var(--c-light-grey);
+  border-radius: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 5%
+}
+
+.window__empty-text {
+  font-size: 20px;
+  color: var(--c-light-grey);
+  max-width: 70%;
+  text-align: center;
+}
+.window__empty-icon {
+  width: 50px;
+  height: 60px;
+}
+.window__empty-icon > svg {
+  width: 100%;
+  height: 100%;
+}
