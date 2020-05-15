@@ -22,15 +22,22 @@ from rest_framework_simplejwt import views as jwt_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
+
     path('api/get_forms/', views.api_get_forms),
     path('api/get_models/', views.api_get_models),
     path('api/predict/', views.api_predict),
+
     path('api/closed/', views.api_closed),
+
     path('api/auth/get_token/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),
     path('api/auth/refresh_token/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('api/auth/create/', views.auth_create_user, name='create_user'),
-    path('api/user_params/', views.api_user_params),
+
+    path('api/save_user_params/', views.api_save_user_params),
+    path('api/get_user_params/', views.api_get_user_params),
+    path('api/get_user_requirements/', views.api_get_user_requirements),
     path('api/user_preferences/', views.api_user_preferences),
-    path('api/get_preferences/', views.api_get_preferences)
+
+    path('api/get_preferences_page/', views.api_get_preferences_page),
     # re_path(r'^.*$', views.index_page),
 ]

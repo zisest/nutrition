@@ -7,10 +7,10 @@ import Button from '../button'
 import Form from '../form'
 import { refreshToken, retryRequest } from '../../api/auth'
 
-const POST_PARAMETERS_URL = '/api/user_params/'
+const POST_PARAMETERS_URL = '/api/save_user_params/'
 const POST_PREFERENCES_URL = '/api/user_preferences/'
 
-const FETCH_FORMS_URL = '/api/get_preferences/'
+const FETCH_FORMS_URL = '/api/get_preferences_page/'
 const AUTHORIZATION_HEADER = (token) => ({'Authorization': 'Bearer ' + token})
 const MODEL_NAME = 'MyModel1'
 const dataToSend = { MODEL_NAME }

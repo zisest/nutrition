@@ -13,17 +13,33 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import AppUserSerializer, MainUserParamsSerializer, UserPreferencesSerializer
-from .models import AppUser, UserParams
+from .serializers import AppUserSerializer, MainUserParamsSerializer, UserPreferencesSerializer, UserRequirementsSerializer
+from .models import AppUser, UserParams, UserRequirements, UserPreferences
+
+from .calculations import Prediction, Requirements
 
 
 ERRORS = {
     'DJ_AUTH-0': 'User with that name already exists',
     'DJ_AUTH-1': 'Could not create user (validation error)',
     'DJ_PARAMS-0': 'Could not save params',
-    'DJ_AUTH-0': 'Could not save params (validation error)'
+    'DJ_AUTH-0': 'Could not save params (validation error)',
+    'DJ_PREFS-0': 'Could not save preferences',
+    'DJ_PREFS-1': 'Could not save preferences (validation error)',
+    'DJ_SAVE-PARAMS-0': 'Could not create params and requirements',
+    'DJ_SAVE-PARAMS-1': 'Could not create params and requirements (params validation error)',
+    'DJ_SAVE-PARAMS-2': 'Could not create params and requirements (requirements validation error)',
+    'DJ_SAVE-PARAMS-3': 'Could not update params and requirements',
+    'DJ_SAVE-PARAMS-4': 'Could not update params and requirements (params validation error)',
+    'DJ_SAVE-PARAMS-5': 'Could not update params and requirements (requirements validation error)',
 
 }
+def PARSE_SERIALIZER_ERRORS(errors, err_id):
+    serializer_errors = []  # restructuring serializer.errors
+    for err_type in errors.items():
+        for err in err_type[1]:
+            serializer_errors.append({'errID': err_id, 'error': f'{err_type[0]}: {err}'})
+    return serializer_errors
 
 # AUTH
 @api_view(['POST'])
@@ -38,13 +54,11 @@ def auth_create_user(request):
     except IntegrityError:
         return Response([{'errID': 'DJ_AUTH-0', 'error': ERRORS['DJ_AUTH-0']}], status=status.HTTP_400_BAD_REQUEST)
 
-    serializer_errors = []  # restructuring serializer.errors
-    for err_type in serializer.errors.items():
-        for err in err_type[1]:
-            serializer_errors.append({'errID': 'DJ_AUTH-1', 'error': f'{err_type[0]}: {err}'})
+    serializer_errors = PARSE_SERIALIZER_ERRORS(serializer.errors, 'DJ_AUTH-1')
     return Response(serializer_errors, status=status.HTTP_400_BAD_REQUEST)
 
 #
+
 
 @api_view()
 @ensure_csrf_cookie
@@ -68,50 +82,13 @@ def api_get_models(request):
 
 
 
-def parse_request(data):
-    ml_model_name = data['MODEL_NAME']
-    ml_model_info = next((item for item in apps.get_app_config('nutrition_helper').ml_models_info if item['MODEL_NAME'] == ml_model_name), False)
-    if not ml_model_info:
-        return False
-
-    parsed_dict = {}
-    for field in ml_model_info['SOURCE_FIELDS']:
-        if field['NAME'] not in data.keys():
-            return False
-        if field['CATEGORIAL']:
-            for val in field['VALUES']:
-                parsed_dict[field['NAME'] + '_' + val['NAME']] = float(data[field['NAME']] == val['NAME'])
-        else:
-            parsed_dict[field['NAME']] = float(data[field['NAME']])
-    parsed = list(parsed_dict.values())
-    return parsed, ml_model_name
-
-
-def norm(x, normalization):
-    return (x - normalization['mean']) / normalization['std']
-
 
 @api_view(['POST'])
 def api_predict(request):
-    data = request.data
-    print(data)
-    parsed, ml_model_name = parse_request(data)
-    print(parsed)
-    if not parsed:
-        return str('ERROR') # CHANGE
-    normalized = norm(parsed, apps.get_app_config('nutrition_helper').normalization_info[ml_model_name])
-    # if the model is created in non eager mode
-    # graph, ml_model = apps.get_app_config('nutrition_helper').ml_models[ml_model_name]
-    # with graph.as_default():
-    #     prediction = ml_model.predict(pd.DataFrame(normalized).transpose())
-
-    ml_model = apps.get_app_config('nutrition_helper').ml_models[ml_model_name]
-    prediction = ml_model.predict(pd.DataFrame(normalized).transpose())
-
-    output = np.array(prediction).flatten()[0]
-    print(output)
-    return Response(output)
-
+    print(request.data)
+    parsed_data, ml_model_name = Prediction.parse_request(request.data)
+    result = Prediction.predict(parsed_data, ml_model_name)
+    return Response(result)
 
 
 @api_view()
@@ -119,36 +96,34 @@ def api_predict(request):
 def api_closed(request):
     return Response('Allowed')
 
-@api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
-def api_user_params(request):
-    user = request.user.id
-    if request.method == 'GET':
-        params = UserParams.objects.filter(user=user)
-        if not params:
-            return Response(None, status=status.HTTP_204_NO_CONTENT)
-        serializer = MainUserParamsSerializer(params[0])
-        return Response(serializer.data)
-    if request.method == 'POST':
-        params = UserParams.objects.filter(user=user)
-        if not params:
-            serializer = MainUserParamsSerializer(data=request.data)
-        else:
-            serializer = MainUserParamsSerializer(params[0], data=request.data)
-        try:
-            if serializer.is_valid():
-                user = AppUser.objects.get(pk=user)
-                params = serializer.save(user=user)
-                if params:
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except IntegrityError:
-            return Response([{'errID': 'DJ_PARAMS-0', 'error': ERRORS['DJ_PARAMS-0']}], status=status.HTTP_400_BAD_REQUEST)
 
-        serializer_errors = []  # restructuring serializer.errors
-        for err_type in serializer.errors.items():
-            for err in err_type[1]:
-                serializer_errors.append({'errID': 'DJ_PARAMS-1', 'error': f'{err_type[0]}: {err}'})
-        return Response(serializer_errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_get_user_params(request):
+    user = request.user.id
+    # if request.method == 'GET':
+    params = UserParams.objects.filter(user=user)
+    if not params:
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+    serializer = MainUserParamsSerializer(params[0])
+    return Response(serializer.data)
+    # if request.method == 'POST':
+    #     params = UserParams.objects.filter(user=user)
+    #     if not params:
+    #         serializer = MainUserParamsSerializer(data=request.data)
+    #     else:
+    #         serializer = MainUserParamsSerializer(params[0], data=request.data)
+    #     try:
+    #         if serializer.is_valid():
+    #             user = AppUser.objects.get(pk=user)
+    #             params = serializer.save(user=user)
+    #             if params:
+    #                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     except IntegrityError:
+    #         return Response([{'errID': 'DJ_PARAMS-0', 'error': ERRORS['DJ_PARAMS-0']}], status=status.HTTP_400_BAD_REQUEST)
+    #
+    #     serializer_errors = PARSE_SERIALIZER_ERRORS(serializer.errors, 'DJ_PARAMS-1')
+    #     return Response(serializer_errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'POST'])
@@ -156,56 +131,139 @@ def api_user_params(request):
 def api_user_preferences(request):
     user = request.user.id
     if request.method == 'GET':
-        params = UserParams.objects.filter(user=user)
-        if not params:
+        prefs = UserPreferences.objects.filter(user=user)
+        if not prefs:
             return Response(None, status=status.HTTP_204_NO_CONTENT)
-        serializer = UserPreferencesSerializer(params[0])
+        serializer = UserPreferencesSerializer(prefs[0])
         return Response(serializer.data)
     if request.method == 'POST':
-        params = UserParams.objects.filter(user=user)
-        if not params:
+        prefs = UserPreferences.objects.filter(user=user)
+        if not prefs:
             serializer = UserPreferencesSerializer(data=request.data)
         else:
-            serializer = UserPreferencesSerializer(params[0], data=request.data)
+            serializer = UserPreferencesSerializer(prefs[0], data=request.data)
         try:
             if serializer.is_valid():
                 user = AppUser.objects.get(pk=user)
-                params = serializer.save(user=user)
-                if params:
+                prefs = serializer.save(user=user)
+                if prefs:
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
         except IntegrityError:
-            return Response([{'errID': 'DJ_PARAMS-0', 'error': ERRORS['DJ_PARAMS-0']}],
+            return Response([{'errID': 'DJ_PREFS-0', 'error': ERRORS['DJ_PREFS-0']}],
                             status=status.HTTP_400_BAD_REQUEST)
 
-        serializer_errors = []  # restructuring serializer.errors
-        for err_type in serializer.errors.items():
-            for err in err_type[1]:
-                serializer_errors.append({'errID': 'DJ_PARAMS-1', 'error': f'{err_type[0]}: {err}'})
+        serializer_errors = PARSE_SERIALIZER_ERRORS(serializer.errors, 'DJ_PREFS-1')
         return Response(serializer_errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def api_get_preferences(request):
+def api_get_preferences_page(request):
     forms = apps.get_app_config('nutrition_helper').forms
     forms = {key: forms[key] for key in ['phys-params-PAL-goal', 'food-preferences']}
 
     user = request.user.id
     user_params = UserParams.objects.filter(user=user)
-    if not user_params:
+    user_preferences = UserPreferences.objects.filter(user=user)
+
+    if not user_params and not user_preferences:
         return Response(forms)
 
-    params_serializer = MainUserParamsSerializer(user_params[0])
-    prefs_serializer = UserPreferencesSerializer(user_params[0])
+    if user_params:
+        params_serializer = MainUserParamsSerializer(user_params[0])
+        params = params_serializer.data
+        params_form = []
+        for field in forms['phys-params-PAL-goal']:
+            params_form.append({**field, 'initialValue': params[field['name']]})
 
-    params = params_serializer.data
-    prefs = prefs_serializer.data
+    if user_preferences:
+        prefs_serializer = UserPreferencesSerializer(user_preferences[0])
+        prefs = prefs_serializer.data
+        prefs_form = []
+        for field in forms['food-preferences']:
+            prefs_form.append({**field, 'initialValue': prefs[field['name']]})
 
-    params_form = []
-    for field in forms['phys-params-PAL-goal']:
-        params_form.append({**field, 'initialValue': params[field['name']]})
-    prefs_form = []
-    for field in forms['food-preferences']:
-        prefs_form.append({**field, 'initialValue': prefs[field['name']]})
+    if user_preferences and user_params:
+        return Response({'food-preferences': prefs_form, 'phys-params-PAL-goal': params_form})
+    if user_params:
+        return Response({'food-preferences': forms['food-preferences'], 'phys-params-PAL-goal': params_form})
+    if user_preferences:
+        return Response({'food-preferences': prefs_form, 'phys-params-PAL-goal': forms['phys-params-PAL-goal']})
 
 
-    return Response({'food-preferences': prefs_form, 'phys-params-PAL-goal': params_form})
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_get_user_requirements(request):
+    user = request.user.id
+    params = UserRequirements.objects.filter(user=user)
+    if not params:
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+    serializer = UserRequirementsSerializer(params[0])
+    return Response(serializer.data)
+
+
+# saves params => recalculates BMR, TEE, energy_reqs, macronutrients => returns
+# { data: { params, requirements } }
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_save_user_params(request):
+    user = request.user
+    params = UserParams.objects.filter(user=user.id)
+    requirements = UserRequirements.objects.filter(user=user.id)
+
+    if not params:
+        params_serializer = MainUserParamsSerializer(data=request.data)
+        try:
+            if params_serializer.is_valid():
+                params_data = dict(params_serializer.validated_data)
+                requirements_data = Requirements.calc_all_diffs(['bmr'], params_data)
+
+                requirements_serializer = UserRequirementsSerializer(data=requirements_data)
+                if requirements_serializer.is_valid():
+                    requirements = requirements_serializer.save(user=user)
+                    params = params_serializer.save(user=user)
+                    if requirements and params:
+                        return Response({'data': {'parameters': params_serializer.data, 'requirements': requirements_serializer.data}},
+                                        status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response([{'errID': 'DJ_SAVE-PARAMS-0', 'error': ERRORS['DJ_SAVE-PARAMS-0']}],
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        params_serializer_errors = PARSE_SERIALIZER_ERRORS(params_serializer.errors, 'DJ_SAVE-PARAMS-1')
+        reqs_serializer_errors = []
+        if 'requirements_serializer' in locals():
+            reqs_serializer_errors = PARSE_SERIALIZER_ERRORS(requirements_serializer.errors, 'DJ_SAVE-PARAMS-2')
+
+        return Response(params_serializer_errors + reqs_serializer_errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif requirements:  # assuming if there are params, there are requirements
+        params_serializer = MainUserParamsSerializer(params[0], data=request.data)
+        old_params_serializer = MainUserParamsSerializer(params[0])
+        old_requirements_serializer = UserRequirementsSerializer(requirements[0])
+
+        old_requirements = old_requirements_serializer.data
+        try:
+            if params_serializer.is_valid():
+                old_params = old_params_serializer.data
+                new_params = dict(params_serializer.validated_data)
+                diffs = Requirements.should_recalc(old_params, new_params)
+                if not diffs:
+                    return Response({'data': {'parameters': old_params, 'requirements': old_requirements}}, status=status.HTTP_200_OK)
+                new_requirements = Requirements.calc_all_diffs(diffs, new_params, old_requirements)
+
+                requirements_serializer = UserRequirementsSerializer(requirements[0], data=new_requirements)
+                if requirements_serializer.is_valid():
+                    requirements = requirements_serializer.save(user=user)
+                    params = params_serializer.save(user=user)
+                    if params and requirements:
+                        return Response({'data': {'parameters': params_serializer.data, 'requirements': requirements_serializer.data}},
+                                        status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response([{'errID': 'DJ_SAVE-PARAMS-3', 'error': ERRORS['DJ_SAVE-PARAMS-3']}], status=status.HTTP_400_BAD_REQUEST)
+
+        params_serializer_errors = PARSE_SERIALIZER_ERRORS(params_serializer.errors, 'DJ_SAVE-PARAMS-4')
+        reqs_serializer_errors = []
+        if 'requirements_serializer' in locals():
+            reqs_serializer_errors = PARSE_SERIALIZER_ERRORS(requirements_serializer.errors, 'DJ_SAVE-PARAMS-5')
+
+        return Response(params_serializer_errors + reqs_serializer_errors, status=status.HTTP_400_BAD_REQUEST)
