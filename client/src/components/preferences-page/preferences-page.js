@@ -16,13 +16,13 @@ const MODEL_NAME = 'MyModel1'
 const dataToSend = { MODEL_NAME }
 
 const mainNutrients = [
-  { name: 'Proteins', value: 55, unit: 'g' },
-  { name: 'Fats', value: 16, unit: 'g' },
-  { name: 'Carbohydrates', value: 89, unit: 'g' }  
+  { label: 'Proteins', value: 55, unit:  { name: 'g', accuracy: 2 } },
+  { label: 'Fats', value: 16, unit:  { name: 'g', accuracy: 2 } },
+  { label: 'Carbohydrates', value: 89, unit:  { name: 'g', accuracy: 2 } }  
 ]
-const BMR = { title: 'estimated BMR', values: ['7 MJ/day', '1850 kcal/day'] }
-const TEE = { title: 'estimated TEE', values: ['7.6 MJ/day', '2120 kcal/day'] }
-const req = { title: 'estimated energy requirements', values: ['7.4 MJ/day', '2034 kcal/day'] }
+const BMR = { label: 'estimated BMR', value: 7, unit: { name: 'MJ/day', accuracy: 3 }, alternativeUnits: [{ name: 'kcal/day', rate: 238.8458966, accuracy: 0.01 }] }
+const TEE = { label: 'estimated TEE', value: 7.2, unit: { name: 'MJ/day', accuracy: 3 }, alternativeUnits: [{ name: 'kcal/day', rate: 238.8458966, accuracy: 0.01 }] }
+const req = { label: 'estimated energy requirements', value: 7.415, unit: { name: 'MJ/day', accuracy: 3 }, alternativeUnits: [{ name: 'kcal/day', rate: 238.8458966, accuracy: 0.01 }] }
 
 
 

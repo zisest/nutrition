@@ -1,22 +1,30 @@
 import React from 'react'
 import './data-square.css'
   
-function DataSquare({ title, values }) {
+// {name, label, value, unit: {name, accuracy}, alternativeUnits: [{name, rate, accuracy }] }
+function DataSquare({ name, label, value, unit, alternativeUnits }) {
 
-  let fields = values.map((value, index) => (
-    <div className="data-square_field" key={index} >{value}</div>
+  let mainField = <div className="data-square_field">{value.toFixed(unit.accuracy) + ' ' + unit.name}</div>
+
+  let fields = alternativeUnits.map((unit, index) => (
+    <div className="data-square_field" key={index} >{(value*unit.rate).toFixed(unit.accuracy) + ' ' + unit.name}</div>
   ))
 
   return (
     <div className='data-square'>
-      <div className='data-square_title'>{title}</div>
-      <div className='data-square_fields'>{fields}</div>                
+      <div className='data-square_title'>{label || name}</div>
+      <div className='data-square_fields'>{[mainField, ...fields]}</div>                
     </div>
   )
 }
 DataSquare.defaultProps = {
-  title: 'Title',
-  values: ['10 in','25.4 cm']
+  label: 'Title',
+  value: 6,
+  unit: {
+    name: 'kg',
+    accuracy: 1
+  },
+  alternativeUnits: []  
  }
   
 export default DataSquare
