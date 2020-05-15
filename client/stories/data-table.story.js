@@ -17,18 +17,18 @@ fields: [{name, value, unit}]
 
 let props1 = {
   fields: [
-    { name: 'Proteins', value: 55, unit: 'g' },
-    { name: 'Fats', value: 16, unit: 'g' },
-    { name: 'Carbohydrates', value: 89, unit: 'g' }
+    { name: 'Proteins', value: 55, unit: { name: 'g', accuracy: 2 } },
+    { name: 'Fats', value: 16, unit:  { name: 'g', accuracy: 2 } },
+    { name: 'Carbohydrates', value: 89, unit:  { name: 'g', accuracy: 2 } }
   ],
   leader: 'centeredDots'
 }
 
 let props2 = {
   fields: [
-    { name: 'Proteins', value: 55, unit: 'g' },
-    { name: 'Fats', value: 16, unit: 'g' },
-    { name: 'Carbohydrates', value: 89, unit: 'g' }
+    { label: 'Proteins', value: 55, unit:  { name: 'g', accuracy: 2 } },
+    { label: 'Fats', value: 16, unit:  { name: 'g', accuracy: 2 } },
+    { label: 'Carbohydrates', value: 89, unit:  { name: 'g', accuracy: 2 } }
   ],
   leader: 'dots',
   size: 'large'

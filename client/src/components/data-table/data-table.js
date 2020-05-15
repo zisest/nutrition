@@ -12,14 +12,14 @@ const sizes = {
   large: ' data-table__large'
 }
 
-
-function DataTable({ fields, size, leader, separator, colorScheme }) {
+// fields: [{ name, label, value, unit: { name, accuracy } }]
+function DataTable({ name, fields, size, leader, separator, colorScheme }) {
   let dataFields = fields.map((field, index) => (
     <li className="data-table_field" key={index} >
-      <div className="data-table_field-name">{field.name}</div>
+      <div className="data-table_field-name">{field.label || field.name}</div>
       <div className={"data-table_field-leader" + leaders[leader]}></div>
-      <div className="data-table_field-value">{field.value}</div>
-      <div className="data-table_field-unit">{field.unit}</div>
+      <div className="data-table_field-value">{(field.value).toFixed(field.unit.accuracy)}</div>
+      <div className="data-table_field-unit">{field.unit.name}</div>
     </li>
   ))
 

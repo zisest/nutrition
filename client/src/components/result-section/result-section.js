@@ -19,11 +19,19 @@ function ResultSection({ input, result, model, layout }) {
       </div>
     )
   })
- 
-  let mainRes = result.toFixed(model['LABEL_TO_PREDICT']['ACCURACY'] || 2) + ' ' + model['LABEL_TO_PREDICT']['UNIT'] 
-  let altUnits = model['LABEL_TO_PREDICT']['ALTERNATIVE_UNITS'].map(unit => (    
-    (result*unit['RATE']).toFixed(unit['ACCURACY'] || 2) + ' ' + unit['UNIT']    
-  ))   
+
+  let dataSquare = {
+    label: model['LABEL_TO_PREDICT']['LABEL'] || model['LABEL_TO_PREDICT']['NAME'],
+    name: model['LABEL_TO_PREDICT']['NAME'],
+    value: result,
+    unit: {
+      name: model['LABEL_TO_PREDICT']['UNIT'],
+      accuracy: model['LABEL_TO_PREDICT']['ACCURACY']
+    },
+    alternativeUnits: model['LABEL_TO_PREDICT']['ALTERNATIVE_UNITS'].map(unit => (
+      { name: unit['UNIT'], rate: unit['RATE'], accuracy: unit['ACCURACY']}
+    ))    
+  }
 
   return (
     <div className={'result-section' + layoutStyle}>
@@ -32,8 +40,7 @@ function ResultSection({ input, result, model, layout }) {
         {sourceFields}
       </div>
       <div className="result-section_results">
-        <DataSquare title={model['LABEL_TO_PREDICT']['LABEL'] || model['LABEL_TO_PREDICT']['NAME']}
-          values={[mainRes, ...altUnits]} />
+        <DataSquare {...dataSquare} />
       </div>
       
     </div>
