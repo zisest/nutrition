@@ -1,8 +1,21 @@
 import React from 'react'
 import './window.css'
+import { ReactComponent as EmptyIcon } from '../../assets/empty-icon.svg'
   
-function Window({title, width, blank, children, className, style }) {
+function Window({title, width, blank, children, className, style, empty, emptyText }) {
   let blankStyle = blank ? ' window__blank' : ''
+
+  let emptyWindow = (
+    <div className={'window window__empty' + ' ' + className} style={{ width, ...style}}>
+      {title && <div className='window_title'><h2>{title}</h2></div>}
+      <div className="window_body">        
+        <div className="window__empty-icon"><EmptyIcon /></div>
+        <div className="window__empty-text">{emptyText.split('\\').map(line => <>{line}<br/></>)}</div>
+      </div>      
+    </div>
+  )
+  if (empty) return emptyWindow
+
   return (
     <div className={'window' + blankStyle + ' ' + className} style={{ width, ...style}}>
       {!blank && <div className='window_title'><h2>{title}</h2></div>}
@@ -12,7 +25,9 @@ function Window({title, width, blank, children, className, style }) {
 }
 Window.defaultProps = {
   blank: false,
-  style: {}
+  style: {},
+  empty: false,
+  emptyText: 'There is nothing here'
  }
   
 export default Window

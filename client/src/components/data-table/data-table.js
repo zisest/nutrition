@@ -18,7 +18,7 @@ function DataTable({ name, fields, size, leader, separator, colorScheme }) {
     <li className="data-table_field" key={index} >
       <div className="data-table_field-name">{field.label || field.name}</div>
       <div className={"data-table_field-leader" + leaders[leader]}></div>
-      <div className="data-table_field-value">{(field.value).toFixed(field.unit.accuracy)}</div>
+      <div className="data-table_field-value">{Number(field.value).toFixed(field.unit.accuracy)}</div>
       <div className="data-table_field-unit">{field.unit.name}</div>
     </li>
   ))
