@@ -61,17 +61,13 @@ class UserParams(models.Model):
     )
 
 
-
-
 class UserPreferences(models.Model):
     PREFERENCES = [
         ('vegan', 'vegan'),
         ('vegetarian', 'vegetarian'),
-        ('kosher', 'kosher'),
         ('halal', 'halal'),
         ('gluten-free', 'gluten-free'),
-        ('low-lactose', 'low-lactose'),
-        ('raw', 'raw')
+        ('low-lactose', 'low-lactose')
     ]
 
     user = models.OneToOneField(
