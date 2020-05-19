@@ -63,7 +63,7 @@ function PreferencesPage({ auth, onAuth }) {
     let energy = forms['energy'].map(field => ({ ...field, value: requirements[field.name] }))
     let nutrients = forms['nutrients'].map(field => ({ ...field, value: requirements[field.name] }))
     setForms(prev => ({...prev, energy, nutrients}))
-    
+    !state.includes('energy') && setState(prev => ([...prev, 'energy', 'nutrients']))    
   }
 
   const handleResponse = (req, res, status, url) => { // handle resonse from protected view    
