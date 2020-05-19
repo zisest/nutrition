@@ -23,6 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
 
+    path('api/dev/add_food_categories/', views.api_dev_add_food_categories),
+    path('api/dev/add_foods/', views.api_dev_add_foods),
+    path('api/dev/get_foods/', views.api_dev_get_foods),
+
     path('api/get_forms/', views.api_get_forms),
     path('api/get_models/', views.api_get_models),
     path('api/predict/', views.api_predict),
