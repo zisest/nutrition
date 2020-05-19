@@ -8,13 +8,14 @@ import numpy as np
 from ml.Equation import Equation
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from rest_framework import status, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import AppUserSerializer, MainUserParamsSerializer, UserPreferencesSerializer, UserRequirementsSerializer
-from .models import AppUser, UserParams, UserRequirements, UserPreferences
+from .serializers import AppUserSerializer, MainUserParamsSerializer, UserPreferencesSerializer
+from .serializers import UserRequirementsSerializer, FoodSerializer, GetFoodSerializer, FoodCategorySerializer
+from .models import AppUser, UserParams, UserRequirements, UserPreferences, Food, FoodCategory
 
 from .calculations import Prediction, Requirements
 
@@ -271,3 +272,35 @@ def api_save_user_params(request):
             reqs_serializer_errors = PARSE_SERIALIZER_ERRORS(requirements_serializer.errors, 'DJ_SAVE-PARAMS-5')
 
         return Response(params_serializer_errors + reqs_serializer_errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def api_dev_add_food_categories(request):
+    # request.data=['halal','meal']
+    data = [{"name": category} for category in request.data]
+    serializer = FoodCategorySerializer(data=data, many=True)
+    if serializer.is_valid():
+        categories = serializer.save()
+        if categories:
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response('Something went wrong')
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def api_dev_add_foods(request):
+    serializer = FoodSerializer(data=request.data, many=True)
+    if serializer.is_valid():
+        print('add foods: valid')
+        categories = serializer.save()
+        if categories:
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response('Could not write')
+    return Response('Not valid')
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def api_dev_get_foods(request):
+    requested_amount = int(request.query_params.get('amount', '5'))
+    return Response(GetFoodSerializer(Food.objects.all()[:requested_amount], many=True).data)

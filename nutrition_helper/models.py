@@ -130,3 +130,89 @@ class UserRequirements(models.Model):
         blank=True,
         null=True
     )
+
+
+class FoodCategory(models.Model):
+    FOOD_CATEGORIES = [
+        'vegan',
+        'vegetarian',
+        'halal',
+        'gluten-free',
+        'low-lactose',
+        'breakfast',
+        'dinner',
+        'snack',
+        'dessert',
+        'drink',
+        'meal',
+        'dairy',
+        'grain',
+        'vegetable',
+        'fruit',
+        'meat',
+        'side',
+        'nut'
+    ]
+
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(
+        blank=False,
+        null=False,
+        choices=[(category, category) for category in FOOD_CATEGORIES],
+        default='dinner',
+        max_length=11
+    )
+
+
+class Food(models.Model):
+    def __str__(self):
+        return self.name
+
+
+    name = models.CharField(
+        blank=False,
+        null=False,
+        max_length=64
+    )
+
+    categories = models.ManyToManyField('FoodCategory', related_name='foods', blank=True)
+
+    source_categories = ArrayField(
+        models.CharField(
+            max_length=64
+        ),
+        default=list
+    )
+
+    water = models.FloatField(null=True, blank=True)
+    protein = models.FloatField(null=True, blank=True)
+    fat = models.FloatField(null=True, blank=True)
+    carbohydrate = models.FloatField(null=True, blank=True)
+    sfa = models.FloatField(null=True, blank=True)
+    pufa = models.FloatField(null=True, blank=True)
+    cholesterol = models.FloatField(null=True, blank=True)
+    mds = models.FloatField(null=True, blank=True)
+    starch = models.FloatField(null=True, blank=True)
+    fiber = models.FloatField(null=True, blank=True)
+    organic_acid = models.FloatField(null=True, blank=True)
+    sodium = models.FloatField(null=True, blank=True)
+    potassium = models.FloatField(null=True, blank=True)
+    calcium = models.FloatField(null=True, blank=True)
+    magnesium = models.FloatField(null=True, blank=True)
+    phosphorus = models.FloatField(null=True, blank=True)
+    iron = models.FloatField(null=True, blank=True)
+    retinol = models.FloatField(null=True, blank=True)
+    beta_carotene = models.FloatField(null=True, blank=True)
+    retinol_eq = models.FloatField(null=True, blank=True)
+    tocopherol_eq = models.FloatField(null=True, blank=True)
+    thiamine = models.FloatField(null=True, blank=True)
+    riboflavin = models.FloatField(null=True, blank=True)
+    niacin = models.FloatField(null=True, blank=True)
+    niacin_eq = models.FloatField(null=True, blank=True)
+    vitamin_c = models.FloatField(null=True, blank=True)
+    energy = models.FloatField(null=True, blank=True)
+    portion = models.FloatField(null=True, blank=True)
+
+
