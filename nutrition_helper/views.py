@@ -4,6 +4,7 @@ from django.db.utils import IntegrityError
 from rest_framework.renderers import StaticHTMLRenderer
 from django.apps import apps
 import pandas as pd
+from random import shuffle, sample
 import numpy as np
 from ml.Equation import Equation
 from django.shortcuts import render
@@ -17,7 +18,10 @@ from .serializers import AppUserSerializer, MainUserParamsSerializer, UserPrefer
 from .serializers import UserRequirementsSerializer, FoodSerializer, GetFoodSerializer, FoodCategorySerializer
 from .models import AppUser, UserParams, UserRequirements, UserPreferences, Food, FoodCategory
 
-from .calculations import Prediction, Requirements
+from .calculations import Prediction, Requirements, MealPlan
+
+from django.db.models import Q
+
 
 
 ERRORS = {
@@ -33,6 +37,7 @@ ERRORS = {
     'DJ_SAVE-PARAMS-3': 'Could not update params and requirements',
     'DJ_SAVE-PARAMS-4': 'Could not update params and requirements (params validation error)',
     'DJ_SAVE-PARAMS-5': 'Could not update params and requirements (requirements validation error)',
+    'DJ_GET-PLAN-0': 'Please make sure you set your parameters and preferences'
 
 }
 def PARSE_SERIALIZER_ERRORS(errors, err_id):
@@ -299,8 +304,32 @@ def api_dev_add_foods(request):
         return Response('Could not write')
     return Response('Not valid')
 
+
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def api_dev_get_foods(request):
     requested_amount = int(request.query_params.get('amount', '5'))
     return Response(GetFoodSerializer(Food.objects.all()[:requested_amount], many=True).data)
+
+
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_get_meal_plan(request):
+    user = request.user
+    preferences = UserPreferences.objects.filter(user=user.id)
+    requirements = UserRequirements.objects.filter(user=user.id)
+    if not preferences or not requirements:
+        return Response(ERRORS['DJ_GET-PLAN-0'])
+    preferences = preferences[0]
+    requirements = requirements[0]
+
+    filtered_by_prefs = MealPlan.and_filter(Food.objects.all(), 'categories__name', preferences.preferences)
+    breakfast = MealPlan.select_breakfast(filtered_by_prefs)
+
+    food_serializer = GetFoodSerializer(breakfast, many=True)
+
+    return Response(food_serializer.data)
+

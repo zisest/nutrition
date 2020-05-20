@@ -66,10 +66,9 @@ class FoodSerializer(serializers.ModelSerializer):
 
 
 class GetFoodSerializer(serializers.ModelSerializer):  # read only
-    categories = serializers.StringRelatedField(many=True, read_only=True)
-
+    # categories = serializers.StringRelatedField(many=True, read_only=True)
     class Meta:
         model = Food
-        fields = '__all__'
+        exclude = ['categories', 'id']
 
 
