@@ -2,6 +2,10 @@ from django.apps import apps
 import numpy as np
 import pandas as pd
 
+from random import sample
+import pulp as p
+
+
 class Prediction:
 
     @classmethod
@@ -65,7 +69,6 @@ class Requirements:
         if old_params['goal'] != new_params['goal']:
             return ['energy_requirements', 'macronutirents']
 
-
     @classmethod
     def calc_BMR(cls, params):
         FIELDS = ['age', 'weight', 'height', 'sex']
@@ -114,7 +117,6 @@ class Requirements:
 
         return energy_requirements
 
-
     @classmethod
     def calc_macronutrients(cls, params, energy_requirements):
         proteins = 22
@@ -150,3 +152,91 @@ class Requirements:
             'fats': fats,
             'carbohydrates': carbohydrates
         }
+
+
+class MealPlan:
+
+    @classmethod
+    def and_filter(cls, queryset, field, values):
+        for value in values:
+            if value[0] == '!':
+                queryset = queryset.exclude(**{field: value[1:]})
+            else:
+                queryset = queryset.filter(**{field: value})
+        return queryset
+
+    @classmethod
+    def select_breakfast(cls, queryset, size=4):
+        breakfast = queryset.filter(categories__name='breakfast')
+        meals = cls.and_filter(breakfast, 'categories__name', ['meal', '!drink'])
+        sides = breakfast.filter(categories__name='side')
+        drinks = breakfast.filter(categories__name='drink')
+
+        return sample(list(meals), 1) + sample(list(sides), 2) + sample(list(drinks), 1)
+
+    @classmethod
+    def calc_meal_plan(cls, queryset, size=3):
+        TOTAL_ENERGY_REQ = 2500
+        FAT_BOUNDS = (40, 60)
+        CARBS_BOUNDS = (140, 220)
+        PROTEIN_BOUNDS = (60, 120)
+
+        breakfast_foods = queryset.filter(categories__name='breakfast')
+        breakfast_meals = list(cls.and_filter(breakfast_foods, 'categories__name', ['meal', '!drink']))
+        breakfast_sides = list(breakfast_foods.filter(categories__name='side'))
+        breakfast_drinks = list(breakfast_foods.filter(categories__name='drink'))
+
+        dinner_foods = queryset.filter(categories__name='dinner')
+        dinner_meals = list(cls.and_filter(dinner_foods, 'categories__name', ['meal', '!drink']))
+        dinner_sides = list(dinner_foods.filter(categories__name='side'))
+        dinner_drinks = list(dinner_foods.filter(categories__name='drink'))
+
+        selected_dinner_meals = sample(dinner_meals, 2)
+        selected_dinner_sides = sample(dinner_sides, 4)
+        selected_dinner_drinks = sample(dinner_drinks, 2)
+
+        meal1 = sample(breakfast_meals, 1) + sample(breakfast_sides, 2) + sample(breakfast_drinks, 1)
+        meal2 = selected_dinner_meals[:1] + selected_dinner_sides[:2] + selected_dinner_drinks[:1]
+        meal3 = selected_dinner_meals[1:] + selected_dinner_sides[2:] + selected_dinner_drinks[1:]
+
+        all_foods = meal1 + meal2 + meal3
+
+        food_items = [food.name for food in all_foods]
+        calories = dict(zip(food_items, [food.energy for food in all_foods]))
+        fats = dict(zip(food_items, [food.fat for food in all_foods]))
+        carbs = dict(zip(food_items, [food.carbohydrate for food in all_foods]))
+        proteins = dict(zip(food_items, [food.protein for food in all_foods]))
+
+        problem = p.LpProblem("Meal_plan", p.LpMinimize)
+        food_vars = p.LpVariable.dicts("Food", food_items, lowBound=0, cat='Continuous')
+
+        problem += p.lpSum([calories[f] * food_vars[f] for f in food_items]) - TOTAL_ENERGY_REQ
+
+        problem += p.lpSum([calories[f] * food_vars[f] for f in food_items]) - TOTAL_ENERGY_REQ >= -50, "Objective >= 0"
+
+        problem += p.lpSum([fats[f] * food_vars[f] for f in food_items]) >= FAT_BOUNDS[0], "Total fat min"
+        problem += p.lpSum([fats[f] * food_vars[f] for f in food_items]) <= FAT_BOUNDS[1], "Total fat max"
+        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_items]) >= CARBS_BOUNDS[0], "Total carbs min"
+        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_items]) <= CARBS_BOUNDS[1], "Total carbs max"
+        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_items]) >= PROTEIN_BOUNDS[0], "Total protein min"
+        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_items]) <= PROTEIN_BOUNDS[1], "Total protein max"
+
+        # if size == 3:
+        #     for i in range(0, 3):
+        #         problem += p.lpSum([fats[f] * food_vars[f] for f in food_items[4*i:4*i+4]]) \
+        #                    >= FAT_BOUNDS[0] / 3, f"Meal {i+1} fat min"
+        #         problem += p.lpSum([fats[f] * food_vars[f] for f in food_items[4*i:4*i+4]]) \
+        #                    <= FAT_BOUNDS[1] / 3,  f"Meal {i+1} fat max"
+        #         problem += p.lpSum([carbs[f] * food_vars[f] for f in food_items[4*i:4*i+4]]) \
+        #                    >= CARBS_BOUNDS[0] / 3,  f"Meal {i+1} carbs min"
+        #         problem += p.lpSum([carbs[f] * food_vars[f] for f in food_items[4*i:4*i+4]]) \
+        #                    <= CARBS_BOUNDS[1] / 3,  f"Meal {i+1} carbs max"
+        #         problem += p.lpSum([proteins[f] * food_vars[f] for f in food_items[4*i:4*i+4]]) \
+        #                    >= PROTEIN_BOUNDS[0] / 3,  f"Meal {i+1} protein min"
+        #         problem += p.lpSum([proteins[f] * food_vars[f] for f in food_items[4*i:4*i+4]]) \
+        #                    <= PROTEIN_BOUNDS[1] / 3,  f"Meal {i+1} protein max"
+        #
+        #         problem += food_vars[food_items[(i+1)*4-1]] == 2
+
+        problem.solve()
+        return [p.LpStatus[problem.status], p.value(problem.objective), [{var.name: var.varValue} for var in problem.variables()]]
