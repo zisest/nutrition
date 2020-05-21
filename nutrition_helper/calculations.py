@@ -119,9 +119,10 @@ class Requirements:
 
     @classmethod
     def calc_macronutrients(cls, params, energy_requirements):
-        proteins = 22
-        fats = 33
-        carbohydrates = 44
+        energy_requirements = float(energy_requirements)
+        proteins = round(energy_requirements * 0.20 / 0.017)  # 10-35
+        fats = round(energy_requirements * 0.25 / 0.037)  # 20-35
+        carbohydrates = round(energy_requirements * 0.55 / 0.017)  # 45-65
 
         return proteins, fats, carbohydrates
 
@@ -240,3 +241,56 @@ class MealPlan:
 
         problem.solve()
         return [p.LpStatus[problem.status], p.value(problem.objective), [{var.name: var.varValue} for var in problem.variables()]]
+
+
+    @classmethod
+    def calc_meal_plan_alt(cls, queryset):
+        TOTAL_ENERGY_REQ = 2650
+        FAT_BOUNDS = (65, 95)
+        CARBS_BOUNDS = (320, 400)
+        PROTEIN_BOUNDS = (100, 150)
+        MAX_WEIGHT = 20
+        MAX_FOOD_WEIGHT = 5
+        MIN_FOOD_WEIGHT = 0.5
+
+        foods = list(queryset)
+        sample_size = round(len(foods)*0.9)
+        foods = sample(foods, sample_size)
+
+        food_items = [food.name for food in foods]
+        calories = dict(zip(food_items, [food.energy for food in foods]))
+        fats = dict(zip(food_items, [food.fat for food in foods]))
+        carbs = dict(zip(food_items, [food.carbohydrate for food in foods]))
+        proteins = dict(zip(food_items, [food.protein for food in foods]))
+
+        problem = p.LpProblem("Meal_plan", p.LpMinimize)
+        food_vars = p.LpVariable.dicts("Food", food_items, lowBound=0, cat='Continuous')
+        food_choices = p.LpVariable.dicts("Chosen", food_items, 0, 1, cat='Integer')
+
+        problem += p.lpSum([calories[f] * food_vars[f] for f in food_items]) - TOTAL_ENERGY_REQ
+
+        problem += p.lpSum([calories[f] * food_vars[f] for f in food_items]) - TOTAL_ENERGY_REQ >= 0, "Objective >= 0"
+
+        problem += p.lpSum([fats[f] * food_vars[f] for f in food_items]) >= FAT_BOUNDS[0], "Total fat min"
+        problem += p.lpSum([fats[f] * food_vars[f] for f in food_items]) <= FAT_BOUNDS[1], "Total fat max"
+        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_items]) >= CARBS_BOUNDS[0], "Total carbs min"
+        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_items]) <= CARBS_BOUNDS[1], "Total carbs max"
+        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_items]) >= PROTEIN_BOUNDS[0], "Total protein min"
+        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_items]) <= PROTEIN_BOUNDS[1], "Total protein max"
+
+        problem += p.lpSum([food_vars[f] for f in food_items]) <= MAX_WEIGHT
+
+
+        # giving weight to lp variables only when choice == 1
+        for f in food_items:
+            problem += food_vars[f] >= food_choices[f] * MIN_FOOD_WEIGHT
+            problem += food_vars[f] <= food_choices[f] * MAX_FOOD_WEIGHT
+
+        problem += p.lpSum([food_choices[f] for f in food_items]) >= 12, "Selecting at least 12 foods"
+
+        problem.solve()
+        results = [{var.name: var.varValue} for var in problem.variables() if var.varValue > 0]
+        for food in results:
+            ' '.join(list(food.keys())[0].split('_')[1:])
+        return [p.LpStatus[problem.status], p.value(problem.objective), results]
+        
