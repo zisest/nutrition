@@ -329,7 +329,7 @@ def api_get_meal_plan(request):
     filtered_by_prefs = MealPlan.and_filter(Food.objects.all(), 'categories__name', preferences.preferences)
     breakfast = MealPlan.select_breakfast(filtered_by_prefs)
 
-    food_serializer = GetFoodSerializer(breakfast, many=True)
+    res = MealPlan.calc_meal_plan_alt(filtered_by_prefs)
 
-    return Response(food_serializer.data)
+    return Response(res[-1])
 
