@@ -8,22 +8,31 @@ from ml.eq_Mifflin_StJeor import eq_Mifflin_StJeor
 from ml.eq_FAO81_combined import eq_FAO81_combined
 from ml.eq_CJK import eq_CJK
 from ml.eq_HB import eq_HB
+from ml.eq_Cole import eq_Cole
 
-eq = eq_HB
+eq = eq_Cole
 
 # should save this model to file?
 should_save = True
-should_write_info = False
+should_write_info = True
+
+# filters
+def age_filter(df):
+    return (df['age'] >= 18) & (df['age'] <= 80)
+
+FILTERS = [
+    age_filter
+]
 
 # 1 MJ = 238.8459 kcal
 # 1 kcal = 0.0041868 MJ
 
 # model info
 TYPE = 'equation'
-MODEL_NAME = 'HB'
-MODEL_TITLE = 'Mifflin-St.Jeor equation'
-MODEL_DESCRIPTION = 'Published in 1990'
-CREATION_TIME = '1990'
+MODEL_NAME = 'Cole'
+MODEL_TITLE = 'T.J. Cole equation'
+MODEL_DESCRIPTION = 'Developed in 2002'
+CREATION_TIME = '2002'
 LABEL_TO_PREDICT = {
     'NAME': 'bmr',
     'LABEL': 'BMR',
@@ -94,6 +103,10 @@ model_dataset = data[ALL_FIELDS].copy().dropna()
 # finding min and max values of LABEL_TO_PREDICT for plotting
 LOWER_LIM = model_dataset[LABEL_TO_PREDICT['NAME']].min()
 HIGHER_LIM = model_dataset[LABEL_TO_PREDICT['NAME']].max()
+
+# filtering if necessary
+for filter_params in FILTERS:
+    model_dataset = model_dataset.loc[filter_params(model_dataset)]
 
 # dividing dataset to train and test samples
 train_dataset = model_dataset.sample(frac=0.8, random_state=72)
