@@ -42,10 +42,10 @@
     "label": "Physical activity level",
     "type": "select",
     "double": true,
-    "dropdownWidth": 1.2,
+    "dropdownWidth": 1.35,
     "initialValue": "moderate",
     "options": [
-      { "name":  "sedentary", "label":  "Sedentary", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." },
+      { "name":  "sedentary", "label":  "Sedentary", "description": "These people have occupations that do not demand much physical effort, are not required to walk long distances, generally use motor vehicles for transportation, do not exercise or participate in sports regularly, and spend most of their leisure time sitting or standing. Example professions: office workers in urban areas." },
       { "name":  "moderate", "label":  "Moderate", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." },
       { "name":  "active", "label":  "Active", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." },
       { "name":  "high", "label":  "High", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." }
@@ -58,7 +58,7 @@
     "initialValue": "maintain",
     "options": [
       { "name":  "lose", "label":  "Lose weight", "description": "Lorem ipsum dolor sit amet" },
-      { "name":  "maintain", "label":  "Maintain weight", "description": "Lorem ipsum dolor sit amet" },
+      { "name":  "maintain", "label":  "Maintain weight", "description": "Keeping weight the same" },
       { "name":  "gain", "label":  "Gain muscle", "description": "Lorem ipsum dolor sit amet" }
     ]
   }

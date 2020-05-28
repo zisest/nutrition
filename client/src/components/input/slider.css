@@ -38,8 +38,9 @@
   transition: .2s;
 }
 
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider > input::-webkit-slider-thumb {
+
+
+.slider > input::-webkit-slider-thumb{
   -webkit-appearance: none; /* Override default look */
   appearance: none;
   width: 7px; 
@@ -49,11 +50,15 @@
   cursor: pointer; 
 }
 
-.slider > input ::-moz-range-thumb {
-  width: 7px; 
-  height: 37px; 
-  background: #00000020;
-  cursor: pointer; 
+.slider > input::-moz-range-thumb {
+  -moz-appearance: none;
+  appearance: none;
+  width: 7px;
+  height: 37px;
+  background: var(--c-grey);
+  box-shadow: 0 0 10px 3px #00000030;
+  cursor: pointer;
+  border: none;
 }
 
 

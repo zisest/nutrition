@@ -22,8 +22,11 @@
 .data-table_field {
   width: 100%;
   display: flex;
+  padding-bottom: 3px;
 }
-
+.data-table_field:last-child {
+  padding-bottom: 0;
+}
 
 
 .data-table_field-name {
@@ -70,4 +73,7 @@
 }
 .data-table_field-unit {
   margin-left: 1px;
+}
+.data-table_field-sign {
+  margin-right: 2px;
 }
