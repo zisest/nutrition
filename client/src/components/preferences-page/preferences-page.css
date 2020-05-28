@@ -71,10 +71,13 @@
 }
 .nutrients_other-nutrients-1 {
   grid-area: otherNutrients1;
+  display: flex;
+  padding-bottom: 25px;
 }
 .nutrients_other-nutrients-2 {
   grid-area: otherNutrients2;
-  padding-right: 25px;
+  padding: 0 25px 10px 0;
+  display: flex;
 }
 .nutrients_button {
   grid-area: nutrientsButton
