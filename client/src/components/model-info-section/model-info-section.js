@@ -13,14 +13,28 @@ function ModelInfoSection({ model }) {
     data: points
   }]
 
+  let metricsTable = <table>
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+    </tr>
+    {model['TEST_METRICS'].map(metric => (
+        <tr>
+          <td>{metric['FULL_LABEL']}</td>
+          <td>{metric['VALUE'].toFixed(4)}</td>
+        </tr>
+    ))}
+  </table>
+
   return (
     <div className='model-info-section'>
-    <ResponsiveScatterPlotCanvas
+    <div className='model-info-section_plot'>
+       <ResponsiveScatterPlotCanvas
         data={data}
         margin={{ top: 40, right: 60, bottom: 40, left: 60 }}
-        xScale={{ type: 'linear', min: 0, max: 'auto' }}
+        xScale={{ type: 'linear', min: 0, max: 12.055 }}
         xFormat={function(e){return e.toFixed(3)+" MJ/d"}}
-        yScale={{ type: 'linear', min: 0, max: 'auto' }}
+        yScale={{ type: 'linear', min: 0, max: 12.055 }}
         yFormat={function(e){return e.toFixed(3)+" MJ/d"}}
         nodeSize={2}
         colors={'#A4145A'}
@@ -45,6 +59,8 @@ function ModelInfoSection({ model }) {
             legendOffset: -35
         }}
     />
+    </div>
+    {metricsTable}
     </div>
   )
 }

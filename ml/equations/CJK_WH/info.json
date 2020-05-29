@@ -69,6 +69,18 @@
             "LABEL": "Correlation coefficient",
             "FULL_LABEL": "Pearson correlation coefficient",
             "VALUE": 0.8971618968982158
+        },
+        {
+            "NAME": "mae",
+            "LABEL": "MAE",
+            "FULL_LABEL": "Mean absolute error",
+            "VALUE": 0.48047628141048826
+        },
+        {
+            "NAME": "mse",
+            "LABEL": "MSE",
+            "FULL_LABEL": "Mean squared error",
+            "VALUE": 0.4161714601759407
         }
     ],
     "TRUE_VALUES": [
