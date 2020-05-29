@@ -18,7 +18,7 @@ tf.keras.backend.clear_session()
 pd.options.display.width = 0
 
 # should save this model to file?
-should_save = True
+should_save = False
 
 # importing data
 data = pd.read_csv('data/14k.csv', sep='\t', header=0)
@@ -86,7 +86,7 @@ METRICS = [
     {'NAME': 'mse', 'LABEL': 'MSE', 'FULL_LABEL': 'Mean squared error'}
 ]
 EARLY_STOPPING = {
-    'PLANNED_EPOCHS': 1000,
+    'PLANNED_EPOCHS': 200,
     'PATIENCE': 150
 }
 #
@@ -106,7 +106,7 @@ LOWER_LIM = model_dataset[LABEL_TO_PREDICT['NAME']].min()
 HIGHER_LIM = model_dataset[LABEL_TO_PREDICT['NAME']].max()
 
 # dividing dataset to train and test samples
-train_dataset = model_dataset.sample(frac=0.8, random_state=72)
+train_dataset = model_dataset.sample(frac=0.8)
 test_dataset = model_dataset.drop(train_dataset.index)
 
 # getting train data statistics (mean, std)
@@ -137,9 +137,10 @@ normed_test_data = norm(test_dataset)
 # MODEL
 def build_model():
     new_model = keras.Sequential([
-        layers.Dense(8, activation='relu', input_shape=[len(train_dataset.keys())]),
-        layers.Dense(8, activation='relu'),
-        layers.Dense(8, activation='relu'),
+        layers.Input(shape=[len(train_dataset.keys())]),
+        layers.Dense(56, activation='relu'),
+        layers.Dense(60, activation='relu'),
+        layers.Dense(24, activation='relu'),
         layers.Dense(1)
     ])
 
