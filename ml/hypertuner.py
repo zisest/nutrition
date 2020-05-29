@@ -44,15 +44,15 @@ normed_test_data = norm(test_dataset)
 
 
 def model_builder(hp):
-    units1 = hp.Int('units1', min_value=4, max_value=64, step=4)
-    units2 = hp.Int('units2', min_value=4, max_value=64, step=4)
-    units3 = hp.Int('units3', min_value=4, max_value=64, step=4)
+    units1 = hp.Int('units1', min_value=16, max_value=80, step=8)
+    # units2 = hp.Int('units2', min_value=32, max_value=64, step=8)
+    # units3 = hp.Int('units3', min_value=32, max_value=64, step=4)
 
     model = keras.Sequential()
     model.add(keras.Input(shape=[len(normed_train_data.keys())]))
     model.add(keras.layers.Dense(units=units1, activation='relu'))
-    model.add(keras.layers.Dense(units=units2, activation='relu'))
-    model.add(keras.layers.Dense(units=units3, activation='relu'))
+    model.add(keras.layers.Dense(units=units1, activation='relu'))
+    model.add(keras.layers.Dense(units=units1, activation='relu'))
     model.add(keras.layers.Dense(1))
 
     # Tune the learning rate for the optimizer
@@ -72,11 +72,11 @@ tuner = kt.Hyperband(
     max_epochs=1000,
     factor=3,
     directory='tuning',
-    project_name='hyper1'
+    project_name='hyper2'
 )
 
 tuner.search(normed_train_data, train_labels,
-             epochs=500,
+             epochs=1000,
              validation_data=(normed_test_data, test_labels))
 
 
