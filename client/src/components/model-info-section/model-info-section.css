@@ -1,4 +1,10 @@
 .model-info-section {
-  width: 500px;
-  height: 500px
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.model-info-section_plot {
+  width:425px;
+  height: 390px;
 }

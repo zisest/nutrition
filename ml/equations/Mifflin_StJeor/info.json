@@ -2,7 +2,7 @@
     "TYPE": "equation",
     "MODEL_DESCRIPTION": "Published in 1990",
     "MODEL_NAME": "Mifflin_StJeor",
-    "MODEL_TITLE": "Mifflin-St.Jeor equation",
+    "MODEL_TITLE": "Mifflin-St.Jeor equation (1990)",
     "LABEL_TO_PREDICT": {
         "NAME": "bmr",
         "LABEL": "BMR",
@@ -69,6 +69,18 @@
             "LABEL": "Correlation coefficient",
             "FULL_LABEL": "Pearson correlation coefficient",
             "VALUE": 0.8825620767418078
+        },
+        {
+            "NAME": "mae",
+            "LABEL": "MAE",
+            "FULL_LABEL": "Mean absolute error",
+            "VALUE": 0.5501871516881851
+        },
+        {
+            "NAME": "mse",
+            "LABEL": "MSE",
+            "FULL_LABEL": "Mean squared error",
+            "VALUE": 0.49494790525222376
         }
     ],
     "TRUE_VALUES": [

@@ -1,6 +1,7 @@
 from ml import Equation
 import pandas as pd
 import scipy.stats
+import sklearn.metrics as metrics
 from pathlib import Path
 import json
 
@@ -8,9 +9,9 @@ from ml.eq_Mifflin_StJeor import eq_Mifflin_StJeor
 from ml.eq_FAO81_combined import eq_FAO81_combined
 from ml.eq_CJK import eq_CJK
 from ml.eq_HB import eq_HB
-from ml.eq_Cole import eq_Cole
+# from ml.eq_Cole import eq_Cole
 
-eq = eq_Cole
+eq = eq_CJK
 
 # should save this model to file?
 should_save = True
@@ -21,7 +22,6 @@ def age_filter(df):
     return (df['age'] >= 18) & (df['age'] <= 80)
 
 FILTERS = [
-    age_filter
 ]
 
 # 1 MJ = 238.8459 kcal
@@ -29,10 +29,10 @@ FILTERS = [
 
 # model info
 TYPE = 'equation'
-MODEL_NAME = 'Cole'
-MODEL_TITLE = 'T.J. Cole equation'
-MODEL_DESCRIPTION = 'Developed in 2002'
-CREATION_TIME = '2002'
+MODEL_NAME = 'CJK'
+MODEL_TITLE = 'CJK Henry equations'
+MODEL_DESCRIPTION = 'aka Oxford equations (2001)'
+CREATION_TIME = '2001'
 LABEL_TO_PREDICT = {
     'NAME': 'bmr',
     'LABEL': 'BMR',
@@ -128,7 +128,8 @@ for el in SOURCE_LABELS:
 
 test_predictions = eq.predict(test_dataset)
 pearson_coef = scipy.stats.pearsonr(test_labels, test_predictions)[0]
-
+mae = metrics.mean_absolute_error(test_labels, test_predictions)
+mse = metrics.mean_squared_error(test_labels, test_predictions)
 
 
 def write_to_files():
@@ -149,6 +150,18 @@ def write_to_files():
                 'LABEL': 'Correlation coefficient',
                 'FULL_LABEL': 'Pearson correlation coefficient',
                 'VALUE': pearson_coef
+            },
+            {
+                'NAME': 'mae',
+                'LABEL': 'MAE',
+                'FULL_LABEL': 'Mean absolute error',
+                'VALUE': mae
+            },
+            {
+                'NAME': 'mse',
+                'LABEL': 'MSE',
+                'FULL_LABEL': 'Mean squared error',
+                'VALUE': mse
             }
         ],
         'TRUE_VALUES': test_labels.tolist(),
