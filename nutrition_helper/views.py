@@ -330,6 +330,6 @@ def api_get_meal_plan(request):
     breakfast = MealPlan.select_breakfast(filtered_by_prefs)
 
     res = MealPlan.calc_meal_plan_alt(filtered_by_prefs)
-
-    return Response(res[-1])
+    print(res)
+    return Response({'plan': res[-2], 'size': res[-1]})
 

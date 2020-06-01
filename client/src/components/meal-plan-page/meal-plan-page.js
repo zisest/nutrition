@@ -1,64 +1,275 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './meal-plan-page.css'
 import Navbar from '../navbar'
 import Window from '../window'
 import Button from '../button'
 import Table from '../table'
 import MealPlan from '../meal-plan'
+import { refreshToken, retryRequest } from '../../api/auth'
+import DataTable from '../data-table'
+
+const PLAN_SIZES = {
+  3: [4, 4, 4]
+}
+
+const NUTRIENTS = {       
+  "portion": {
+    label: "Масса",
+    unit: {
+      accuracy: 0.01,
+      name: 'г'
+    }
+  },
+  "protein": {
+    label: "Белки",
+    unit: {
+      accuracy: 0.01,
+      name: 'г'
+    }
+  },
+  "fat": {
+    label: "Жиры",
+    unit: {
+      accuracy: 0.01,
+      name: 'г'
+    }
+  },
+  "carbohydrate": {
+    label: "Углеводы",
+    unit: {
+      accuracy: 0.01,
+      name: 'г'
+    }
+  }, 
+  "energy": {
+    label: "Энергетическая ценность",
+    unit: {
+      accuracy: 0.01,
+      name: 'ккал'
+    }
+  },
+  "water": {
+    label: "Вода",
+    unit: {
+      accuracy: 0.01,
+      name: 'мл'
+    }
+  },
+  "sfa": {
+    label: "Насыщенные жирные кислоты",
+    unit: {
+      accuracy: 0.01,
+      name: 'г'
+    }
+  },
+  "mds": {
+    label: "Моно- и дисахариды",
+    unit: {
+      accuracy: 0.01,
+      name: 'г'
+    }
+  },
+  "starch": {
+    label: "Крахмал",
+    unit: {
+      accuracy: 0.01,
+      name: 'г'
+    }
+  },
+  "fiber": {
+    label: "Пищевые волокна",
+    unit: {
+      accuracy: 0.01,
+      name: 'г'
+    }
+  },
+  "sodium": {
+    label: "Натрий",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "potassium": {
+    label: "Калий",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "calcium": {
+    label: "Кальций",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "magnesium": {
+    label: "Магний",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "phosphorus": {
+    label: "Фосфор",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "iron": {
+    label: "Железо",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "thiamine": {
+    label: "Витамин B1",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "riboflavin": {
+    label: "Витамин B2",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "niacin": {
+    label: "Витамин PP",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "beta_carotene": {
+    label: "Бета-каротин",
+    unit: {
+      accuracy: 0.01,
+      name: 'µг'
+    }
+  },
+  "vitamin_c": {
+    label: "Витамин C",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "cholesterol": {
+    label: "Холестерин",
+    unit: {
+      accuracy: 0.01,
+      name: 'мг'
+    }
+  },
+  "retinol": {
+    label: "Витамин A",
+    unit: {
+      accuracy: 0.01,
+      name: 'µг'
+    }
+  }
+}
+
+const FETCH_PLAN_URL ='/api/get_meal_plan/'
+const AUTHORIZATION_HEADER = (token) => ({'Authorization': 'Bearer ' + token})
+
+
+function MealPlanPage({ auth, onAuth }) {
+  const [plan, setPlan] = useState(null)
+  const [planSize, setPlanSize] = useState(null)
+  const [parsedPlan, setParsedPlan] = useState([])
+  const [totalNutrients, setTotalNutrients] = useState([])
+
+
+  const parsePlan = (rawPln, planSz) => {
+    const NAN_FIELDS = ['name', 'categories', 'source_categories']
+
+    let rawPlan = [...rawPln]
+    
+    let meals = PLAN_SIZES[planSz]
+    let parsed = []
+    let nutrients = {}
+
+    meals.forEach((mealSz, mealNo) => { //meals = [4,4,4]
+      let rawPortions = rawPlan.splice(0, mealSz)
+      console.log(mealSz)
+      let totalMainNutrients = []
+      let parsedMeal = rawPortions.map(portion => {
+        console.log(portion)
+        for (let [name, value] of Object.entries(portion)) {
+          if (!NAN_FIELDS.includes(name) && value) {
+            if (!(name in nutrients)) {
+              nutrients[name] = value
+            } else {
+              nutrients[name] += value
+            }
+          }
+        }
+        let mainNutrients = [portion.portion, portion.protein, portion.fat, portion.carbohydrate, portion.energy]
+        if (!totalMainNutrients.length) {
+          totalMainNutrients = mainNutrients
+        } else {
+          totalMainNutrients = totalMainNutrients.map((v, i) => v + mainNutrients[i])
+        }
+        return [portion.name, ...mainNutrients]
+      })
+      parsedMeal.push(['Итого', ...totalMainNutrients])
+      parsed.push(parsedMeal)
+    })
+    nutrients = Object.keys(NUTRIENTS).map(nutrient => (
+      { ...NUTRIENTS[nutrient], value: nutrients[nutrient] }
+    ))
+    return { parsed, nutrients }
+  }
+
+  const fetchPlan = () => {
+    fetch(FETCH_PLAN_URL, { headers: AUTHORIZATION_HEADER(localStorage.getItem('access_token')) })
+    .then(res => {
+      if (!res.ok) throw {status: res.status, data: 'Failed to fetch'}
+      return res.json()
+    })
+    .then(res => {     
+      setPlan(res.plan)
+      setPlanSize(res.size)
+      let { parsed, nutrients } = parsePlan(res.plan, res.size)
+      setParsedPlan(parsed)
+      setTotalNutrients(nutrients)
+    })
+    .catch(err => {
+      if (err.status === 401) return retryRequest(null, FETCH_PLAN_URL, 'GET')
+        .then(res => {
+          setPlan(res.data.plan)
+          setPlanSize(res.data.size)
+          let { parsed, nutrients } = parsePlan(res.data.plan, res.data.size)
+          setParsedPlan(parsed)
+          setTotalNutrients(nutrients)
+          console.log('retryRequest successful', res.status, res.data)
+        })
+        .catch(err => {
+          if (err.logout) onAuth(false)
+          console.error('retryRequest error!', err.status, err.data, err)
+        })
+    })
+  }
+
+  useEffect(() => { //fetching forms
+    fetchPlan()
+  }, [auth])
+
+
   
-let dummyPlan = [
-  [
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-  ],
-  [
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-  ],
-  [
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-    {name: 'Apple', weight: 135, protein: 8, fat: 14, carbohydrate: 93, energy: 160},
-  ]
-]
-
-let parsedDummyPlan = [
-  [
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Total', 540, 32, 56, 372, 640]
-  ],
-  [
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Total', 540, 32, 56, 372, 640]
-  ],
-  [
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Apple', 135, 8, 14, 93, 160],
-    ['Total', 540, 32, 56, 372, 640]
-  ]
-]
-
-
-function MealPlanPage() {
 
   return (
     <div className='meal-plan-page'>
       <div className="meal-plan-page_navbar">
         <Navbar title='Nutritional value' size='350px'>
-          text
+          <DataTable fields={totalNutrients} />
         </Navbar>
       </div>
       <div className="meal-plan-page_main-area">
@@ -75,7 +286,7 @@ function MealPlanPage() {
             </div>            
           </Window>
           <Window width='700px' >
-          <MealPlan plan={parsedDummyPlan} />
+          <MealPlan plan={parsedPlan} />
             
           </Window>
         </div>

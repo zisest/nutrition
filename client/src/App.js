@@ -68,7 +68,7 @@ function App() {
         <Route exact path='/' render={() => <Redirect to='/models' />} />
         <Route path='/models' component={ModelsPage} />
         <Route path='/preferences' render={() => <PreferencesPage auth={auth} onAuth={(state) => setAuth(state)} />} />
-        <Route path='/meal-plan' render={() => <MealPlanPage />} />
+        <Route path='/meal-plan' render={() => <MealPlanPage auth={auth} onAuth={(state) => setAuth(state)} />} />
         <Route render={() => <Redirect to='/' />} />
       </Switch>
       {authModal}

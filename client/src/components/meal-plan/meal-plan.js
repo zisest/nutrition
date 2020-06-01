@@ -1,6 +1,7 @@
 import React from 'react'
 import './meal-plan.css'
 import Table from '../table'
+import DataTable from '../data-table'
 
 const MEAL_NAMES = {
   3: ['Завтрак', 'Обед', 'Ужин'],
@@ -10,6 +11,7 @@ const MEAL_NAMES = {
   7: ['Завтрак', 'Второй завтрак', 'Перекус', 'Обед', 'Перекус', 'Ужин', 'Перекус'],
 }
 const COLUMN_NAMES = ['Продукт', 'Порция', 'Б', 'Ж', 'У', 'Энергия']
+
 
 
 
@@ -26,7 +28,7 @@ function MealPlan({ plan }) {
         header={!mealNo ? COLUMN_NAMES : null} 
         boldRows={[meal.length - 1]} 
         centeredCols={[1, 2, 3, 4, 5]} 
-        cols={[70, 65, 40, 40, 40, 70]}
+        cols={['!230', 65, 40, 40, 40, 70]}
       />
       </div>      
     </>
