@@ -266,6 +266,9 @@ class MealPlan:
         MIN_FOOD_WEIGHT = 0.5
         DRINK_PORTION = 2
 
+        TOTAL_PORTIONS = 12
+        TOTAL_MEALS = 3
+
         PERCENTAGE = 0.7
 
         breakfast_foods = queryset.filter(categories__name='breakfast')
@@ -301,6 +304,10 @@ class MealPlan:
         carbs = dict(zip(food_names, [food.carbohydrate for food in foods]))
         proteins = dict(zip(food_names, [food.protein for food in foods]))
 
+        #MDS
+        mds = dict(zip(food_names, [food.mds for food in foods]))
+        #
+
         problem = p.LpProblem("Meal_plan", p.LpMinimize)
         food_vars = p.LpVariable.dicts("Food", food_names, lowBound=0, cat='Continuous')
         food_choices = p.LpVariable.dicts("Chosen", food_names, 0, 1, cat='Integer')
@@ -315,6 +322,9 @@ class MealPlan:
         problem += p.lpSum([carbs[f] * food_vars[f] for f in food_names]) <= CARBS_BOUNDS[1], "Total carbs max"
         problem += p.lpSum([proteins[f] * food_vars[f] for f in food_names]) >= PROTEIN_BOUNDS[0], "Total protein min"
         problem += p.lpSum([proteins[f] * food_vars[f] for f in food_names]) <= PROTEIN_BOUNDS[1], "Total protein max"
+        # mono- and disacharides
+        problem += p.lpSum([mds[f] * food_vars[f] for f in food_names]) <= 100, "MDS"
+        #
 
         problem += p.lpSum([food_vars[f] for f in food_names]) <= MAX_WEIGHT, "00_3"
 
@@ -326,7 +336,7 @@ class MealPlan:
                 problem += food_vars[f] >= food_choices[f] * MIN_FOOD_WEIGHT
                 problem += food_vars[f] <= food_choices[f] * MAX_FOOD_WEIGHT
 
-        problem += p.lpSum([food_choices[f] for f in food_names]) == 12, "Selecting 12 foods"
+        problem += p.lpSum([food_choices[f] for f in food_names]) == TOTAL_PORTIONS, "Selecting 12 foods"
         problem += p.lpSum([food_choices[f] for f in breakfast_names['meals']]) == 1, "4"
         problem += p.lpSum([food_choices[f] for f in breakfast_names['sides']]) == 2, "5"
         problem += p.lpSum([food_choices[f] for f in breakfast_names['drinks']]) == 1, "6"
@@ -349,4 +359,4 @@ class MealPlan:
             food_obj = next(f for f in foods if f.name == food_name)
             meal_plan.append(cls.calc_food(food_obj, res[1]))
 
-        return [p.LpStatus[problem.status], p.value(problem.objective) + TOTAL_ENERGY_REQ, problem_results, meal_plan]
+        return [p.LpStatus[problem.status], p.value(problem.objective) + TOTAL_ENERGY_REQ, problem_results, meal_plan, TOTAL_MEALS]

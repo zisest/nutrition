@@ -16,11 +16,13 @@ function Table({ content, cols, header, boldRows, centeredCols }) {
     {content.map((row, i) => (
       <tr>
         {row.map((el, idx) => {
-          let colWidth = cols && cols[idx] ? { minWidth: cols[idx] + 'px' } : {} 
+          let colWidth = cols && cols[idx] ? 
+              cols[idx][0] === '!' ? { width: cols[idx].slice(1) + 'px' } : {minWidth: cols[idx] + 'px'} 
+            : {}
           let colAlign = centeredCols.includes(idx) ? { textAlign: 'center' } : {}
           return <td style={{ ...colWidth, ...colAlign }} 
             className={boldRows.includes(i) ? 'table_td__bold': ''}>
-            {el}
+            {isNaN(el) ? el : Number(el).toFixed(1)}
           </td>
         })}
       </tr>
