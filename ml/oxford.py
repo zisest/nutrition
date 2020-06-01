@@ -86,7 +86,7 @@ METRICS = [
     {'NAME': 'mse', 'LABEL': 'MSE', 'FULL_LABEL': 'Mean squared error'}
 ]
 EARLY_STOPPING = {
-    'PLANNED_EPOCHS': 200,
+    'PLANNED_EPOCHS': 1000,
     'PATIENCE': 150
 }
 #

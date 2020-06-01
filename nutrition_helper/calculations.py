@@ -74,7 +74,7 @@ class Requirements:
     @classmethod
     def calc_BMR(cls, params):
         FIELDS = ['age', 'weight', 'height', 'sex']
-        MODEL_NAME = 'MyModel1'
+        MODEL_NAME = 'nn'
 
         data = {key: params[key] for key in FIELDS if params[key] is not None}
         data['MODEL_NAME'] = MODEL_NAME

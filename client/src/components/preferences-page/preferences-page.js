@@ -12,7 +12,7 @@ const POST_PREFERENCES_URL = '/api/user_preferences/'
 
 const FETCH_FORMS_URL = '/api/get_preferences_page/'
 const AUTHORIZATION_HEADER = (token) => ({'Authorization': 'Bearer ' + token})
-const MODEL_NAME = 'MyModel1'
+const MODEL_NAME = 'nn'
 const dataToSend = { MODEL_NAME }
 
 const mainNutrients = [

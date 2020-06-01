@@ -72,12 +72,12 @@ tuner = kt.Hyperband(
     max_epochs=1000,
     factor=3,
     directory='tuning',
-    project_name='hyper2'
+    project_name='hyper4'
 )
-
-tuner.search(normed_train_data, train_labels,
-             epochs=1000,
-             validation_data=(normed_test_data, test_labels))
+#
+# tuner.search(normed_train_data, train_labels,
+#              epochs=1000,
+#              validation_data=(normed_test_data, test_labels))
 
 
 
