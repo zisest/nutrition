@@ -28,9 +28,9 @@ data['sex'] = data['sex'].map({1: 'm', 2: 'f'})
 data = pd.get_dummies(data, columns=['sex'])
 
 # specifying model information
-MODEL_NAME = 'Tuned1'
-MODEL_TITLE = 'Tuned #1'
-MODEL_DESCRIPTION = '4x12, 1000/100, 0.001'
+MODEL_NAME = '6Tuned1'
+MODEL_TITLE = '6-Tuned #1'
+MODEL_DESCRIPTION = '[60, 60, 88, 88, 60, 60], 1000/100, 0.001'
 CREATION_TIME = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 LABEL_TO_PREDICT = {
     'NAME': 'bmr',
@@ -88,7 +88,7 @@ EARLY_STOPPING = {
     'PLANNED_EPOCHS': 1000,
     'PATIENCE': 100
 }
-LAYERS = [12, 12, 12, 12]
+LAYERS = [60, 60, 88, 88, 60, 60]
 LEARNING_RATE = 0.001
 #
 
