@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { Switch, Route, Redirect, Link, useLocation } from 'react-router-dom'
-import HomePage from './components/home-page'
+import MealPlanPage from './components/meal-plan-page'
 import ModelsPage from './components/models-page'
 import AuthModal from './components/auth-modal'
 import './App.css'
@@ -16,7 +16,7 @@ function App() {
   const [auth, setAuth] = useState(null)
   const [protectedRoute, setProtectedRoute] = useState(false)
 
-  const protectedRoutes = ['/preferences', '/preferences/', '/meal-plan', '/meal-plan/']
+  const protectedRoutes = ['/preferences', '/preferences/'] //, '/meal-plan', '/meal-plan/']
   
   useEffect(() => { //check auth
     let isAuth = checkAuth()
@@ -68,7 +68,7 @@ function App() {
         <Route exact path='/' render={() => <Redirect to='/models' />} />
         <Route path='/models' component={ModelsPage} />
         <Route path='/preferences' render={() => <PreferencesPage auth={auth} onAuth={(state) => setAuth(state)} />} />
-        <Route path='/meal-plan' render={() => <HomePage />} />
+        <Route path='/meal-plan' render={() => <MealPlanPage />} />
         <Route render={() => <Redirect to='/' />} />
       </Switch>
       {authModal}

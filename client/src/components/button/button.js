@@ -7,15 +7,17 @@ const types = {
   'corner': ' corner-button'
 }
 //  corner only for coren-button
-function Button({ type, corner, submit, text, onClick, disabled, color, formHeight, className }) {
+function Button({ type, corner, submit, text, onClick, disabled, color, formHeight, className, style }) {
   let buttonColorStyle = types[type] + '_btn__' + color
   let cornerStyle = corner ? '__' + corner : ''
   let buttonCornerStyle = corner ? types[type] + '_btn' + cornerStyle : ''
 
   let button = submit ?
-    <input className={className + types[type] + '_btn' + buttonColorStyle + buttonCornerStyle} disabled={disabled} onClick={onClick} type='submit' value={text} />      
+    <input className={className + types[type] + '_btn' + buttonColorStyle + buttonCornerStyle} 
+      disabled={disabled} onClick={onClick} type='submit' value={text} style={style} />      
   : 
-    <button className={className + types[type] + '_btn' + buttonColorStyle + buttonCornerStyle} disabled={disabled} onClick={onClick}>{text}</button>
+    <button className={className + types[type] + '_btn' + buttonColorStyle + buttonCornerStyle} 
+      disabled={disabled} onClick={onClick} style={style} >{text}</button>
 
   return (
     <div className={types[type] + types[type] + cornerStyle}>

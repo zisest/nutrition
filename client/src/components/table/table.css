@@ -1,0 +1,29 @@
+.table {
+  width: 100%;
+  background-color: white;
+  border-radius: 7px;
+  padding: 5px 8px;
+  box-sizing: border-box;
+
+  
+}
+
+.table-tag {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table_thead {
+  border-bottom: 1px solid var(--c-light-grey);
+}
+.table_thead th {
+  padding-bottom: 5px;
+}
+
+.table_tbody td {
+  padding: 3px
+}
+
+.table_td__bold {
+  font-weight: 600;
+}
