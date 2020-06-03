@@ -133,7 +133,7 @@ function PreferencesPage({ auth, onAuth }) {
   if (toMealPlan) return <Redirect to='/meal-plan' />
   return (
     <Fragment>
-    <div className='preferences-page'>
+    <div className='preferences-page' style={!auth ? { filter: 'blur(10px)' } : {}}>
       <div className="preferences-page_main-area">
         <div className="preferences-page_grid">
         <Window blank width='600px' className='preferences-page_phys-params' style={{ zIndex: 1 }}>

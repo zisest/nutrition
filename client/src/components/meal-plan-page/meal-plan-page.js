@@ -278,7 +278,7 @@ function MealPlanPage({ auth, onAuth }) {
   }
 
   return (
-    <div className='meal-plan-page'>
+    <div className='meal-plan-page' style={!auth ? { filter: 'blur(10px)' } : {}}>
       <div className="meal-plan-page_navbar">
         <Navbar title='Пищевая ценность' size='350px' fontSize='24px' >
           <DataTable fields={totalNutrients} />
