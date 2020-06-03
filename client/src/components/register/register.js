@@ -23,7 +23,7 @@ function Register({ form, onSuccess }) {
     singleErrorList={false}
     submitUrl={REGISTER_URL}
     fields={form} 
-    formTitle={'Register'}
+    formTitle={'Регистрация'}
     onResponse={handleResponse}
     errorsToDisplay={errors.map(err => err.error)}
     onFieldChange={() => setErrors([])}

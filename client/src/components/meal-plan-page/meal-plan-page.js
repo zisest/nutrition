@@ -280,7 +280,7 @@ function MealPlanPage({ auth, onAuth }) {
   return (
     <div className='meal-plan-page'>
       <div className="meal-plan-page_navbar">
-        <Navbar title='Nutritional value' size='350px'>
+        <Navbar title='Пищевая ценность' size='350px' fontSize='24px' >
           <DataTable fields={totalNutrients} />
         </Navbar>
       </div>
@@ -288,7 +288,7 @@ function MealPlanPage({ auth, onAuth }) {
         <div className="meal-plan-page_container">
           <Window width='700px' blank className='meal-plan_header-window'>
             <div className="meal-plan_header">
-              <div className="meal-plan_title"><h2>Meal plan</h2></div>
+              <div className="meal-plan_title"><h2>План питания</h2></div>
               <div className="meal-plan_refresh">
                 <Button type='corner' corner='top-right' text='↺' style={{ fontSize: '31px' }} />
               </div>              

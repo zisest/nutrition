@@ -273,7 +273,7 @@ class MealPlan:
         return meals  # meal_plan
 
     @classmethod
-    def calc_meal_plan_alt(cls, queryset, requirements, no_of_meals):
+    def calc_meal_plan_alt(cls, queryset, requirements, no_of_meals=3):
         TOTAL_ENERGY_REQ = float(requirements.energy_requirements)*238.8458966
         FAT_BOUNDS = (requirements.fats*0.9, requirements.fats*1.1)
         CARBS_BOUNDS = (requirements.carbohydrates*0.9, requirements.carbohydrates*1.1)

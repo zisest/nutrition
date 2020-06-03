@@ -37,12 +37,12 @@ function AuthModal({ onAuth }) {
   let login = forms && <Login onSuccess={handleLogin} username={username} form={forms.login} />
   let register = forms && <Register onSuccess={handleRegistration} form={forms.register} />
   let titleBlock = state === 'login' ? 
-    <Window width='500px' title='New user?' style={{ marginBottom: '15px' }}>
-      Click <span onClick={() => setState('register')} className='auth-modal_link'>here</span> to register
+    <Window width='500px' title='Новый пользователь?' style={{ marginBottom: '15px' }}>
+       Перейти к <span onClick={() => setState('register')} className='auth-modal_link'>регистрации</span>
     </Window>
   :
-    <Window width='500px' title='Already have an account?' style={{ marginBottom: '15px' }}>
-      Click <span onClick={() => setState('login')} className='auth-modal_link'>here</span> to login
+    <Window width='500px' title='Уже есть аккаунт?' style={{ marginBottom: '15px' }}>
+      Нажмите <span onClick={() => setState('login')} className='auth-modal_link'>здесь</span>, чтобы войти
     </Window>
   
   return (

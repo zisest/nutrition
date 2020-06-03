@@ -14,6 +14,7 @@ import os
 import dj_database_url
 from datetime import timedelta
 import environ
+import django_heroku
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
@@ -61,7 +62,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=2),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=45),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': False,
@@ -164,3 +165,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'client', "build", "static"),
 ]
+
+django_heroku.settings(locals())

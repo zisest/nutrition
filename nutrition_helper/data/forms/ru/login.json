@@ -1,0 +1,19 @@
+[
+  {
+    "name": "username",
+    "label": "имя пользователя",
+    "type": "text",
+    "required": true,
+    "maxLength": 16,
+    "placeholder": "user"
+  },
+  {
+    "name": "password",
+    "label": "пароль",
+    "type": "text",
+    "subtype": "password",
+    "required": true,
+    "maxLength": 16,
+    "placeholder": "password"
+  }
+]

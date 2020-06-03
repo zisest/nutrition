@@ -15,7 +15,7 @@ const parseModel = (model) => {
     if (!field['CATEGORIAL']) 
       return { 
         name: field['NAME'],
-        label: (field['LABEL'] || field['NAME']) + (field['UNIT'] && ` (${field['UNIT']})`),
+        label: (field['LABEL'] || field['NAME']) + (field['UNIT'] ? ` (${field['UNIT']})` : ''),
         type: 'text',
         regex: "^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$",
         required: true,
@@ -57,7 +57,7 @@ function Model({ model, request, result, onResponse }) {
   />
   
   let resultSection = result && request && 
-    <Window  title='Results'>
+    <Window  title='Результаты'>
       <ResultSection 
         input={request}
         model={model} 
