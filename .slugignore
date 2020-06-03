@@ -1,0 +1,8 @@
+client/src
+client/.storybook
+client/node_modules
+client/public
+client/stories
+client/package.json
+client/package-lock.json
+client/component-boilerplate.js
