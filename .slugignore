@@ -1,8 +1,10 @@
-/client/src
-/client/.storybook
-/client/node_modules
-/client/public
-/client/stories
+/client/src/
+/client/.storybook/
+/client/node_modules/
+/client/public/
+/client/stories/
 /client/*.json
 /client/*.json
 /client/*.js
+/ml/tuning/
+/ml/data/
