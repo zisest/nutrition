@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import domtoimage from 'dom-to-image'
 import './meal-plan-page.css'
 import Navbar from '../navbar'
 import Window from '../window'
@@ -8,9 +9,9 @@ import MealPlan from '../meal-plan'
 import { refreshToken, retryRequest } from '../../api/auth'
 import DataTable from '../data-table'
 
-const PLAN_SIZES = {
-  3: [4, 4, 4]
-}
+// const PLAN_SIZES = {
+//   3: [4, 4, 4]
+// }
 
 const NUTRIENTS = {       
   "portion": {
@@ -192,16 +193,16 @@ function MealPlanPage({ auth, onAuth }) {
 
     let rawPlan = [...rawPln]
     
-    let meals = PLAN_SIZES[planSz]
+    //let meals = PLAN_SIZES[planSz]
     let parsed = []
     let nutrients = {}
 
-    meals.forEach((mealSz, mealNo) => { //meals = [4,4,4]
-      let rawPortions = rawPlan.splice(0, mealSz)
-      console.log(mealSz)
+    rawPlan.forEach((rawPortions, mealNo) => { //meals = [4,4,4]
+      //let rawPortions = rawPlan[mealNo] //.splice(0, mealSz)
+      // console.log(mealSz)
       let totalMainNutrients = []
       let parsedMeal = rawPortions.map(portion => {
-        console.log(portion)
+        // console.log(portion)
         for (let [name, value] of Object.entries(portion)) {
           if (!NAN_FIELDS.includes(name) && value) {
             if (!(name in nutrients)) {
@@ -242,6 +243,7 @@ function MealPlanPage({ auth, onAuth }) {
       setTotalNutrients(nutrients)
     })
     .catch(err => {
+      console.log('SOME ERROR')
       if (err.status === 401) return retryRequest(null, FETCH_PLAN_URL, 'GET')
         .then(res => {
           setPlan(res.data.plan)
@@ -263,7 +265,17 @@ function MealPlanPage({ auth, onAuth }) {
   }, [auth])
 
 
-  
+  const saveAsPng = () => {
+    if (parsedPlan.length) {
+      domtoimage.toPng(document.querySelector('.meal-plan'), { bgcolor: '#f5f6f6' })
+      .then(function (dataUrl) {
+          let link = document.createElement('a')
+          link.download = 'meal-plan.png'
+          link.href = dataUrl
+          link.click()
+      })
+    }
+  }
 
   return (
     <div className='meal-plan-page'>
@@ -281,7 +293,7 @@ function MealPlanPage({ auth, onAuth }) {
                 <Button type='corner' corner='top-right' text='↺' style={{ fontSize: '31px' }} />
               </div>              
               <div className='meal-plan_header-body'>
-                Нажмите <span onClick={() => alert('Downloaded')} className='meal-plan_download'>сюда</span>, чтобы скачать план питания
+                Нажмите <span onClick={saveAsPng} className='meal-plan_download'>сюда</span>, чтобы скачать план питания
               </div>
             </div>            
           </Window>

@@ -6,7 +6,7 @@ import pandas as pd
 
 from random import sample
 import pulp as p
-
+from operator import itemgetter
 
 class Prediction:
 
@@ -256,18 +256,35 @@ class MealPlan:
         return food_data
 
     @classmethod
-    def calc_meal_plan_alt(cls, queryset):
-        TOTAL_ENERGY_REQ = 2650
-        FAT_BOUNDS = (65, 95)
-        CARBS_BOUNDS = (320, 400)
-        PROTEIN_BOUNDS = (100, 150)
-        MAX_WEIGHT = 20
+    def sort_foods(cls, foods, no_of_meals):
+        foods = sorted(foods, key=itemgetter('energy'))
+        meals = [[] for i in range(no_of_meals)]
+        meals_energy = [0] * no_of_meals
+        while foods:
+            food_data = foods.pop()
+            sorted_by_energy = np.argsort(meals_energy)
+            smallest_bin = None
+            for i in sorted_by_energy:
+                if smallest_bin is None and len(meals[i]) < 4:
+                    smallest_bin = i
+            meals[smallest_bin].append(food_data)
+            meals_energy[smallest_bin] += food_data['energy']
+        # meal_plan = [food for meal in meals for food in meal]
+        return meals  # meal_plan
+
+    @classmethod
+    def calc_meal_plan_alt(cls, queryset, requirements, no_of_meals):
+        TOTAL_ENERGY_REQ = float(requirements.energy_requirements)*238.8458966
+        FAT_BOUNDS = (requirements.fats*0.9, requirements.fats*1.1)
+        CARBS_BOUNDS = (requirements.carbohydrates*0.9, requirements.carbohydrates*1.1)
+        PROTEIN_BOUNDS = (requirements.proteins*0.9, requirements.proteins*1.1)
+        MAX_WEIGHT = 30
         MAX_FOOD_WEIGHT = 5
         MIN_FOOD_WEIGHT = 0.5
         DRINK_PORTION = 2
 
-        TOTAL_PORTIONS = 12
-        TOTAL_MEALS = 3
+        TOTAL_PORTIONS = no_of_meals*4
+        TOTAL_MEALS = no_of_meals
 
         PERCENTAGE = 0.7
 
@@ -294,55 +311,55 @@ class MealPlan:
 
         foods = set([food for food_type in breakfast.values() for food in food_type]
                     + [food for food_type in dinner.values() for food in food_type])
-        food_names = [food.name for food in foods]
+        food_ids = [food.id for food in foods]
 
-        breakfast_names = {food_type: [food.name for food in foods] for food_type, foods in breakfast.items()}
-        dinner_names = {food_type: [food.name for food in foods] for food_type, foods in dinner.items()}
+        breakfast_ids = {food_type: [food.id for food in foods] for food_type, foods in breakfast.items()}
+        dinner_ids = {food_type: [food.id for food in foods] for food_type, foods in dinner.items()}
 
-        calories = dict(zip(food_names, [food.energy for food in foods]))
-        fats = dict(zip(food_names, [food.fat for food in foods]))
-        carbs = dict(zip(food_names, [food.carbohydrate for food in foods]))
-        proteins = dict(zip(food_names, [food.protein for food in foods]))
+        calories = dict(zip(food_ids, [food.energy for food in foods]))
+        fats = dict(zip(food_ids, [food.fat for food in foods]))
+        carbs = dict(zip(food_ids, [food.carbohydrate for food in foods]))
+        proteins = dict(zip(food_ids, [food.protein for food in foods]))
 
         #MDS
-        mds = dict(zip(food_names, [food.mds for food in foods]))
+        mds = dict(zip(food_ids, [food.mds for food in foods]))
         #
 
         problem = p.LpProblem("Meal_plan", p.LpMinimize)
-        food_vars = p.LpVariable.dicts("Food", food_names, lowBound=0, cat='Continuous')
-        food_choices = p.LpVariable.dicts("Chosen", food_names, 0, 1, cat='Integer')
+        food_vars = p.LpVariable.dicts("Food", food_ids, lowBound=0, cat='Continuous')
+        food_choices = p.LpVariable.dicts("Chosen", food_ids, 0, 1, cat='Integer')
 
-        problem += p.lpSum([calories[f] * food_vars[f] for f in food_names]) - TOTAL_ENERGY_REQ
+        problem += p.lpSum([calories[f] * food_vars[f] for f in food_ids]) - TOTAL_ENERGY_REQ
 
-        problem += p.lpSum([calories[f] * food_vars[f] for f in food_names]) - TOTAL_ENERGY_REQ >= 0, "Objective >= 0"
+        problem += p.lpSum([calories[f] * food_vars[f] for f in food_ids]) - TOTAL_ENERGY_REQ >= 0, "Objective >= 0"
 
-        problem += p.lpSum([fats[f] * food_vars[f] for f in food_names]) >= FAT_BOUNDS[0], "Total fat min"
-        problem += p.lpSum([fats[f] * food_vars[f] for f in food_names]) <= FAT_BOUNDS[1], "Total fat max"
-        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_names]) >= CARBS_BOUNDS[0], "Total carbs min"
-        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_names]) <= CARBS_BOUNDS[1], "Total carbs max"
-        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_names]) >= PROTEIN_BOUNDS[0], "Total protein min"
-        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_names]) <= PROTEIN_BOUNDS[1], "Total protein max"
+        problem += p.lpSum([fats[f] * food_vars[f] for f in food_ids]) >= FAT_BOUNDS[0], "Total fat min"
+        problem += p.lpSum([fats[f] * food_vars[f] for f in food_ids]) <= FAT_BOUNDS[1], "Total fat max"
+        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_ids]) >= CARBS_BOUNDS[0], "Total carbs min"
+        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_ids]) <= CARBS_BOUNDS[1], "Total carbs max"
+        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_ids]) >= PROTEIN_BOUNDS[0], "Total protein min"
+        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_ids]) <= PROTEIN_BOUNDS[1], "Total protein max"
         # mono- and disacharides
-        problem += p.lpSum([mds[f] * food_vars[f] for f in food_names]) <= 100, "MDS"
+        problem += p.lpSum([mds[f] * food_vars[f] for f in food_ids]) <= 100, "MDS"
         #
 
-        problem += p.lpSum([food_vars[f] for f in food_names]) <= MAX_WEIGHT, "00_3"
+        problem += p.lpSum([food_vars[f] for f in food_ids]) <= MAX_WEIGHT, "00_3"
 
         # giving weight to lp variables only when choice == 1
-        for f in food_names:
-            if f in breakfast_names['drinks'] or f in dinner_names['drinks']:
+        for f in food_ids:
+            if f in breakfast_ids['drinks'] or f in dinner_ids['drinks']:
                 problem += food_vars[f] == food_choices[f] * DRINK_PORTION
             else:
                 problem += food_vars[f] >= food_choices[f] * MIN_FOOD_WEIGHT
                 problem += food_vars[f] <= food_choices[f] * MAX_FOOD_WEIGHT
 
-        problem += p.lpSum([food_choices[f] for f in food_names]) == TOTAL_PORTIONS, "Selecting 12 foods"
-        problem += p.lpSum([food_choices[f] for f in breakfast_names['meals']]) == 1, "4"
-        problem += p.lpSum([food_choices[f] for f in breakfast_names['sides']]) == 2, "5"
-        problem += p.lpSum([food_choices[f] for f in breakfast_names['drinks']]) == 1, "6"
-        problem += p.lpSum([food_choices[f] for f in dinner_names['meals']]) == 2, "7"
-        problem += p.lpSum([food_choices[f] for f in dinner_names['sides']]) == 4, "8"
-        problem += p.lpSum([food_choices[f] for f in dinner_names['drinks']]) == 2, "9"
+        problem += p.lpSum([food_choices[f] for f in food_ids]) == TOTAL_PORTIONS, "Selecting 12 foods"
+        # problem += p.lpSum([food_choices[f] for f in breakfast_ids['meals']]) == 1, "4"
+        # problem += p.lpSum([food_choices[f] for f in breakfast_ids['sides']]) == 2, "5"
+        # problem += p.lpSum([food_choices[f] for f in breakfast_ids['drinks']]) == 1, "6"
+        # problem += p.lpSum([food_choices[f] for f in dinner_ids['meals']]) == 2, "7"
+        # problem += p.lpSum([food_choices[f] for f in dinner_ids['sides']]) == 4, "8"
+        # problem += p.lpSum([food_choices[f] for f in dinner_ids['drinks']]) == 2, "9"
 
         problem.solve()
         problem_results = [{var.name: var.varValue} for var in problem.variables() if
@@ -352,11 +369,16 @@ class MealPlan:
         for food in problem_results:
             res = list(food.items())[0]
 
-            food_name = ' '.join(res[0].split('_')[1:])
-            contains_recipe_num = food_name[-1].isdigit()
-            if contains_recipe_num:
-                food_name = ' '.join(food_name.split(' ')[:-1]) + '-' + food_name.split(' ')[-1]
-            food_obj = next(f for f in foods if f.name == food_name)
+            food_id = int(res[0].split('_')[1])
+            # contains_recipe_num = food_name[-1].isdigit()
+            # if contains_recipe_num:
+            #     food_name = ' '.join(food_name.split(' ')[:-1]) + '-' + food_name.split(' ')[-1]
+            food_obj = next(f for f in foods if f.id == food_id)
             meal_plan.append(cls.calc_food(food_obj, res[1]))
+            # food_data = cls.calc_food(food_obj, res[1])
+
+
+
+        meal_plan = cls.sort_foods(meal_plan, TOTAL_MEALS)
 
         return [p.LpStatus[problem.status], p.value(problem.objective) + TOTAL_ENERGY_REQ, problem_results, meal_plan, TOTAL_MEALS]
