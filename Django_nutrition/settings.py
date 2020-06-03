@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'nutrition_helper.apps.NutritionHelperConfig',
-    'nutrition_helper',
+
     'rest_framework',
     'corsheaders'
 ]

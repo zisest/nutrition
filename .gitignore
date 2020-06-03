@@ -3,7 +3,7 @@ venv/
 .env
 ml/data/
 node_modules/
-client/build
+
 __pycache__
 
 tuning/
