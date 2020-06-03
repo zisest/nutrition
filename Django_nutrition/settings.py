@@ -91,7 +91,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True  # DISABLE IN PRODUCTION
+# CORS_ORIGIN_ALLOW_ALL = True  # DISABLE IN PRODUCTION
 
 ROOT_URLCONF = 'Django_nutrition.urls'
 
@@ -168,5 +168,21 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'client', "build", "static"),
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+        },
+    },
+}
 
 django_heroku.settings(locals())
