@@ -47,8 +47,8 @@ class NutritionHelperConfig(AppConfig):
                 self.ml_models_info.append(json.load(f))
 
     def ready(self):
-        if 'runserver' not in sys.argv:
-            return True  # NOT SUITABLE FOR PRODUCTION!!!
+        # if 'runserver' not in sys.argv:
+        #     return True  # NOT SUITABLE FOR PRODUCTION!!!
         self.load_forms()
         self.load_ml_models()
         self.load_equations()
