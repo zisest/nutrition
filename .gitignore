@@ -7,3 +7,4 @@ client/build
 __pycache__
 
 tuning/
+migrations/
