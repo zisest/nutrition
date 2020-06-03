@@ -16,7 +16,7 @@ function App() {
   const [auth, setAuth] = useState(null)
   const [protectedRoute, setProtectedRoute] = useState(false)
 
-  const protectedRoutes = ['/preferences', '/preferences/'] //, '/meal-plan', '/meal-plan/']
+  const protectedRoutes = ['/preferences', '/preferences/', '/meal-plan', '/meal-plan/']
   
   useEffect(() => { //check auth
     let isAuth = checkAuth()
@@ -58,9 +58,9 @@ function App() {
   return (
     <div className='app'>
       <Navbar title='Nutrition helper' position='horizontal' size='70px' zIndex={100} stickToEnd={1} >
-        <Link to='/models'>Models</Link>
-        <Link to='/preferences'>Preferences</Link>
-        <Link to='/meal-plan'>Meal plan</Link>
+        <Link to='/models'>Модели</Link>
+        <Link to='/preferences'>Параметры</Link>
+        <Link to='/meal-plan'>План питания</Link>
         <div onClick={() => {deleteTokens(); setAuth(false)}}>{auth && localStorage.getItem('username') || ''}</div>
       </Navbar>
       <div className="app_main">

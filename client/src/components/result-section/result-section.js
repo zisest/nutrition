@@ -36,7 +36,7 @@ function ResultSection({ input, result, model, layout }) {
   return (
     <div className={'result-section' + layoutStyle}>
       <div className='result-section_sources'>
-        <div className='result-section_sources-title'>Input data</div>        
+        <div className='result-section_sources-title'>Параметры</div>
         {sourceFields}
       </div>
       <div className="result-section_results">

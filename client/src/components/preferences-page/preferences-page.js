@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react'
+import { Redirect } from 'react-router-dom'
 import './preferences-page.css'
 import Window from '../window'
 import DataTable from '../data-table'
@@ -12,52 +13,41 @@ const POST_PREFERENCES_URL = '/api/user_preferences/'
 
 const FETCH_FORMS_URL = '/api/get_preferences_page/'
 const AUTHORIZATION_HEADER = (token) => ({'Authorization': 'Bearer ' + token})
-const MODEL_NAME = 'nn'
-const dataToSend = { MODEL_NAME }
-
-const mainNutrients = [
-  { label: 'Proteins', value: 55, unit:  { name: 'g', accuracy: 2 } },
-  { label: 'Fats', value: 16, unit:  { name: 'g', accuracy: 2 } },
-  { label: 'Carbohydrates', value: 89, unit:  { name: 'g', accuracy: 2 } }  
-]
-const BMR = { label: 'estimated BMR', value: 7, unit: { name: 'MJ/day', accuracy: 3 }, alternativeUnits: [{ name: 'kcal/day', rate: 238.8458966, accuracy: 0.01 }] }
-const TEE = { label: 'estimated TEE', value: 7.2, unit: { name: 'MJ/day', accuracy: 3 }, alternativeUnits: [{ name: 'kcal/day', rate: 238.8458966, accuracy: 0.01 }] }
-const req = { label: 'estimated energy requirements', value: 7.415, unit: { name: 'MJ/day', accuracy: 3 }, alternativeUnits: [{ name: 'kcal/day', rate: 238.8458966, accuracy: 0.01 }] }
 
 const dummyNutrients = [
-    { label: 'Fiber', value: 30, unit:  { name: 'g', accuracy: 0.01 } },
-    { label: 'Saturated fat', value: 25, unit:  { name: 'g', accuracy: 0.01 }, sign: '<' },
-    { label: 'PUFAs', value: 11, unit:  { name: 'g', accuracy: 0.01 }, sign: '>' },
-    { label: 'Cholesterol', value: 300, unit:  { name: 'mg', accuracy: 0.01 }, sign: '<' },
-    { label: 'Sodium', value: 2400, unit:  { name: 'mg', accuracy: 0.01 }, sign: '<' },
-    { label: 'Potassium', value: 3500, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Calcium', value: 1000, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Phosphorus', value: 1000, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Iodine', value: 150, unit:  { name: 'μg', accuracy: 0.01 } },
-    { label: 'Magnesium', value: 400, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Iron', value: 14, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Zinc', value: 9.5, unit:  { name: 'mg', accuracy: 0.01 } },
+    { label: 'Пищ. волокна', value: 30, unit:  { name: 'г', accuracy: 0.01 } },
+    { label: 'НЖК', value: 25, unit:  { name: 'г', accuracy: 0.01 }, sign: '<' },
+    { label: 'ПНЖК', value: 11, unit:  { name: 'г', accuracy: 0.01 }, sign: '>' },
+    { label: 'Холестерин', value: 300, unit:  { name: 'мг', accuracy: 0.01 }, sign: '<' },
+    { label: 'Натрий', value: 2400, unit:  { name: 'мг', accuracy: 0.01 }, sign: '<' },
+    { label: 'Калий', value: 3500, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Кальций', value: 1000, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Фосфор', value: 1000, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Йод', value: 150, unit:  { name: 'μг', accuracy: 0.01 } },
+    { label: 'Магний', value: 400, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Железо', value: 14, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Цинк', value: 9.5, unit:  { name: 'мг', accuracy: 0.01 } },
 ]
 
 const dummyNutrients2 = [
-    { label: 'Vitamin A', value: 1, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Vitamin B1', value: 1.5, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Vitamin B2', value: 1.8, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Vitamin B3', value: 20, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Vitamin B6', value: 1.3, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Vitamin B9', value: 400, unit:  { name: 'μg', accuracy: 0.01 } },
-    { label: 'Vitamin B12', value: 2.4, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Vitamin C', value: 70, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Vitamin D', value: 15, unit:  { name: 'μg', accuracy: 0.01 } },
-    { label: 'Vitamin E', value: 10, unit:  { name: 'mg', accuracy: 0.01 } },
-    { label: 'Vitamin K', value: 120, unit:  { name: 'μg', accuracy: 0.01 } },
+    { label: 'Витамин A', value: 1, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Витамин B1', value: 1.5, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Витамин B2', value: 1.8, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Витамин B3', value: 20, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Витамин B6', value: 1.3, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Витамин B9', value: 400, unit:  { name: 'μг', accuracy: 0.01 } },
+    { label: 'Витамин B12', value: 2.4, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Витамин C', value: 70, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Витамин D', value: 15, unit:  { name: 'μг', accuracy: 0.01 } },
+    { label: 'Витамин E', value: 10, unit:  { name: 'мг', accuracy: 0.01 } },
+    { label: 'Витамин K', value: 120, unit:  { name: 'μг', accuracy: 0.01 } },
 
 ]
 
 function PreferencesPage({ auth, onAuth }) {
   const [forms, setForms] = useState(null)
   const [state, setState] = useState([])
-  
+  const [toMealPlan, setToMealPlan] = useState(false)
 
   const fetchForms = () => {
     fetch(FETCH_FORMS_URL, { headers: AUTHORIZATION_HEADER(localStorage.getItem('access_token')) })
@@ -113,8 +103,8 @@ function PreferencesPage({ auth, onAuth }) {
   }
   
   let physParamsPALGoalSections = [
-    { title: 'Physiological parameters', size: 4, columns: 4 }, 
-    { title: 'Physical activity & goals', size: 2, columns: 2 }, 
+    { title: 'Физиологические параметры', size: 4, columns: 4 },
+    { title: 'Физическая активность & цель', size: 2, columns: 2 },
   ]
   let physParamsPALGoalForm = forms && forms['phys-params-PAL-goal'] ? <Form
     singleErrorList={true}
@@ -132,7 +122,7 @@ function PreferencesPage({ auth, onAuth }) {
     singleErrorList={true}
     fields={forms['food-preferences']} 
     submitUrl={POST_PREFERENCES_URL} 
-    formTitle={'Food preferences'}
+    formTitle={'Предпочтения'}
     onResponse={handleResponse}
     withAuth
   /> : ''
@@ -140,7 +130,7 @@ function PreferencesPage({ auth, onAuth }) {
   let energySquares = forms && forms['energy'] ? forms['energy'].map((square, index) => <DataSquare key={index} {...square} />) : ''
   let macronutrientsTable = forms && forms['nutrients'] ? <DataTable fields={forms['nutrients']} /> : ''
 
-
+  if (toMealPlan) return <Redirect to='/meal-plan' />
   return (
     <Fragment>
     <div className='preferences-page'>
@@ -154,13 +144,12 @@ function PreferencesPage({ auth, onAuth }) {
         </Window>
         <Window 
           blank width='610px'            
-          className='nutrients' 
-          title='Nutrition requirements' 
+          className='nutrients'
           empty={!state.includes('energy')} 
           emptyText='There is nothing here.\Please provide your parameters.' 
         >
           <div className="nutrients_grid">
-            <div className="nutrients_title"><h2>Nutrition requirements</h2></div>
+            <div className="nutrients_title"><h2>Потребности и рекомендации</h2></div>
             <div className="nutrients_energy">
               {energySquares}
             </div>
@@ -168,7 +157,7 @@ function PreferencesPage({ auth, onAuth }) {
               {macronutrientsTable}
             </div>
             <div className="nutrients_other-title">
-              <h3>Other nutrients</h3>
+              <h3>Питательные вещества</h3>
             </div>
             <div className="nutrients_other-nutrients-1">
               <DataTable fields={dummyNutrients} />
@@ -177,7 +166,7 @@ function PreferencesPage({ auth, onAuth }) {
               <DataTable fields={dummyNutrients2} />
             </div>
             <div className="nutrients_button">
-              <Button type='corner' corner='bottom-right' text='Generate meal plan' />
+              <Button type='corner' corner='bottom-right' text='Рассчитать рацион' onClick={() => setToMealPlan(true)} />
             </div>
           </div>          
         </Window>

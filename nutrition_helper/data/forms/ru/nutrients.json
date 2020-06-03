@@ -1,0 +1,5 @@
+[
+  { "name": "proteins", "label": "Белки", "value": 0, "unit":  { "name": "г", "accuracy": 0.01 }},
+  { "name": "fats", "label": "Жиры", "value": 0, "unit":  { "name": "г", "accuracy": 0.01 }},
+  { "name": "carbohydrates", "label": "Углеводы", "value": 0, "unit":  { "name": "г", "accuracy": 0.01 }}
+]

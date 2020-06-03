@@ -1,0 +1,38 @@
+[
+  {
+    "name": "bmr",
+    "label": "ПОО",
+    "value": 0,
+    "unit": {
+      "name": "МДж",
+      "accuracy":3
+    },
+    "alternativeUnits": [
+      { "name": "ккал", "accuracy": 0.01, "rate": 238.8458966 }
+    ]
+  },
+  {
+    "name": "tee",
+    "label": "энергетические затраты",
+    "value": 0,
+    "unit": {
+      "name": "МДж",
+      "accuracy":3
+    },
+    "alternativeUnits": [
+      { "name": "ккал", "accuracy": 0.01, "rate": 238.8458966 }
+    ]
+  },
+  {
+    "name": "energy_requirements",
+    "label": "энергетические потребности",
+    "value": 0,
+    "unit": {
+      "name": "МДж",
+      "accuracy":3
+    },
+    "alternativeUnits": [
+      { "name": "ккал", "accuracy": 0.01, "rate": 238.8458966 }
+    ]
+  }
+]

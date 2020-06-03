@@ -43,7 +43,7 @@
   grid-template-columns: auto 185px 210px;
   grid-template-rows: max-content max-content max-content auto 50px;
   grid-template-areas: 
-    "nutrientsTitle nutrientsTitle nutrientTitle"
+    "nutrientsTitle nutrientsTitle nutrientsTitle"
     "nutrientsEnergy mainNutrients mainNutrients"
     "nutrientsEnergy otherTitle otherTitle"
     "nutrientsEnergy otherNutrients1 otherNutrients2"

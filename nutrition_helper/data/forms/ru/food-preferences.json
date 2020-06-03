@@ -1,0 +1,29 @@
+[
+  {
+    "name": "preferences",
+    "label": "предпочтения в питании",
+    "type": "checkbox",
+    "options": [
+      { "name":  "vegan", "label":  "веганство", "description": "Только продукты растительного происхождения" },
+      { "name":  "vegetarian", "label":  "вегетарианство", "description": "Без мяса, рыбы" },
+      { "name":  "halal", "label":  "халяль", "description": "Только халяльные продукты" },
+      { "name":  "gluten-free", "label":  "без глютена", "description": "Без продуктов, содержащих пшеницу, рожь, овес" },
+      { "name":  "low-lactose", "label":  "низколактозная диета", "description": "Без молочных продуктов" }
+    ],
+    "layout": [2, 2, 1]
+  },
+  {
+    "name": "meals",
+    "label": "количество преимов пищи",
+    "type": "slider",
+    "options": [
+      { "name":  2, "label":  "2 приема пищи", "description": "План: 2 приема пищи в день" },
+      { "name":  3, "label":  "3 приема пищи", "description": "План: 3 приема пищи в день" },
+      { "name":  4, "label":  "4 приема пищи", "description": "План: 4 приема пищи в день" },
+      { "name":  5, "label":  "5 приема пищи", "description": "План: 5 приема пищи в день" },
+      { "name":  6, "label":  "6 приема пищи", "description": "План: 6 приема пищи в день" },
+      { "name":  7, "label":  "7 приема пищи", "description": "План: 7 приема пищи в день" }
+    ],
+    "initialValue": 3
+  }
+]

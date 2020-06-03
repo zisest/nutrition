@@ -31,7 +31,7 @@ function Login({ form, username, onSuccess }) {
     singleErrorList={false}
     submitUrl={LOGIN_URL}
     fields={fields} 
-    formTitle={'Login'}
+    formTitle={'Войти в аккаунт'}
     onResponse={handleResponse}
     errorsToDisplay={errors.map(err => err.error)}
     onFieldChange={() => setErrors([])}

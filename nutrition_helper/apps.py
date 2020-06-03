@@ -16,7 +16,7 @@ def load_ml_model(path):
 
 class NutritionHelperConfig(AppConfig):
     name = 'nutrition_helper'
-    forms_dir = 'nutrition_helper/data/forms'
+    forms_dir = 'nutrition_helper/data/forms/ru'
     ml_models_dir = 'ml/models'
     equations_dir = 'ml/equations'
 

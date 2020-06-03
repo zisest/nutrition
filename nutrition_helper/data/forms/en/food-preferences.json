@@ -24,6 +24,6 @@
       { "name":  6, "label":  "6 meals/day", "description": "I consume 6 meals a day" },
       { "name":  7, "label":  "7 meals/day", "description": "I consume 7 meals a day" }
     ],
-    "initialValue": 4
+    "initialValue": 3
   }
 ]

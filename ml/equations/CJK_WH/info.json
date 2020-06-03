@@ -1,18 +1,18 @@
 {
     "TYPE": "equation",
-    "MODEL_DESCRIPTION": "aka 'Oxford' equations (2001)",
+    "MODEL_DESCRIPTION": "Уравнения C. J. K. Henry (2001)",
     "MODEL_NAME": "CJK_WH",
-    "MODEL_TITLE": "CJK Henry equations",
+    "MODEL_TITLE": "\"Оксфордские\" уравнения",
     "LABEL_TO_PREDICT": {
         "NAME": "bmr",
-        "LABEL": "BMR",
-        "FULL_LABEL": "Basal metabolic rate",
-        "UNIT": "MJ/day",
+        "LABEL": "ПОО",
+        "FULL_LABEL": "Показатель основного обмена",
+        "UNIT": "МДж",
         "ACCURACY": 3,
         "ALTERNATIVE_UNITS": [
             {
-                "UNIT": "kcal/day",
-                "RATE": 238.8459,
+                "UNIT": "ккал",
+                "RATE": 238.8458966,
                 "ACCURACY": 0.01
             }
         ]
@@ -21,26 +21,26 @@
         {
             "NAME": "age",
             "CATEGORIAL": false,
-            "UNIT": "years",
+            "LABEL": "возраст",
             "ALTERNATIVE_UNITS": [],
             "DEFAULT_VALUE": 42
         },
         {
             "NAME": "weight",
             "CATEGORIAL": false,
-            "LABEL": "weight",
-            "UNIT": "kg",
+            "LABEL": "масса",
+            "UNIT": "кг",
             "ALTERNATIVE_UNITS": [],
             "DEFAULT_VALUE": 74
         },
         {
             "NAME": "height",
             "CATEGORIAL": false,
-            "LABEL": "height",
-            "UNIT": "m",
+            "LABEL": "рост",
+            "UNIT": "м",
             "ALTERNATIVE_UNITS": [
                 {
-                    "UNIT": "cm",
+                    "UNIT": "см",
                     "RATE": 100
                 }
             ],
@@ -48,15 +48,16 @@
         },
         {
             "NAME": "sex",
+            "LABEL": "пол",
             "CATEGORIAL": true,
             "VALUES": [
                 {
                     "NAME": "m",
-                    "LABEL": "male"
+                    "LABEL": "м"
                 },
                 {
                     "NAME": "f",
-                    "LABEL": "female"
+                    "LABEL": "ж"
                 }
             ],
             "DEFAULT_VALUE": "m"
@@ -67,19 +68,19 @@
         {
             "NAME": "pearson",
             "LABEL": "Correlation coefficient",
-            "FULL_LABEL": "Pearson correlation coefficient",
+            "FULL_LABEL": "Коэффициент корреляции Пирсона",
             "VALUE": 0.8971618968982158
         },
         {
             "NAME": "mae",
             "LABEL": "MAE",
-            "FULL_LABEL": "Mean absolute error",
+            "FULL_LABEL": "Средняя абсолютная ошибка",
             "VALUE": 0.48047628141048826
         },
         {
             "NAME": "mse",
             "LABEL": "MSE",
-            "FULL_LABEL": "Mean squared error",
+            "FULL_LABEL": "Среднеквадратичная ошибка",
             "VALUE": 0.4161714601759407
         }
     ],

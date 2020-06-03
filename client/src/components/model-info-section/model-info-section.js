@@ -9,14 +9,14 @@ function ModelInfoSection({ model }) {
     points.push({'x': val, 'y': model['TRUE_VALUES'][index]})
   })
   let data = [{
-    id: 'BMR',
+    id: 'ПОО',
     data: points
   }]
 
   let metricsTable = <table>
     <tr>
-      <th>Metric</th>
-      <th>Value</th>
+      <th>Метрика</th>
+      <th>Значение</th>
     </tr>
     {model['TEST_METRICS'].map(metric => (
         <tr>
@@ -33,9 +33,9 @@ function ModelInfoSection({ model }) {
         data={data}
         margin={{ top: 40, right: 60, bottom: 40, left: 60 }}
         xScale={{ type: 'linear', min: 0, max: 12.055 }}
-        xFormat={function(e){return e.toFixed(3)+" MJ/d"}}
+        xFormat={function(e){return e.toFixed(3)+" МДж/сут"}}
         yScale={{ type: 'linear', min: 0, max: 12.055 }}
-        yFormat={function(e){return e.toFixed(3)+" MJ/d"}}
+        yFormat={function(e){return e.toFixed(3)+" МДж/сут"}}
         nodeSize={2}
         colors={'#A4145A'}
         axisTop={null}
@@ -45,7 +45,7 @@ function ModelInfoSection({ model }) {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'Predictions',
+            legend: 'Предсказанные значения',
             legendPosition: 'middle',
             legendOffset: 35
         }}
@@ -54,7 +54,7 @@ function ModelInfoSection({ model }) {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'Real values',
+            legend: 'Фактические значения',
             legendPosition: 'middle',
             legendOffset: -35
         }}

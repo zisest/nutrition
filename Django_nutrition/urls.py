@@ -43,7 +43,7 @@ urlpatterns = [
     path('api/user_preferences/', views.api_user_preferences),
 
     path('api/get_preferences_page/', views.api_get_preferences_page),
-    path('api/get_meal_plan/', views.api_get_meal_plan)
+    path('api/get_meal_plan/', views.api_get_meal_plan),
 
-    # re_path(r'^.*$', views.index_page),
+    re_path(r'^.*$', views.index_page),
 ]

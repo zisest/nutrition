@@ -37,7 +37,7 @@ ERRORS = {
     'DJ_SAVE-PARAMS-3': 'Could not update params and requirements',
     'DJ_SAVE-PARAMS-4': 'Could not update params and requirements (params validation error)',
     'DJ_SAVE-PARAMS-5': 'Could not update params and requirements (requirements validation error)',
-    'DJ_GET-PLAN-0': 'Please make sure you set your parameters and preferences'
+    'DJ_GET-PLAN-0': 'Please make sure you set your parameters'
 
 }
 def PARSE_SERIALIZER_ERRORS(errors, err_id):
@@ -321,15 +321,20 @@ def api_get_meal_plan(request):
     user = request.user
     preferences = UserPreferences.objects.filter(user=user.id)
     requirements = UserRequirements.objects.filter(user=user.id)
-    if not preferences or not requirements:
+    if not requirements:
         return Response(ERRORS['DJ_GET-PLAN-0'])
-    preferences = preferences[0]
     requirements = requirements[0]
 
-    filtered_by_prefs = MealPlan.and_filter(Food.objects.all(), 'categories__name', preferences.preferences)
-    breakfast = MealPlan.select_breakfast(filtered_by_prefs)
+    if not preferences:
+        filtered_by_prefs = Food.objects.all()
+        no_of_meals = 3
+    else:
+        preferences = preferences[0]
+        filtered_by_prefs = MealPlan.and_filter(Food.objects.all(), 'categories__name', preferences.preferences)
+        no_of_meals = preferences.meals
+        # breakfast = MealPlan.select_breakfast(filtered_by_prefs)
 
-    res = MealPlan.calc_meal_plan_alt(filtered_by_prefs, requirements, preferences.meals)
+    res = MealPlan.calc_meal_plan_alt(filtered_by_prefs, requirements, no_of_meals)
     print(res[-2])
     return Response({'plan': res[-2], 'size': res[-1]})
 
