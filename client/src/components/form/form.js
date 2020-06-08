@@ -32,7 +32,9 @@ function Form({
   let withMinLength = fields.reduce((ac, field) => ({...ac, [field.name]: field.minLength || 0}), {})
 
   useEffect(() => {
-    let initValues = fields.reduce((ac, field) => ({...ac, [field.name]: field.initialValue || ''}), {})
+    let initValues = fields.reduce((ac, field) => (
+        { ...ac, [field.name]: field.initialValue || field.type === 'checkbox' ? [] : '' }
+    ), {})
     let initValidityErrors = fields.reduce((ac, field) => ({...ac, [field.name]: {}}), {})
     setValues(initValues)
     setValidityErrors(initValidityErrors)
