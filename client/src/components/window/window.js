@@ -27,7 +27,7 @@ Window.defaultProps = {
   blank: false,
   style: {},
   empty: false,
-  emptyText: 'There is nothing here',
+  emptyText: 'Здесь ничего нет.',
   className: ''
  }
   

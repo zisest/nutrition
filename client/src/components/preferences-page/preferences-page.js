@@ -146,7 +146,7 @@ function PreferencesPage({ auth, onAuth }) {
           blank width='610px'            
           className='nutrients'
           empty={!state.includes('energy')} 
-          emptyText='There is nothing here.\Please provide your parameters.' 
+          emptyText='Здесь ничего нет.\Пожалуйста укажите параметры.'
         >
           <div className="nutrients_grid">
             <div className="nutrients_title"><h2>Потребности и рекомендации</h2></div>

@@ -3,6 +3,7 @@
     "name": "preferences",
     "label": "предпочтения в питании",
     "type": "checkbox",
+    "initialValue": [],
     "options": [
       { "name":  "vegan", "label":  "веганство", "description": "Только продукты растительного происхождения" },
       { "name":  "vegetarian", "label":  "вегетарианство", "description": "Без мяса, рыбы" },
