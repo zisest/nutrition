@@ -24,7 +24,7 @@
 }
 
 
-.window__empty {
+.window.window__empty {
   grid-area: auto;
 }
 
