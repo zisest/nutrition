@@ -1,4 +1,4 @@
-from .serializers import GetFoodSerializer
+# from .serializers import GetFoodSerializer
 
 from django.apps import apps
 import numpy as np
@@ -157,7 +157,7 @@ class Requirements:
         }
 
 
-class MealPlan:
+class CalcMealPlan:
 
     @classmethod
     def and_filter(cls, queryset, field, values):
@@ -177,103 +177,48 @@ class MealPlan:
 
         return sample(list(meals), 1) + sample(list(sides), 2) + sample(list(drinks), 1)
 
-    @classmethod
-    def calc_meal_plan(cls, queryset, size=3):
-        TOTAL_ENERGY_REQ = 2500
-        FAT_BOUNDS = (40, 60)
-        CARBS_BOUNDS = (140, 220)
-        PROTEIN_BOUNDS = (60, 120)
 
-        breakfast_foods = queryset.filter(categories__name='breakfast')
-        breakfast_meals = list(cls.and_filter(breakfast_foods, 'categories__name', ['meal', '!drink']))
-        breakfast_sides = list(breakfast_foods.filter(categories__name='side'))
-        breakfast_drinks = list(breakfast_foods.filter(categories__name='drink'))
-
-        dinner_foods = queryset.filter(categories__name='dinner')
-        dinner_meals = list(cls.and_filter(dinner_foods, 'categories__name', ['meal', '!drink']))
-        dinner_sides = list(dinner_foods.filter(categories__name='side'))
-        dinner_drinks = list(dinner_foods.filter(categories__name='drink'))
-
-        selected_dinner_meals = sample(dinner_meals, 2)
-        selected_dinner_sides = sample(dinner_sides, 4)
-        selected_dinner_drinks = sample(dinner_drinks, 2)
-
-        meal1 = sample(breakfast_meals, 1) + sample(breakfast_sides, 2) + sample(breakfast_drinks, 1)
-        meal2 = selected_dinner_meals[:1] + selected_dinner_sides[:2] + selected_dinner_drinks[:1]
-        meal3 = selected_dinner_meals[1:] + selected_dinner_sides[2:] + selected_dinner_drinks[1:]
-
-        all_foods = meal1 + meal2 + meal3
-
-        food_names = [food.name for food in all_foods]
-        calories = dict(zip(food_names, [food.energy for food in all_foods]))
-        fats = dict(zip(food_names, [food.fat for food in all_foods]))
-        carbs = dict(zip(food_names, [food.carbohydrate for food in all_foods]))
-        proteins = dict(zip(food_names, [food.protein for food in all_foods]))
-
-        problem = p.LpProblem("Meal_plan", p.LpMinimize)
-        food_vars = p.LpVariable.dicts("Food", food_names, lowBound=0, cat='Continuous')
-
-        problem += p.lpSum([calories[f] * food_vars[f] for f in food_names]) - TOTAL_ENERGY_REQ
-
-        problem += p.lpSum([calories[f] * food_vars[f] for f in food_names]) - TOTAL_ENERGY_REQ >= -50, "Objective >= 0"
-
-        problem += p.lpSum([fats[f] * food_vars[f] for f in food_names]) >= FAT_BOUNDS[0], "Total fat min"
-        problem += p.lpSum([fats[f] * food_vars[f] for f in food_names]) <= FAT_BOUNDS[1], "Total fat max"
-        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_names]) >= CARBS_BOUNDS[0], "Total carbs min"
-        problem += p.lpSum([carbs[f] * food_vars[f] for f in food_names]) <= CARBS_BOUNDS[1], "Total carbs max"
-        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_names]) >= PROTEIN_BOUNDS[0], "Total protein min"
-        problem += p.lpSum([proteins[f] * food_vars[f] for f in food_names]) <= PROTEIN_BOUNDS[1], "Total protein max"
-
-        # if size == 3:
-        #     for i in range(0, 3):
-        #         problem += p.lpSum([fats[f] * food_vars[f] for f in food_names[4*i:4*i+4]]) \
-        #                    >= FAT_BOUNDS[0] / 3, f"Meal {i+1} fat min"
-        #         problem += p.lpSum([fats[f] * food_vars[f] for f in food_names[4*i:4*i+4]]) \
-        #                    <= FAT_BOUNDS[1] / 3,  f"Meal {i+1} fat max"
-        #         problem += p.lpSum([carbs[f] * food_vars[f] for f in food_names[4*i:4*i+4]]) \
-        #                    >= CARBS_BOUNDS[0] / 3,  f"Meal {i+1} carbs min"
-        #         problem += p.lpSum([carbs[f] * food_vars[f] for f in food_names[4*i:4*i+4]]) \
-        #                    <= CARBS_BOUNDS[1] / 3,  f"Meal {i+1} carbs max"
-        #         problem += p.lpSum([proteins[f] * food_vars[f] for f in food_names[4*i:4*i+4]]) \
-        #                    >= PROTEIN_BOUNDS[0] / 3,  f"Meal {i+1} protein min"
-        #         problem += p.lpSum([proteins[f] * food_vars[f] for f in food_names[4*i:4*i+4]]) \
-        #                    <= PROTEIN_BOUNDS[1] / 3,  f"Meal {i+1} protein max"
-        #
-        #         problem += food_vars[food_names[(i+1)*4-1]] == 2
-
-        problem.solve()
-        return [p.LpStatus[problem.status], p.value(problem.objective),
-                [{var.name: var.varValue} for var in problem.variables()]]
 
     @classmethod
     def calc_food(cls, food, value):
         NAN_FIELDS = ['name', 'categories', 'source_categories']
-
-        food_serializer = GetFoodSerializer(food)
-        food_data = food_serializer.data
+        food_data = food
+        # food_serializer = GetFoodSerializer(food)
+        # food_data = food_serializer.data
         res = {key: val * value for key, val in food_data.items() if key not in NAN_FIELDS and val is not None}
         food_data.update(res)
         return food_data
 
     @classmethod
+    def calc_food_energy(cls, food, value):
+        energy = food.energy * value
+        return {'food': food.pk, 'energy': energy, 'portion_size': value}
+
+    @classmethod
     def sort_foods(cls, foods, no_of_meals):
         foods = sorted(foods, key=itemgetter('energy'))
-        meals = [[] for i in range(no_of_meals)]
+        # meals = [[] for i in range(no_of_meals)]
+        meals = []
+        meal_sizes = [0] * no_of_meals
         meals_energy = [0] * no_of_meals
         while foods:
             food_data = foods.pop()
             sorted_by_energy = np.argsort(meals_energy)
             smallest_bin = None
             for i in sorted_by_energy:
-                if smallest_bin is None and len(meals[i]) < 4:
+                if smallest_bin is None and meal_sizes[i] < 4:
                     smallest_bin = i
-            meals[smallest_bin].append(food_data)
-            meals_energy[smallest_bin] += food_data['energy']
+            # meals[smallest_bin].append(food_data)
+            if smallest_bin is not None:
+                meal_sizes[smallest_bin] += 1
+                meals_energy[smallest_bin] += food_data['energy']
+                food_data['meal_no'] = smallest_bin + 1
+                meals.append(food_data)
         # meal_plan = [food for meal in meals for food in meal]
         return meals  # meal_plan
 
     @classmethod
-    def calc_meal_plan_alt(cls, queryset, requirements, no_of_meals=3):
+    def calc_meal_plan(cls, queryset, requirements, no_of_meals=3):
         TOTAL_ENERGY_REQ = float(requirements.energy_requirements)*238.8458966
         FAT_BOUNDS = (requirements.fats*0.9, requirements.fats*1.1)
         CARBS_BOUNDS = (requirements.carbohydrates*0.9, requirements.carbohydrates*1.1)
@@ -354,12 +299,6 @@ class MealPlan:
                 problem += food_vars[f] <= food_choices[f] * MAX_FOOD_WEIGHT
 
         problem += p.lpSum([food_choices[f] for f in food_ids]) == TOTAL_PORTIONS, "Selecting 12 foods"
-        # problem += p.lpSum([food_choices[f] for f in breakfast_ids['meals']]) == 1, "4"
-        # problem += p.lpSum([food_choices[f] for f in breakfast_ids['sides']]) == 2, "5"
-        # problem += p.lpSum([food_choices[f] for f in breakfast_ids['drinks']]) == 1, "6"
-        # problem += p.lpSum([food_choices[f] for f in dinner_ids['meals']]) == 2, "7"
-        # problem += p.lpSum([food_choices[f] for f in dinner_ids['sides']]) == 4, "8"
-        # problem += p.lpSum([food_choices[f] for f in dinner_ids['drinks']]) == 2, "9"
 
         problem.solve()
         problem_results = [{var.name: var.varValue} for var in problem.variables() if
@@ -368,16 +307,9 @@ class MealPlan:
         meal_plan = []
         for food in problem_results:
             res = list(food.items())[0]
-
             food_id = int(res[0].split('_')[1])
-            # contains_recipe_num = food_name[-1].isdigit()
-            # if contains_recipe_num:
-            #     food_name = ' '.join(food_name.split(' ')[:-1]) + '-' + food_name.split(' ')[-1]
             food_obj = next(f for f in foods if f.id == food_id)
-            meal_plan.append(cls.calc_food(food_obj, res[1]))
-            # food_data = cls.calc_food(food_obj, res[1])
-
-
+            meal_plan.append(cls.calc_food_energy(food_obj, res[1]))
 
         meal_plan = cls.sort_foods(meal_plan, TOTAL_MEALS)
 

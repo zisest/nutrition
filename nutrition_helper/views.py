@@ -16,9 +16,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .serializers import AppUserSerializer, MainUserParamsSerializer, UserPreferencesSerializer
 from .serializers import UserRequirementsSerializer, FoodSerializer, GetFoodSerializer, FoodCategorySerializer
-from .models import AppUser, UserParams, UserRequirements, UserPreferences, Food, FoodCategory
+from .serializers import MealPlanSerializer, GetMealPlanSerializer
+from .models import AppUser, UserParams, UserRequirements, UserPreferences, Food, FoodCategory, MealPlan
 
-from .calculations import Prediction, Requirements, MealPlan
+from .calculations import Prediction, Requirements, CalcMealPlan
 
 from django.db.models import Q
 
@@ -314,10 +315,9 @@ def api_dev_get_foods(request):
 
 
 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def api_get_meal_plan(request):
+def api_generate_meal_plan(request):
     user = request.user
     preferences = UserPreferences.objects.filter(user=user.id)
     requirements = UserRequirements.objects.filter(user=user.id)
@@ -330,11 +330,29 @@ def api_get_meal_plan(request):
         no_of_meals = 3
     else:
         preferences = preferences[0]
-        filtered_by_prefs = MealPlan.and_filter(Food.objects.all(), 'categories__name', preferences.preferences)
+        filtered_by_prefs = CalcMealPlan.and_filter(Food.objects.all(), 'categories__name', preferences.preferences)
         no_of_meals = preferences.meals
-        # breakfast = MealPlan.select_breakfast(filtered_by_prefs)
+        # breakfast = CalcMealPlan.select_breakfast(filtered_by_prefs)
 
-    res = MealPlan.calc_meal_plan_alt(filtered_by_prefs, requirements, no_of_meals)
+    res = CalcMealPlan.calc_meal_plan(filtered_by_prefs, requirements, no_of_meals)
     print(res[-2])
-    return Response({'plan': res[-2], 'size': res[-1]})
 
+    meal_plan_data = {'portions': res[-2], 'size': res[-1]}
+    serializer = MealPlanSerializer(data=meal_plan_data)
+    if serializer.is_valid():
+        meal_plan_obj = serializer.save(user=user)
+    if meal_plan_obj:
+        data_serializer = GetMealPlanSerializer(meal_plan_obj)
+        meal_plan = data_serializer.data
+
+    return Response(meal_plan)
+    # return Response({'plan': res[-2], 'size': res[-1]})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_get_meal_plans(request):
+    user = request.user
+    meal_plans_obj = MealPlan.objects.filter(user=user.id)
+    meal_plans = GetMealPlanSerializer(meal_plans_obj, many=True)
+    return Response(meal_plans.data)

@@ -14,7 +14,7 @@ const jwtDecode = require('jwt-decode')
 function App() {
   const location = useLocation()
   const [auth, setAuth] = useState(null)
-  const [protectedRoute, setProtectedRoute] = useState(false)
+  const [awaitingNewPlan, setAwaitingNewPlan] = useState(false)
 
   const protectedRoutes = ['/preferences', '/preferences/', '/meal-plan', '/meal-plan/']
   
@@ -67,8 +67,17 @@ function App() {
       <Switch>
         <Route exact path='/' render={() => <Redirect to='/models' />} />
         <Route path='/models' component={ModelsPage} />
-        <Route path='/preferences' render={() => <PreferencesPage auth={auth} onAuth={(state) => setAuth(state)} />} />
-        <Route path='/meal-plan' render={() => <MealPlanPage auth={auth} onAuth={(state) => setAuth(state)} />} />
+        <Route path='/preferences' render={() => <PreferencesPage 
+          auth={auth} 
+          onAuth={(state) => setAuth(state)} 
+          onPlanRequest={(state) => setAwaitingNewPlan(state)}
+        />} />
+        <Route path='/meal-plan' render={() => <MealPlanPage
+          auth={auth} 
+          onAuth={(state) => setAuth(state)}
+          onPlanRequest={(state) => setAwaitingNewPlan(state)}
+          awaitingNewPlan={awaitingNewPlan}
+        />} />
         <Route render={() => <Redirect to='/' />} />
       </Switch>
       {authModal}

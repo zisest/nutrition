@@ -216,3 +216,21 @@ class Food(models.Model):
     portion = models.FloatField(null=True, blank=True)
 
 
+class MealPlan(models.Model):
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    size = models.IntegerField(
+        blank=False,
+        null=False,
+        validators=[MinValueValidator(2), MaxValueValidator(7)]
+    )
+
+
+class Portions(models.Model):
+    meal_plan = models.ForeignKey(MealPlan, on_delete=models.CASCADE)
+    food = models.ForeignKey(Food, null=True, on_delete=models.SET_NULL)
+    portion_size = models.FloatField(null=False, blank=False)
+    meal_no = models.IntegerField(
+        blank=False,
+        null=False,
+        validators=[MinValueValidator(1), MaxValueValidator(7)]
+    )

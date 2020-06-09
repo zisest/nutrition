@@ -1,7 +1,8 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .models import AppUser
-from .models import UserParams, UserRequirements, UserPreferences, Food, FoodCategory
+from .models import UserParams, UserRequirements, UserPreferences, Food, FoodCategory, MealPlan, Portions
+from .calculations import CalcMealPlan
 
 class AppUserSerializer(serializers.ModelSerializer):
     """
@@ -72,3 +73,38 @@ class GetFoodSerializer(serializers.ModelSerializer):  # read only
         exclude = ['id']
 
 
+class PortionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Portions
+        fields = ['portion_size', 'food', 'meal_no']
+
+
+class GetPortionsSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        food_data = GetFoodSerializer(instance.food).data
+        food = CalcMealPlan.calc_food(food_data, instance.portion_size)
+        return {'food': food, 'meal_no': instance.meal_no}
+
+
+class GetMealPlanSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        portions = Portions.objects.filter(meal_plan_id=instance.id)
+        portions_data = GetPortionsSerializer(portions, many=True)
+
+        return {'portions': portions_data.data, 'size': instance.size}
+
+
+class MealPlanSerializer(serializers.ModelSerializer):
+    portions = PortionsSerializer(many=True)
+
+    class Meta:
+        model = MealPlan
+        fields = ['size', 'portions']
+
+    def create(self, validated_data):
+        portions_data = validated_data.pop('portions')
+        meal_plan = self.Meta.model(**validated_data)
+        meal_plan.save()
+        for portion_data in portions_data:
+            portion = meal_plan.portions_set.create(**portion_data)
+        return meal_plan

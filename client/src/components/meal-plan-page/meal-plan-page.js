@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useParams } from 'react'
 import domtoimage from 'dom-to-image'
 import './meal-plan-page.css'
 import Navbar from '../navbar'
@@ -177,79 +177,100 @@ const NUTRIENTS = {
   }
 }
 
-const FETCH_PLAN_URL ='/api/get_meal_plan/'
+const FETCH_PLANS_URL ='/api/get_meal_plans/'
+const GENERATE_PLAN_URL = '/api/generate_meal_plan/'
 const AUTHORIZATION_HEADER = (token) => ({'Authorization': 'Bearer ' + token})
 
 
-function MealPlanPage({ auth, onAuth }) {
-  const [plan, setPlan] = useState(null)
-  const [planSize, setPlanSize] = useState(null)
-  const [parsedPlan, setParsedPlan] = useState([])
+function MealPlanPage({ auth, onAuth, onPlanRequest, awaitingNewPlan }) {
+  const [plans, setPlans] = useState([])
+  // const [planSizes, setPlanSizes] = useState(null)
+  const [parsedPlans, setParsedPlans] = useState([])
   const [totalNutrients, setTotalNutrients] = useState([])
+  const [currentPlan, setCurrentPlan] = useState(0)
 
 
-  const parsePlan = (rawPln, planSz) => {
+  const parsePlan = (rawPln) => {
     const NAN_FIELDS = ['name', 'categories', 'source_categories']
-
-    let rawPlan = [...rawPln]
+    let rawPlan = {...rawPln}
+    let portions = rawPlan.portions
+    let planSize = rawPlan.size
     
-    //let meals = PLAN_SIZES[planSz]
-    let parsed = []
-    let nutrients = {}
+    let parsed = Array(planSize).fill([])    
+    let totalMainNutrients = Array(planSize).fill([])
+    let allNutrients = {}
 
-    rawPlan.forEach((rawPortions, mealNo) => { //meals = [4,4,4]
-      //let rawPortions = rawPlan[mealNo] //.splice(0, mealSz)
-      // console.log(mealSz)
-      let totalMainNutrients = []
-      let parsedMeal = rawPortions.map(portion => {
-        // console.log(portion)
-        for (let [name, value] of Object.entries(portion)) {
-          if (!NAN_FIELDS.includes(name) && value) {
-            if (!(name in nutrients)) {
-              nutrients[name] = value
-            } else {
-              nutrients[name] += value
-            }
+    portions.forEach(rawPortion => {
+      let mealNo = rawPortion['meal_no'] - 1
+      let portion = rawPortion['food']
+
+      // for allNutrients
+      for (let [name, value] of Object.entries(portion)) {
+        if (!NAN_FIELDS.includes(name) && value) {
+          if (!(name in allNutrients)) {
+            allNutrients[name] = value
+          } else {
+            allNutrients[name] += value
           }
         }
-        let mainNutrients = [portion.portion, portion.protein, portion.fat, portion.carbohydrate, portion.energy]
-        if (!totalMainNutrients.length) {
-          totalMainNutrients = mainNutrients
-        } else {
-          totalMainNutrients = totalMainNutrients.map((v, i) => v + mainNutrients[i])
-        }
-        return [portion.name, ...mainNutrients]
-      })
-      parsedMeal.push(['Итого', ...totalMainNutrients])
-      parsed.push(parsedMeal)
+      }
+
+      let mainNutrients = [portion.portion, portion.protein, portion.fat, portion.carbohydrate, portion.energy]
+      
+      if (!totalMainNutrients[mealNo].length) {
+        totalMainNutrients[mealNo] = mainNutrients
+      } else {
+        totalMainNutrients[mealNo] = totalMainNutrients[mealNo].map((v, i) => v + mainNutrients[i])
+      }
+
+      parsed[mealNo] = [...parsed[mealNo], [portion.name, ...mainNutrients]]
     })
-    nutrients = Object.keys(NUTRIENTS).map(nutrient => (
-      { ...NUTRIENTS[nutrient], value: nutrients[nutrient] }
+
+    // inserting nutrients values into template
+    allNutrients = Object.keys(NUTRIENTS).map(nutrient => (
+      { ...NUTRIENTS[nutrient], value: allNutrients[nutrient] }
     ))
-    return { parsed, nutrients }
+
+    parsed = parsed.map((meal, i) => [ ...meal, ['Итого', ...totalMainNutrients[i]] ])
+    
+    return [ parsed, allNutrients ]
+   
   }
 
-  const fetchPlan = () => {
-    fetch(FETCH_PLAN_URL, { headers: AUTHORIZATION_HEADER(localStorage.getItem('access_token')) })
+
+  const fetchPlans = () => {
+    console.log('fetching plans')
+    fetch(FETCH_PLANS_URL, { headers: AUTHORIZATION_HEADER(localStorage.getItem('access_token')) })
     .then(res => {
       if (!res.ok) throw {status: res.status, data: 'Failed to fetch'}
       return res.json()
     })
     .then(res => {     
-      setPlan(res.plan)
-      setPlanSize(res.size)
-      let { parsed, nutrients } = parsePlan(res.plan, res.size)
-      setParsedPlan(parsed)
+      setPlans(res)      
+      let parsed = []
+      let nutrients = []
+      res.forEach(plan => {
+        let [ planParsed, planNutrients ] = parsePlan(plan)
+        parsed.push(planParsed)
+        nutrients.push(planNutrients)
+      })      
+      setParsedPlans(parsed)
       setTotalNutrients(nutrients)
     })
     .catch(err => {
       console.log('SOME ERROR')
-      if (err.status === 401) return retryRequest(null, FETCH_PLAN_URL, 'GET')
+      console.log(err)
+      if (err.status === 401) return retryRequest(null, FETCH_PLANS_URL, 'GET')
         .then(res => {
-          setPlan(res.data.plan)
-          setPlanSize(res.data.size)
-          let { parsed, nutrients } = parsePlan(res.data.plan, res.data.size)
-          setParsedPlan(parsed)
+          setPlans(res)      
+          let parsed = []
+          let nutrients = []
+          res.forEach(plan => {
+            let [ planParsed, planNutrients ] = parsePlan(plan)
+            parsed.push(planParsed)
+            nutrients.push(planNutrients)
+          })      
+          setParsedPlans(parsed)
           setTotalNutrients(nutrients)
           console.log('retryRequest successful', res.status, res.data)
         })
@@ -260,13 +281,72 @@ function MealPlanPage({ auth, onAuth }) {
     })
   }
 
-  useEffect(() => { //fetching forms
-    fetchPlan()
+  const generateNewPlan = () => {
+    console.log('generating new plan')
+    fetch(GENERATE_PLAN_URL, { headers: AUTHORIZATION_HEADER(localStorage.getItem('access_token')) })
+    .then(res => {
+      if (!res.ok) throw {status: res.status, data: 'Failed to fetch'}
+      return res.json()
+    })
+    .then(res => {     
+      setPlans(prev => ([...prev, res]))          
+      let [ planParsed, planNutrients ] = parsePlan(res)                 
+      setParsedPlans(prev => ([...prev, planParsed]))
+      setTotalNutrients(prev => ([...prev, planNutrients]))
+    })
+    .catch(err => {      
+      if (err.status === 401) return retryRequest(null, GENERATE_PLAN_URL, 'GET')
+        .then(res => {
+          setPlans(prev => ([...prev, res.data]))          
+          let [ planParsed, planNutrients ] = parsePlan(res.data)                 
+          setParsedPlans(prev => ([...prev, planParsed]))
+          setTotalNutrients(prev => ([...prev, planNutrients]))
+          console.log('retryRequest successful', res.status, res.data)
+        })
+        .catch(err => {
+          if (err.logout) onAuth(false)
+          console.error('retryRequest error!', err.status, err.data, err)
+        })
+      else console.error(err)
+    })
+  }
+
+  const changeSelectedPlan = (dir) => {
+    let numberOfPlans = parsedPlans.length
+    let current = currentPlan
+    if (dir === 'next') {
+      if (current < numberOfPlans - 1)
+        setCurrentPlan(prev => prev + 1)
+      else
+        setCurrentPlan(0)
+    } else {
+      if (current === 0)
+        setCurrentPlan(numberOfPlans - 1)
+      else
+        setCurrentPlan(prev => prev - 1)
+    }
+  }
+
+  useEffect(() => { //fetching plans on auth
+    fetchPlans()
   }, [auth])
+
+  useEffect(() => {
+    setCurrentPlan(parsedPlans.length - 1)
+    console.log('Change current plan')
+  }, [parsedPlans])
+
+  useEffect(() => {
+    if (awaitingNewPlan) {
+      onPlanRequest(false)
+      generateNewPlan()
+    }
+    
+  }, [awaitingNewPlan])
 
 
   const saveAsPng = () => {
-    if (parsedPlan.length) {
+    if (parsedPlans.length && parsedPlans[currentPlan].length) {
       domtoimage.toPng(document.querySelector('.meal-plan'), { bgcolor: '#f5f6f6' })
       .then(function (dataUrl) {
           let link = document.createElement('a')
@@ -281,7 +361,7 @@ function MealPlanPage({ auth, onAuth }) {
     <div className='meal-plan-page' style={!auth ? { filter: 'blur(10px)' } : {}}>
       <div className="meal-plan-page_navbar">
         <Navbar title='Пищевая ценность' size='350px' fontSize='24px' >
-          <DataTable fields={totalNutrients} />
+          <DataTable fields={totalNutrients[currentPlan]} />
         </Navbar>
       </div>
       <div className="meal-plan-page_main-area">
@@ -290,16 +370,19 @@ function MealPlanPage({ auth, onAuth }) {
             <div className="meal-plan_header">
               <div className="meal-plan_title"><h2>План питания</h2></div>
               <div className="meal-plan_refresh">
-                <Button type='corner' corner='top-right' text='↺' style={{ fontSize: '31px' }} />
+                <Button type='corner' corner='top-right' text='↺' style={{ fontSize: '31px' }} onClick={generateNewPlan} />
               </div>              
               <div className='meal-plan_header-body'>
                 Нажмите <span onClick={saveAsPng} className='meal-plan_download'>сюда</span>, чтобы скачать план питания
               </div>
             </div>            
           </Window>
-          <Window width='700px' >
-          <MealPlan plan={parsedPlan} />
-            
+          <Window width='700px' empty={!parsedPlans.length} emptyText='Здесь ничего нет.\Пожалуйста, укажите параметры.' >
+          <div className="meal-plan_select-buttons">
+            <div className="meal-plan_prev-button" onClick={() => changeSelectedPlan('prev')} >←</div>
+            <div className="meal-plan_next-button" onClick={() => changeSelectedPlan('next')} >→</div>
+          </div> 
+          <MealPlan plan={parsedPlans[currentPlan]} />                  
           </Window>
         </div>
         

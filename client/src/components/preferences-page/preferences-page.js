@@ -44,7 +44,7 @@ const dummyNutrients2 = [
 
 ]
 
-function PreferencesPage({ auth, onAuth }) {
+function PreferencesPage({ auth, onAuth, onPlanRequest }) {
   const [forms, setForms] = useState(null)
   const [state, setState] = useState([])
   const [toMealPlan, setToMealPlan] = useState(false)
@@ -130,7 +130,11 @@ function PreferencesPage({ auth, onAuth }) {
   let energySquares = forms && forms['energy'] ? forms['energy'].map((square, index) => <DataSquare key={index} {...square} />) : ''
   let macronutrientsTable = forms && forms['nutrients'] ? <DataTable fields={forms['nutrients']} /> : ''
 
-  if (toMealPlan) return <Redirect to='/meal-plan' />
+  if (toMealPlan) {
+    onPlanRequest(true)
+    return <Redirect to='/meal-plan' />
+  }
+
   return (
     <Fragment>
     <div className='preferences-page' style={!auth ? { filter: 'blur(10px)' } : {}}>
@@ -146,7 +150,7 @@ function PreferencesPage({ auth, onAuth }) {
           blank width='610px'            
           className='nutrients'
           empty={!state.includes('energy')} 
-          emptyText='Здесь ничего нет.\Пожалуйста укажите параметры.'
+          emptyText='Здесь ничего нет.\Пожалуйста, укажите параметры.'
         >
           <div className="nutrients_grid">
             <div className="nutrients_title"><h2>Потребности и рекомендации</h2></div>
