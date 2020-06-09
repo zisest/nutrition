@@ -4,6 +4,7 @@ import Table from '../table'
 import DataTable from '../data-table'
 
 const MEAL_NAMES = {
+  2: ['Завтрак', 'Ужин'],
   3: ['Завтрак', 'Обед', 'Ужин'],
   4: ['Завтрак', 'Перекус', 'Обед', 'Ужин'],
   5: ['Завтрак', 'Перекус', 'Обед', 'Перекус', 'Ужин'],
@@ -21,7 +22,7 @@ function MealPlan({ plan }) {
   
   let mealPlan = plan.map((meal, mealNo) => {    
     return <>
-      <h2>{mealNames[mealNo]}</h2>
+      <h2>{mealNames && mealNames[mealNo]}</h2>
       <div className="meal-plan_meal-table">
       <Table 
         content={meal} 
