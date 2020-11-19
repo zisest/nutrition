@@ -1,0 +1,90 @@
+.simple-button {
+  height: 45px;
+  width: 100%;
+  min-width: fit-content;
+
+  padding: 10px 18px;
+
+  border-radius: 8px;
+  border: none;
+  outline: none;
+
+  cursor: pointer;
+  font-size: 16px;
+
+  background-color: var(--c-main-green);
+  color: var(--c-grey);
+  fill: var(--c-grey);
+
+  line-height: 100%;
+  
+  transition: 300ms;
+}
+.simple-button:hover { 
+  /* Lightness +2% */
+  background-color: hsl(151, 49%, 52%);
+}
+
+/* Icon button */
+.simple-button__icon {
+  width: 45px;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+/* Flat sides */ 
+.simple-button__flat-left {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.simple-button__flat-right {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.simple-button__flat-both {
+  border-radius: 0;
+}
+
+
+/* Colors */
+
+.simple-button__grey {
+  background-color: #E6EBE9;
+}
+
+.simple-button__faint-grey {
+  background-color: #F9FAFA;
+}
+
+.simple-button__red {
+  background-color: #DF5555;
+  color: #FCF8F8;
+  fill: #FCF8F8;
+}
+
+.simple-button__faint-red {
+  background-color: #FCF8F8;
+  color: #DF5555;
+  fill: #DF5555;
+}
+
+/* Hovers */
+.simple-button__grey:hover {
+  /* Lightness -1% */
+  background-color: hsl(156, 11%, 90%);
+}
+
+.simple-button__faint-grey:hover {
+  /* Lightness -1% */
+  background-color: hsl(180, 9%, 97%);
+}
+
+.simple-button__red:hover {
+  /* Lightness +2% */
+  background-color: hsl(0, 68%, 62%);
+}
+
+.simple-button__faint-red:hover {
+  /* Lightness -1%, saturation +3% */
+  background-color: hsl(0, 43%, 97%);
+}
