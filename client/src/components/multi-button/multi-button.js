@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react'
 import './multi-button.css'
   
-function MultiButton({ color, children }) {
+function MultiButton({ color, children, className }) {
   let colorClass = color ? ' multi-button__' + color : ''
-  
+  let propsClass = className ? ' ' + className : ''
+
   let verticalLine = <div className='multi-button_divider'></div>
 
   let buttons = children.map((btn, idx) => {
@@ -17,13 +18,14 @@ function MultiButton({ color, children }) {
   })
 
   return (
-    <div className={'multi-button' + colorClass}>
+    <div className={'multi-button' + colorClass + propsClass}>
       {buttons}
     </div>
   )
 }
 MultiButton.defaultProps = {
-  color: ''
+  color: '',
+  className: ''
 }
   
 export default MultiButton

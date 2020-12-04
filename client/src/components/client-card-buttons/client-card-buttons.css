@@ -1,0 +1,24 @@
+.client-card-buttons {
+  height: 45px;
+  width: 280px;
+
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 8px;
+}
+
+.client-card-buttons_animated-div { 
+  position: absolute;
+  width: inherit;
+  height: inherit;
+
+  display: flex;
+  align-items: center;
+
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.client-card-buttons_align-right {
+  justify-content: flex-end;
+}

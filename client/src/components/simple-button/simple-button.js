@@ -6,10 +6,10 @@ function SimpleButton({ children, color, isIcon, withFlatSide, onClick }) {
   let flatSidesClass = withFlatSide ? ' simple-button__flat-' + withFlatSide : ''
   let isIconClass = isIcon ? ' simple-button__icon' : ''
 
-  let className = 'simple-button' + colorClass + flatSidesClass + isIconClass
+  let classNames = 'simple-button' + colorClass + flatSidesClass + isIconClass
 
   return (
-    <button className={className} onClick={onClick} >
+    <button className={classNames} onClick={onClick} >
       { children }
     </button>
   )
