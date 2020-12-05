@@ -4,6 +4,7 @@ venv/
 ml/data/
 ml/models/**/variables/
 ml/models/**/saved_model.pb
+ml/models/**/weights.json
 node_modules/
 
 __pycache__
