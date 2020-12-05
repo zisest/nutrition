@@ -3,13 +3,14 @@
 from django.apps import apps
 import numpy as np
 import pandas as pd
+import math
 
 from random import sample
 import pulp as p
 from operator import itemgetter
 
-class Prediction:
 
+class Prediction:
     @classmethod
     def parse_request(cls, data):
         ml_model_name = data['MODEL_NAME']
@@ -34,22 +35,52 @@ class Prediction:
         return (x - normalization['mean']) / normalization['std']
 
     @classmethod
+    def sigmoid(cls, x):
+        return 1 / (1 + math.exp(-x))
+
+    @classmethod
+    def count_nn_layer(cls, input, weights, biases, activate=True):
+        input = input.reshape(input.shape[0], -1)
+        iw = input * weights
+        iw = np.sum(iw, axis=0) + biases
+        if activate:
+            res = np.array([cls.sigmoid(xi) for xi in iw])
+        else:
+            res = iw
+        return res
+
+    @classmethod
+    def predict_w(cls, normed_data, ml_model_name):
+
+        weights = apps.get_app_config('nutrition_helper').ml_models[ml_model_name]
+
+        input = np.array(normed_data)
+        for i in range(int(len(weights)/2)):
+            if i == int(len(weights)/2-1):
+                output = cls.count_nn_layer(input, weights[2*i], weights[2*i+1], activate=False)[0]
+            else:
+                input = cls.count_nn_layer(input, weights[2 * i], weights[2 * i + 1])
+
+        return output
+
+    @classmethod
     def predict(cls, parsed_data, ml_model_name):
         print(parsed_data)
         print(ml_model_name)
         if not parsed_data:
             return str('ERROR')  # CHANGE
+
         normalized = cls.norm(parsed_data, apps.get_app_config('nutrition_helper').normalization_info[ml_model_name])
 
-        # if the model is created in non eager mode
-        # graph, ml_model = apps.get_app_config('nutrition_helper').ml_models[ml_model_name]
-        # with graph.as_default():
-        #     prediction = ml_model.predict(pd.DataFrame(normalized).transpose())
-
         ml_model = apps.get_app_config('nutrition_helper').ml_models[ml_model_name]
-        prediction = ml_model.predict(pd.DataFrame(normalized).transpose())
+        ml_model_info = next((item for item in apps.get_app_config('nutrition_helper').ml_models_info if
+                              item['MODEL_NAME'] == ml_model_name), None)
 
-        output = np.array(prediction).flatten()[0]
+        if ml_model_info['TYPE'] == 'equation':
+            prediction = ml_model.predict(pd.DataFrame(normalized).transpose())
+            output = np.array(prediction).flatten()[0]
+        else:
+            output = cls.predict_w(normalized, ml_model_name)
         print(output)
         return output
 

@@ -1,18 +1,8 @@
-import sys
 import json
-from tensorflow import keras
-import tensorflow as tf
 from pathlib import Path
 from django.apps import AppConfig
 import pandas as pd
-from ml.Equation import Equation
 
-
-def load_ml_model(path):
-    # graph = tf.Graph()
-    ml_model = keras.models.load_model(str(path))
-    # return graph, ml_model
-    return ml_model
 
 class NutritionHelperConfig(AppConfig):
     name = 'nutrition_helper'
@@ -35,7 +25,11 @@ class NutritionHelperConfig(AppConfig):
     def load_ml_models(self):
         for path in Path(self.ml_models_dir).glob('*'):
             self.normalization_info[path.name] = pd.read_csv('{}/normalization.csv'.format(path), header=0, index_col=0)
-            self.ml_models[path.name] = load_ml_model(path)
+            # self.ml_models[path.name] = load_ml_model(path)
+
+            with open('{}/weights.json'.format(path), 'r', encoding='utf-8') as f:
+                self.ml_models[path.name] = json.load(f)
+
             with open('{}/info.json'.format(path), 'r', encoding='utf-8') as f:
                 self.ml_models_info.append(json.load(f))
 
