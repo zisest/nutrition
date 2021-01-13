@@ -2,7 +2,7 @@ import React from 'react'
 import './window.css'
 import { ReactComponent as EmptyIcon } from '../../assets/empty-icon.svg'
   
-function Window({title, width, blank, children, className, style, empty, emptyText }) {
+function Window({title, width, blank, children, className, style, empty, emptyText, cornerIcon, onCornerIcon }) {
   let blankStyle = blank ? ' window__blank' : ''
 
   let emptyWindow = (
@@ -19,7 +19,8 @@ function Window({title, width, blank, children, className, style, empty, emptyTe
   return (
     <div className={'window' + blankStyle + ' ' + className} style={{ width, ...style}}>
       {!blank && title && <div className='window_title'><h2>{title}</h2></div>}
-      <div className="window_body">{children}</div>      
+      <div className="window_body">{children}</div>
+      {cornerIcon && <div className='window_corner-icon' onClick={onCornerIcon}>{cornerIcon}</div>}
     </div>
   )
 }

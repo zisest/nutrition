@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import MethodsButton from '../src/components/methods-button'
+import { MethodsIcon } from '../src/components/icons'
 
 export default { 
-  title: 'MethodsButton',
-  component: MethodsButton
+  title: 'Icons/MethodsIcon',
+  component: MethodsIcon
 }
 
-export const MethodsButtonStory = () => {
+export const MethodsIconStory = () => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isNonDefault, setIsNonDefault] = useState(false)
 
@@ -19,6 +19,6 @@ export const MethodsButtonStory = () => {
     <label>isExpanded <input type='checkbox' onChange={() => setIsExpanded(prev => !prev)} /></label>
     <br />
     <label>isNonDefault <input type='checkbox' onChange={() => setIsNonDefault(prev => !prev)} /></label>
-    <MethodsButton {...props} />
+    <MethodsIcon {...props} />
   </div>
 }

@@ -22,7 +22,8 @@ function Form({
   withAuth, 
   onResponse, 
   errorsToDisplay,
-  onFieldChange
+  onFieldChange,
+
 }) {
   const [cookies, setCookie] = useCookies()
   const [values, setValues] = useState({})
@@ -169,7 +170,7 @@ function Form({
   let sectioned = sectionsToRender.map((section, index) => {
     let sectionInputs = inputs.splice(0, section.size)
     let sectionCols = { 'gridTemplateColumns': '1fr '.repeat(section.columns) }
-    let sectionDelimeter = index !== 0 ? <div className="form_section-delimeter"></div> : ''
+    let sectionDelimeter = index !== 0 ? <div className="delimeter-h-15"></div> : ''
     return (
       <Fragment key={index}>
       {sectionDelimeter}
@@ -187,7 +188,7 @@ function Form({
         {sectioned}
         {formValidityErrors}       
       </div>
-      <Button type='form' submit  />      
+      {/*<Button type='form' submit/>*/}
     </form>
 )
 
