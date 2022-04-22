@@ -1,11 +1,11 @@
 import React from 'react'
-import './methods-icon.css'
+import './methods-button.css'
 
 // isExpanded: methods menu expanded - arrow icon is turned 180deg
 // isNonDefault: non default method selected - methods icon is different color
-function MethodsIcon({ isExpanded, isNonDefault }) {
-  let buttonClass = 'methods-icon' + (isNonDefault ? ' methods-icon__non-default' : '')
-  let arrowClass = 'methods-icon_arrow' + (isExpanded ? ' methods-icon_arrow__expanded' : '')
+function MethodsButton({ isExpanded, isNonDefault }) {
+  let buttonClass = 'methods-button' + (isNonDefault ? ' methods-button__non-default' : '')
+  let arrowClass = 'methods-button_arrow' + (isExpanded ? ' methods-button_arrow__expanded' : '')
 
   return (
     <div className={buttonClass}>    
@@ -16,9 +16,9 @@ function MethodsIcon({ isExpanded, isNonDefault }) {
     </div>
   )
 }
-MethodsIcon.defaultProps = {
+MethodsButton.defaultProps = {
   isNonDefault: false,
   isExpanded: false
 }
   
-export default MethodsIcon
+export default MethodsButton
