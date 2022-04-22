@@ -11,5 +11,3 @@ client/build
 __pycache__
 
 tuning/
-
-.vscode/
