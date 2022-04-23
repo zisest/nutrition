@@ -1,7 +1,9 @@
 import json
+from os import environ
 from pathlib import Path
 from django.apps import AppConfig
 import pandas as pd
+from cryptography.fernet import Fernet
 
 
 class NutritionHelperConfig(AppConfig):
@@ -25,11 +27,12 @@ class NutritionHelperConfig(AppConfig):
     def load_ml_models(self):
         for path in Path(self.ml_models_dir).glob('*'):
             self.normalization_info[path.name] = pd.read_csv('{}/normalization.csv'.format(path), header=0, index_col=0)
-            # self.ml_models[path.name] = load_ml_model(path)
-
-            with open('{}/weights.json'.format(path), 'r', encoding='utf-8') as f:
-                self.ml_models[path.name] = json.load(f)
-
+            
+            with open('{}/encrypted_weights'.format(path), 'rb') as f:
+                key = environ['WEIGHTS_KEY'].encode()          
+                decrypted = Fernet(key)  .decrypt(f.read()).decode('utf-8')
+                weights = json.loads(decrypted)                
+                self.ml_models[path.name] = weights
             with open('{}/info.json'.format(path), 'r', encoding='utf-8') as f:
                 self.ml_models_info.append(json.load(f))
 
