@@ -112,7 +112,7 @@ TEMPLATES = [
     },
 ]
 
-print(TEMPLATES['DIRS'])
+print(TEMPLATES[0]['DIRS'][0])
 
 WSGI_APPLICATION = 'Django_nutrition.wsgi.application'
 
