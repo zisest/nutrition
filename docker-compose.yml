@@ -3,8 +3,13 @@ services:
     # environment variables are specified in docker-compose.yml and not in Dockerfile 
     # to go in line with a specific CD implementation
     env_file:
-      - backend/Django_nutrition/.env
-    build: .
+      - .env
+    build: 
+      context: .
+      args: 
+        SECRET_KEY: ${SECRET_KEY}
+        WEIGHTS_KEY: ${WEIGHTS_KEY}
+        DATABASE_URL: ${DATABASE_URL}
     container_name: nutrition
     ports:
       - "8000:8000"
