@@ -1,5 +1,5 @@
 """
-settings_remote.py
+settings_docker_local.py
 
 Django settings for Django_nutrition project.
 
@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import environ
 import dj_database_url
 from datetime import timedelta
 # env = environ.Env(
@@ -35,7 +36,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = bool(os.environ.get('DEBUG'))
 
 ALLOWED_HOSTS = [
-    '.zisest.ru'
+    'localhost'
 ]
 
 # CSRF_COOKIE_SECURE = False
@@ -83,6 +84,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -93,8 +95,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Django_nutrition.urls'
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_SSL_REDIRECT = True
 
 TEMPLATES = [
     {
@@ -112,6 +114,7 @@ TEMPLATES = [
     },
 ]
 
+# print(TEMPLATES['DIRS'])
 
 WSGI_APPLICATION = 'Django_nutrition.wsgi.application'
 
