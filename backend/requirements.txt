@@ -1,6 +1,7 @@
 Django==3.0.6
 django-cors-headers==3.2.1
 django-environ==0.4.5
+dj-database-url==0.5.0
 djangorestframework-simplejwt==4.4.0
 gunicorn==20.0.4
 PyJWT==v1.7.1
