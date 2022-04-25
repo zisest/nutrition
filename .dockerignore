@@ -1,0 +1,6 @@
+**/node_modules
+**/npm-debug.log
+client/build
+__pycache__
+.env
+venv

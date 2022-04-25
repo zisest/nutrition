@@ -1,0 +1,10 @@
+services:
+  app:
+    # environment variables are specified in docker-compose.yml and not in Dockerfile 
+    # to go in line with a specific CD implementation
+    env_file:
+      - backend/Django_nutrition/.env
+    build: .
+    container_name: nutrition
+    ports:
+      - "8000:8000"

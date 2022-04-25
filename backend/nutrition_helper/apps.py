@@ -30,7 +30,7 @@ class NutritionHelperConfig(AppConfig):
             
             with open('{}/encrypted_weights'.format(path), 'rb') as f:
                 key = environ['WEIGHTS_KEY'].encode()          
-                decrypted = Fernet(key)  .decrypt(f.read()).decode('utf-8')
+                decrypted = Fernet(key).decrypt(f.read()).decode('utf-8')
                 weights = json.loads(decrypted)                
                 self.ml_models[path.name] = weights
             with open('{}/info.json'.format(path), 'r', encoding='utf-8') as f:
