@@ -42,3 +42,9 @@ DJANGO_SETTINGS_MODULE=Django_nutrition.settings
 2. Запустить сервер: `npm run start`
 
 Dev-сервер по умолчанию доступен на порте 3000.
+
+
+---
+
+`settings_dev.py`: `.env` should be inside `backend/Django_nutrition`
+`settings_docker_local.py`: `.env` should be in the root directory
