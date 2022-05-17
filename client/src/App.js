@@ -6,6 +6,7 @@ import AuthModal from './components/auth-modal'
 import './App.css'
 import PreferencesPage from './components/preferences-page'
 import Navbar from './components/navbar'
+import StaleCodeWarning from './components/stale-code-warning'
 
 import { checkAuth, refreshToken, checkRefresh, deleteTokens } from './api/auth'
 
@@ -82,6 +83,7 @@ function App() {
       </Switch>
       {authModal}
       </div>    
+      <StaleCodeWarning />
     </div>
   )
 }
