@@ -28,7 +28,7 @@ export default function StaleCodeWarning () {
     setIsHidden(true)
   }
 
-  const isHiddenStyle = isHidden ? 'stale-code-warning__wrapper_hidden' : ''
+  const isHiddenStyle = isHidden ? ' stale-code-warning__wrapper_hidden' : ''
 
   return (
     <div className={"stale-code-warning__wrapper" + isHiddenStyle}>
